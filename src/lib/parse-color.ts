@@ -162,7 +162,6 @@ export function parseColor(value: string): ParsedColor {
     let shape = 'circle';
     let size = 'farthest-corner';
     let position = 'center';
-    const colorStops: ParsedColorStopArray = [];
 
     // Regular expression to match the radial-gradient function
     const regex = /radial-gradient\((.*)\)/i;
@@ -198,7 +197,6 @@ export function parseColor(value: string): ParsedColor {
     }
 
     // Extract color stops
-
     const colorStops = parseColorStops(components.slice(index));
 
     const result: ParsedColorRdialGradient = {
