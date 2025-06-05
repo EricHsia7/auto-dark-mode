@@ -72,7 +72,7 @@ export function getStyles() {
         result[title] = sheetObj;
       } catch (e) {
         // Security/CORS error – skip this stylesheet
-        console.warn('Skipping inaccessible stylesheet:', e);
+        // console.warn('Skipping inaccessible stylesheet:', e);
       }
     }
 
