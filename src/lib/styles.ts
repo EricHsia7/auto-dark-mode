@@ -1,4 +1,4 @@
-import { generateIdentifier } from './index';
+import { generateIdentifier } from './generate-identifier';
 
 export function getStyles() {
   if ('styleSheets' in document) {
