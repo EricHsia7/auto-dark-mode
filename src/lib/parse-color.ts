@@ -53,7 +53,7 @@ export function parseColor(value: string): ParsedColor {
       const trimmedComponent = component.trim();
       const matches = trimmedComponent.match(positionRegex);
       if (matches) {
-        const color = parseColor(trimmedComponent.replace(positionRegex, '').trim());
+        const color = parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ParsedColorRGBA | ParsedColorVariable;
         const position = matches[0].trim();
         colorStops.push({
           type: 'stop',
@@ -76,19 +76,14 @@ export function parseColor(value: string): ParsedColor {
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
     const matches = value.match(/rgba?\((\d+),\s{0,}(\d+),\s{0,}(\d+)(?:,\s{0,}(\d+\.?\d*))?\)/);
-    if (!matches) throw new Error(`Invalid RGB/RGBA format: ${rgb}`);
-    const rgba: ParsedColorRGBA['rgba'] = [];
-    for (let i = 1; i < 3; i++) {
-      rgba.push(parseInt(matches[i], 10));
-    }
-    if (matches[4]) {
-      rgba.push(parseFloat(matches[4]));
-    } else {
-      rgba.push(1);
-    }
+    if (!matches) throw new Error(`Invalid RGB/RGBA format: ${value}`);
+    const r = parseInt(matches[1], 10);
+    const g = parseInt(matches[2], 10);
+    const b = parseInt(matches[3], 10);
+    const a = matches[4] !== undefined ? parseFloat(matches[4]) : 1;
     const result: ParsedColorRGBA = {
       type: 'rgba',
-      rgba: rgba
+      rgba: [r, g, b, a]
     };
     return result;
   }
@@ -214,9 +209,9 @@ export function parseColor(value: string): ParsedColor {
     // Regular expression to match the radial-gradient function
     const regex = /conic-gradient\((.*)\)/i;
     const matches = value.match(regex);
-    const parts = matches[1].split(/,(.+)/);
-    const angle = parts[0].trim();
-    const colorStops = parseColorStops(parts[1]);
+    const components = matches[1].split(/,(.+)/);
+    const angle = components[0].trim();
+    const colorStops = parseColorStops(components[1]);
 
     const result: ParsedColorConicGradient = {
       type: 'conic-gradient',
@@ -237,7 +232,7 @@ export function parseColor(value: string): ParsedColor {
   }
 
   // handle named colors
-  const foundColor = namedColors[propertyValue];
+  const foundColor = namedColors[value.toLowerCase()];
   if (foundColor) {
     const result: ParsedColorRGBA = {
       type: 'rgba',
@@ -254,5 +249,24 @@ export function parseColor(value: string): ParsedColor {
 }
 
 export function parsedColorToString(parsedColor: ParsedColor): string {
-  
+  switch (parsedColor.type) {
+    case 'rgba':
+      const [r, g, b, a] = parsedColor.rgba;
+      return a < 1 ? `rgba(${r}, ${g}, ${b}, ${a})` : `rgb(${r}, ${g}, ${b})`;
+    case 'variable':
+      return parsedColor.ref;
+    case 'linear-gradient':
+      const linearStops = parsedColor.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(', ');
+      return `linear-gradient(${parsedColor.direction}, ${linearStops})`;
+    case 'radial-gradient':
+      const radialStops = parsedColor.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(', ');
+      return `radial-gradient(${parsedColor.shape} ${parsedColor.size} at ${parsedColor.position}, ${radialStops})`;
+    case 'conic-gradient':
+      const conicStops = parsedColor.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(', ');
+      return `conic-gradient(${parsedColor.angle}, ${conicStops})`;
+    case 'url':
+      return parsedColor.ref;
+    default:
+      throw new Error(`Unknown color type: ${(parsedColor as any).type}`);
+  }
 }
