@@ -1,30 +1,20 @@
 import { flattenStyleSheets, getStyles, invertStyles, stylesToString } from './lib/styles';
 
 export function initialize(): void {
-  setTimeout(() => {
-    try {
-      // Extract styles
-      const styles = getStyles();
-      console.log(0, styles);
+  // Extract styles
+  const styles = getStyles();
 
-      // Invert styles
-      const invertedStyles = invertStyles(styles);
-      console.log(1, invertedStyles);
+  // Invert styles
+  const invertedStyles = invertStyles(styles);
 
-      // Flatten styles
-      const flattenStyles = flattenStyleSheets(invertedStyles);
-      console.log(2, flattenStyles);
+  // Flatten styles
+  const flattenStyles = flattenStyleSheets(invertedStyles);
 
-      // Styles String
-      const string = stylesToString(flattenStyles);
-      console.log(3, string);
+  // Styles String
+  const string = stylesToString(flattenStyles);
 
-      // Create stylesheet
-      const styleSheet = document.createElement('style');
-      styleSheet.textContent = string;
-      document.head.appendChild(styleSheet);
-    } catch (e) {
-      console.log(e);
-    }
-  }, 5000);
+  // Create stylesheet
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = string;
+  document.head.appendChild(styleSheet);
 }
