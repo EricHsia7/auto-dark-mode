@@ -94,23 +94,36 @@ export function parseColor(value: string): ParsedColor {
     let red: number = 0;
     let green: number = 0;
     let blue: number = 0;
+    let alpha: number = 0;
 
-    if (colorLength === 4) {
-      // #fff
-      red = parseInt(value[1] + value[1], 16);
-      green = parseInt(value[2] + value[2], 16);
-      blue = parseInt(value[3] + value[3], 16);
-    } else if (colorLength === 7) {
-      // #ffffff
-      red = parseInt(value.slice(1, 3), 16);
-      green = parseInt(value.slice(3, 5), 16);
-      blue = parseInt(value.slice(5, 7), 16);
-    } else {
-      throw new Error('Invalid hex format');
+    switch (colorLength) {
+      case 4:
+        // #fff
+        red = parseInt(value[1] + value[1], 16);
+        green = parseInt(value[2] + value[2], 16);
+        blue = parseInt(value[3] + value[3], 16);
+        alpha = 1;
+        break;
+      case 7:
+        // #ffffff
+        red = parseInt(value.slice(1, 3), 16);
+        green = parseInt(value.slice(3, 5), 16);
+        blue = parseInt(value.slice(5, 7), 16);
+        alpha = 1;
+        break;
+      case 9:
+        red = parseInt(value.slice(1, 3), 16);
+        green = parseInt(value.slice(3, 5), 16);
+        blue = parseInt(value.slice(5, 7), 16);
+        alpha = parseInt(value.slice(7, 9), 16) / 255;
+        break;
+      default:
+        break;
     }
+
     const result: ParsedColorRGBA = {
       type: 'rgba',
-      rgba: [red, green, blue, 1]
+      rgba: [red, green, blue, alpha]
     };
     return result;
   }
