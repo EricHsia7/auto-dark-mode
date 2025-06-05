@@ -115,7 +115,7 @@ export function flattenStyleSheets(styles: Record<string, any>): any {
       if (!merged.hasOwnProperty(key)) {
         merged[key] = {};
       }
-      merged[key] = Object.assign(merged[key], styles[key]);
+      merged[key] = Object.assign(merged[key], styles[sheetName][key]);
     }
   }
   return merged;
