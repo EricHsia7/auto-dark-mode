@@ -29,7 +29,9 @@ export function invertRGBA(color: ParsedColorRGBA): ParsedColorRGBA {
       invertible = true;
     }
   }
-  if (!invertible) return color;
+  if (invertible === false) {
+    return color;
+  }
 
   const newHue = originalHue;
   const newSaturation = originalSaturation * 0.2;
