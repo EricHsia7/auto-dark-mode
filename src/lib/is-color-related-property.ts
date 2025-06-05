@@ -10,7 +10,9 @@ function looksLikeColorValue(value: string): boolean {
 
   // Other formats
   if (/^(rgb|rgba|hsl|hsla|linear-gradient|radial-gradient|conic-gradient)\(/.test(value)) {
-    return true;
+    if (!/var\(--.*\)/.test(value) && !/calc\(.*\)/.test(value) && !/clamp\(.*\)/.test(value)) {
+      return true;
+    }
   }
 
   // Named colors
@@ -89,7 +91,7 @@ export function isColorRelatedProperty(property: string, value: string): boolean
     'box-decoration-break',
     'column-rule'
   ];
-  
+
   if (colorRelatedCSSProperties.indexOf(property) > -1) {
     return true;
   } else {
