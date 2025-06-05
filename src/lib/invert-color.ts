@@ -1,6 +1,6 @@
-import { ParsedColorRGBA } from './parse-color';
+import { ParsedColor, ParsedColorConicGradient, ParsedColorLinearGradient, ParsedColorRdialGradient, ParsedColorRGBA, ParsedColorStop, ParsedColorStopArray, ParsedColorVariable } from './parse-color';
 
-export function invertColor(color: ParsedColorRGBA): ParsedColorRGBA {
+export function invertRGBA(color: ParsedColorRGBA): ParsedColorRGBA {
   const [R, G, B, A] = color.rgba;
 
   const r = R / 255;
@@ -48,4 +48,71 @@ export function invertColor(color: ParsedColorRGBA): ParsedColorRGBA {
   };
 
   return result;
+}
+
+export function invertColor(color: ParsedColor): ParsedColor {
+  function invertStops(colorStops: ParsedColorStopArray) {
+    const colorStopsLength = colorStops.length;
+    const invertedStops: ParsedColorStopArray = [];
+    for (let i = 0; i < colorStopsLength; i++) {
+      const stop = colorStops[i];
+      if (stop.type === 'stop') {
+        const invertedColor = invertColor(stop.color) as ParsedColorRGBA | ParsedColorVariable;
+        const invertedColorStop: ParsedColorStop = {
+          type: 'stop',
+          color: invertedColor,
+          position: stop.position
+        };
+        invertedStops.push(invertedColorStop);
+      }
+    }
+    return invertedStops;
+  }
+  switch (color.type) {
+    case 'rgba': {
+      return invertRGBA(color);
+      break;
+    }
+    case 'variable': {
+      return color; // Variables are not inverted
+      break;
+    }
+    case 'linear-gradient': {
+      const invertedColors = invertStops(color.colorStops);
+      const result: ParsedColorLinearGradient = {
+        type: 'linear-gradient',
+        direction: color.direction,
+        colorStops: invertedColors
+      };
+      return result;
+      break;
+    }
+    case 'radial-gradient':
+      {
+        const invertedColors = invertStops(color.colorStops);
+        const result: ParsedColorRdialGradient = {
+          type: 'radial-gradient',
+          position: color.position,
+          shape: color.shape,
+          size: color.size,
+          colorStops: invertedColors
+        };
+        return result;
+      }
+      break;
+    case 'conic-gradient': {
+      const invertedColors = invertStops(color.colorStops);
+      const result: ParsedColorConicGradient = {
+        type: 'conic-gradient',
+        angle: color.angle,
+        colorStops: invertedColors
+      };
+      return result;
+      break;
+    }
+    case 'url':
+      return color; // URLs are not inverted
+    default:
+      return color; // Fallback for any other types
+  }
 }

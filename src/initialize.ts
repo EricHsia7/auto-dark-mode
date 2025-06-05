@@ -1,4 +1,4 @@
-import { getStyles, invertStyles } from './lib/styles';
+import { getStyles, invertStyles, stylesToString } from './lib/styles';
 
 export function initialize(): void {
   // Extract styles
@@ -8,4 +8,7 @@ export function initialize(): void {
   invertStyles(styles);
 
   // Create stylesheet
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = stylesToString(styles);
+  document.head.appendChild(styleSheet);
 }

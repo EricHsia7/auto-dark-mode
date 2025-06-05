@@ -1,5 +1,5 @@
 import { generateIdentifier } from './generate-identifier';
-import { invertColor } from './invert-color';
+import { invertColor, invertRGBA } from './invert-color';
 import { isColorRelatedProperty } from './is-color-related-property';
 import { parseColor, parsedColorToString } from './parse-color';
 
@@ -86,7 +86,7 @@ export function invertStyles(styles: any, path: string[] = []) {
     const currentPath = [...path, key];
 
     if (typeof value === 'object' && value !== null) {
-      iterateStyles(value, currentPath); // Recurse into nested objects
+      invertStyles(value, currentPath); // Recurse into nested objects
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isColorRelatedProperty(key)) {
@@ -98,4 +98,40 @@ export function invertStyles(styles: any, path: string[] = []) {
       }
     }
   }
+}
+
+export function stylesToString(styles: any, indent = ''): string {
+  let result = '';
+  let basicRules = '';
+
+  for (const selector in styles) {
+    const properties = styles[selector];
+    if (typeof properties === 'object' && properties !== null && !Array.isArray(properties)) {
+      // Check if this is a nested block (e.g., @media, @keyframes, or keyframe steps)
+      const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
+      if (isNestedBlock) {
+        result += `${indent}${selector} {\n`;
+        result += stylesToString(properties, indent + '  ');
+        result += `${indent}}\n`;
+      } else {
+        // Collect basic rules to wrap later
+        basicRules += `${indent}${selector} {\n`;
+        for (const prop in properties) {
+          basicRules += `${indent}  ${prop}: ${properties[prop]};\n`;
+        }
+        basicRules += `${indent}}\n`;
+      }
+    }
+  }
+
+  // If there are basic rules, wrap them in the dark mode media query
+  if (basicRules) {
+    result =
+      `${indent}@media (prefers-color-scheme: dark) {\n` +
+      basicRules.replace(/^/gm, indent + '  ') + // indent all lines
+      `${indent}}\n` +
+      result;
+  }
+
+  return result;
 }
