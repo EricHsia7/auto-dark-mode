@@ -80,25 +80,32 @@ export function getStyles() {
   }
 }
 
-export function invertStyles(styles: any, path: string[] = []) {
+export function invertStyles(styles: any, path: string[] = []): any {
+  const newStyles: any = {};
+
   for (const key in styles) {
     const value = styles[key];
     const currentPath = [...path, key];
 
     if (typeof value === 'object' && value !== null) {
-      styles[key] = invertStyles(value, currentPath); // Recurse into nested objects
+      newStyles[key] = invertStyles(value, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isColorRelatedProperty(key)) {
         const parsedColor = parseColor(value);
         if (parsedColor) {
           const invertedColor = invertColor(parsedColor);
-          styles[key] = parsedColorToString(invertedColor);
+          newStyles[key] = parsedColorToString(invertedColor);
+        } else {
+          newStyles[key] = value; // If parsing fails, keep original
         }
+      } else {
+        newStyles[key] = value;
       }
     }
   }
-  return styles;
+
+  return newStyles;
 }
 
 export function stylesToString(styles: any, indent = ''): string {
