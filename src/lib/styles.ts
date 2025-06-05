@@ -111,17 +111,11 @@ export function invertStyles(styles: any, path: string[] = []): any {
 export function flattenStyleSheets(styles: Record<string, any>): any {
   const merged: Record<string, any> = {};
   for (const sheetName in styles) {
-    const styles = styles[sheetName];
-    for (const selector in styles) {
-      if (!merged[selector]) {
-        merged[selector] = styles[selector];
-      } else {
-        // Merge properties or nested blocks
-        merged[selector] = {
-          ...merged[selector],
-          ...styles[selector],
-        };
+    for (const key in styles[sheetName]) {
+      if (!merged.hasOwnProperty(key)) {
+        merged[key] = {};
       }
+      merged[key] = Object.assign(merged[key], styles[key]);
     }
   }
   return merged;
