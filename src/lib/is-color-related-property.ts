@@ -1,4 +1,27 @@
-export function isColorRelatedProperty(value: string): boolean {
+import { namedColors } from './named-colors';
+
+function looksLikeColorValue(value: string): boolean {
+  value = value.trim().toLowerCase();
+
+  // Check for hex codes
+  if (/^#([a-f0-9]{3,4}|[a-f0-9]{6}|[a-f0-9]{8})$/.test(value)) {
+    return true;
+  }
+
+  // Other formats
+  if (/^(rgb|rgba|hsl|hsla|linear-gradient|radial-gradient|conic-gradient)\(/.test(value)) {
+    return true;
+  }
+
+  // Named colors
+  if (namedColors.hasOwnProperty(value.toLowerCase())) {
+    return true;
+  }
+
+  return false;
+}
+
+export function isColorRelatedProperty(property: string, value: string): boolean {
   const colorRelatedCSSProperties = [
     // General color properties
     'color',
@@ -66,9 +89,16 @@ export function isColorRelatedProperty(value: string): boolean {
     'box-decoration-break',
     'column-rule'
   ];
-  if (colorRelatedCSSProperties.indexOf(value) > -1) {
+  
+  if (colorRelatedCSSProperties.indexOf(property) > -1) {
     return true;
   } else {
+    if (property.startsWith('--')) {
+      // css variable
+      if (looksLikeColorValue(value)) {
+        return true;
+      }
+    }
     return false;
   }
 }
