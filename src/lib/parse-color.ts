@@ -65,6 +65,11 @@ export function parseColor(value: string): ParsedColor {
     return colorStops;
   }
 
+  const fallbackColor: ParsedColorRGBA = {
+    type: 'rgba',
+    rgba: [0, 0, 0, 0]
+  };
+
   if (value.startsWith('var(')) {
     const result: ParsedColorVariable = {
       type: 'variable',
@@ -76,7 +81,9 @@ export function parseColor(value: string): ParsedColor {
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
     const matches = value.match(/rgba?\((\d+),\s{0,}(\d+),\s{0,}(\d+)(?:,\s{0,}(\d+\.?\d*))?\)/);
-    if (!matches) throw new Error(`Invalid RGB/RGBA format: ${value}`);
+    if (!matches) {
+      return fallbackColor;
+    }
     const r = parseInt(matches[1], 10);
     const g = parseInt(matches[2], 10);
     const b = parseInt(matches[3], 10);
@@ -135,7 +142,7 @@ export function parseColor(value: string): ParsedColor {
     const matches = value.match(regex);
 
     if (!matches || matches.length < 2) {
-      throw new Error('Invalid linear gradient string');
+      return fallbackColor;
     }
 
     // Extract the content inside the linear-gradient function
@@ -176,7 +183,7 @@ export function parseColor(value: string): ParsedColor {
     const matches = value.match(regex);
 
     if (!matches) {
-      throw new Error('Invalid radial gradient string');
+      return fallbackColor;
     }
 
     // Split the content by commas, but ignore commas inside parentheses
@@ -253,11 +260,7 @@ export function parseColor(value: string): ParsedColor {
     };
     return result;
   } else {
-    const result: ParsedColorRGBA = {
-      type: 'rgba',
-      rgba: [0, 0, 0, 0]
-    };
-    return result;
+    return fallbackColor;
   }
 }
 
@@ -280,6 +283,5 @@ export function parsedColorToString(parsedColor: ParsedColor): string {
     case 'url':
       return parsedColor.ref;
     default:
-      throw new Error(`Unknown color type: ${(parsedColor as any).type}`);
   }
 }
