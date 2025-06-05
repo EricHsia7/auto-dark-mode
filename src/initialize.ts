@@ -2,18 +2,22 @@ import { flattenStyleSheets, getStyles, invertStyles, stylesToString } from './l
 
 export function initialize(): void {
   setTimeout(() => {
-    // Extract styles
-    let styles = getStyles();
+    try {
+      // Extract styles
+      let styles = getStyles();
 
-    // Invert styles
-    styles = invertStyles(styles);
+      // Invert styles
+      styles = invertStyles(styles);
 
-    // Flatten styles
-    styles = flattenStyleSheets(styles);
+      // Flatten styles
+      styles = flattenStyleSheets(styles);
 
-    // Create stylesheet
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = stylesToString(styles);
-    document.head.appendChild(styleSheet);
+      // Create stylesheet
+      const styleSheet = document.createElement('style');
+      styleSheet.textContent = stylesToString(styles);
+      document.head.appendChild(styleSheet);
+    } catch (e) {
+      console.log(e);
+    }
   }, 5000);
 }
