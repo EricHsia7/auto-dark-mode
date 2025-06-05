@@ -4,8 +4,6 @@ var autoDarkMode = {
   initialize
 };
 
-window.addEventListener('load', function () {
-  autoDarkMode.initialize();
-});
+autoDarkMode.initialize();
 
 export default autoDarkMode;
