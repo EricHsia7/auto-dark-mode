@@ -1,6 +1,6 @@
 {
   "name": "Auto Dark Mode",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Darken Any Website",
   "namespace": "http://erichsia7.github.io/",
   "run-at": "document-idle",
@@ -8,6 +8,5 @@
   "inject-into": "content",
   "updateURL": "https://erichsia7.github.io/auto-dark-mode/auto-dark-mode.user.js",
   "downloadURL": "https://erichsia7.github.io/auto-dark-mode/auto-dark-mode.user.js",
-  "match": "*://*/*",
-  "noframes": ""
+  "match": "*://*/*"
 }

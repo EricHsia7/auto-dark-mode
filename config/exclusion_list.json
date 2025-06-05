@@ -24,6 +24,11 @@
       "name": "X",
       "pattern": "*://x.*/*",
       "description": ""
+    },
+    {
+      "name": "Accounts",
+      "pattern": "*://accounts.*.*/*",
+      "description": ""
     }
   ]
 }
