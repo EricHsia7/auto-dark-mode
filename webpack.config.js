@@ -46,7 +46,7 @@ module.exports = (env, argv) => {
       path: path.resolve(__dirname, 'dist'), // Output directory for bundled files
       publicPath: './',
       library: {
-        name: 'darkify',
+        name: 'autodarkmode',
         type: 'var',
         export: 'default'
       }

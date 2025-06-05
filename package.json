@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/EricHsia7/auto-dark-mode.git"
   },
-  "keywords": ["darkify", "extension", "userscript"],
+  "keywords": ["auto-dark-mode", "extension", "userscript"],
   "author": "EricHsia7",
   "bugs": {
     "url": "https://github.com/erichsia7/auto-dark-mode/issues"
