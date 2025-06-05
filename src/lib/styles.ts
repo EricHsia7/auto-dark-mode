@@ -1,5 +1,5 @@
 import { generateIdentifier } from './generate-identifier';
-import { invertColor, invertRGBA } from './invert-color';
+import { invertColor } from './invert-color';
 import { isColorRelatedProperty } from './is-color-related-property';
 import { parseColor, parsedColorToString } from './parse-color';
 
@@ -106,6 +106,25 @@ export function invertStyles(styles: any, path: string[] = []): any {
   }
 
   return newStyles;
+}
+
+export function flattenStyleSheets(styles: Record<string, any>): any {
+  const merged: Record<string, any> = {};
+  for (const sheetName in styles) {
+    const styles = styles[sheetName];
+    for (const selector in styles) {
+      if (!merged[selector]) {
+        merged[selector] = styles[selector];
+      } else {
+        // Merge properties or nested blocks
+        merged[selector] = {
+          ...merged[selector],
+          ...styles[selector],
+        };
+      }
+    }
+  }
+  return merged;
 }
 
 export function stylesToString(styles: any, indent = ''): string {
