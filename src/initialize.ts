@@ -4,17 +4,24 @@ export function initialize(): void {
   setTimeout(() => {
     try {
       // Extract styles
-      let styles = getStyles();
+      const styles = getStyles();
+      console.log(0, styles);
 
       // Invert styles
-      styles = invertStyles(styles);
+      const invertedStyles = invertStyles(styles);
+      console.log(1, invertedStyles);
 
       // Flatten styles
-      styles = flattenStyleSheets(styles);
+      const flattenStyles = flattenStyleSheets(invertedStyles);
+      console.log(2, flattenStyles);
+
+      // Styles String
+      const string = stylesToString(flattenStyles);
+      console.log(3, string);
 
       // Create stylesheet
       const styleSheet = document.createElement('style');
-      styleSheet.textContent = stylesToString(styles);
+      styleSheet.textContent = string;
       document.head.appendChild(styleSheet);
     } catch (e) {
       console.log(e);
