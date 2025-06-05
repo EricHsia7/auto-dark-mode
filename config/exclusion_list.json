@@ -1,0 +1,29 @@
+{
+  "exclusion_list": [
+    {
+      "name": "Google",
+      "pattern": "*://*.google.com/*",
+      "description": "To avoid reCAPTCHA."
+    },
+    {
+      "name": "YouTube",
+      "pattern": "*://*.youtube.com/*",
+      "description": "To avoid reCAPTCHA."
+    },
+    {
+      "name": "Github",
+      "pattern": "*://github.*/*",
+      "description": ""
+    },
+    {
+      "name": "Twitter",
+      "pattern": "*://twitter.*/*",
+      "description": ""
+    },
+    {
+      "name": "X",
+      "pattern": "*://x.*/*",
+      "description": ""
+    }
+  ]
+}

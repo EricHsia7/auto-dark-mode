@@ -1,0 +1,33 @@
+{
+  "name": "@erichsia7/auto-dark-mode",
+  "version": "0.0.1",
+  "description": "Darken Any Website",
+  "main": "auto-dark-mode.user.js",
+  "private": false,
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EricHsia7/auto-dark-mode.git"
+  },
+  "keywords": ["darkify", "extension", "userscript"],
+  "author": "EricHsia7",
+  "bugs": {
+    "url": "https://github.com/erichsia7/auto-dark-mode/issues"
+  },
+  "homepage": "https://erichsia7.github.io/auto-dark-mode/",
+  "devDependencies": {
+    "babel-loader": "^9.1.3",
+    "@babel/core": "^7.22.9",
+    "@babel/preset-env": "^7.22.9",
+    "@babel/preset-flow": "^7.22.5",
+    "@babel/plugin-syntax-flow": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
+    "babel-preset-modules": "^0.0.2",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4",
+    "gh-pages": "^5.0.0",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3"
+  },
+  "dependencies": {}
+}
