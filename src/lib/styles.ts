@@ -1,4 +1,7 @@
 import { generateIdentifier } from './generate-identifier';
+import { invertColor } from './invert-color';
+import { isColorRelatedProperty } from './is-color-related-property';
+import { parseColor, parsedColorToString } from './parse-color';
 
 export function getStyles() {
   if ('styleSheets' in document) {
@@ -74,5 +77,25 @@ export function getStyles() {
     }
 
     return result;
+  }
+}
+
+export function invertStyles(styles: any, path: string[] = []) {
+  for (const key in styles) {
+    const value = styles[key];
+    const currentPath = [...path, key];
+
+    if (typeof value === 'object' && value !== null) {
+      iterateStyles(value, currentPath); // Recurse into nested objects
+    } else {
+      // Leaf node: reached a CSS property/value pair
+      if (isColorRelatedProperty(key)) {
+        const parsedColor = parseColor(value);
+        if (parsedColor) {
+          const invertedColor = invertColor(parsedColor);
+          styles[key] = parsedColorToString(invertedColor);
+        }
+      }
+    }
   }
 }

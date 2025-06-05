@@ -254,3 +254,7 @@ export function parseColor(value: string): ParsedColor {
     return result;
   }
 }
+
+export function parsedColorToString(parsedColor: ParsedColor): string {
+  
+}
