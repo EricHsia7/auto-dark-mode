@@ -22,10 +22,10 @@ export function invertRGBA(color: ParsedColorRGBA): ParsedColorRGBA {
   }
 
   let invertible: boolean = false;
-  if (originalSaturation <= 38) {
+  if (originalSaturation <= 0.38) {
     invertible = true;
   } else {
-    if (originalValue <= 46) {
+    if (originalValue <= 0.46) {
       invertible = true;
     }
   }
