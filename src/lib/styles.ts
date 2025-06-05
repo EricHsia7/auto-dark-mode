@@ -86,7 +86,7 @@ export function invertStyles(styles: any, path: string[] = []) {
     const currentPath = [...path, key];
 
     if (typeof value === 'object' && value !== null) {
-      invertStyles(value, currentPath); // Recurse into nested objects
+      styles[key] = invertStyles(value, currentPath); // Recurse into nested objects
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isColorRelatedProperty(key)) {
@@ -98,6 +98,7 @@ export function invertStyles(styles: any, path: string[] = []) {
       }
     }
   }
+  return styles;
 }
 
 export function stylesToString(styles: any, indent = ''): string {
