@@ -13,7 +13,7 @@ export function initialize(): void {
   console.log(flattenedStyles);
 
   // Styles String
-  const string = stylesToString(flattenStyles);
+  const string = stylesToString(flattenedStyles);
 
   // Create stylesheet
   const styleSheet = document.createElement('style');
