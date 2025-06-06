@@ -16,6 +16,11 @@
       "description": ""
     },
     {
+      "name": "Github Sites",
+      "pattern": "*://*.github.com/*",
+      "description": ""
+    },
+    {
       "name": "Twitter",
       "pattern": "*://twitter.*/*",
       "description": ""
