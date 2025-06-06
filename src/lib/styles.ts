@@ -121,25 +121,26 @@ export function getStyles() {
         switch (rule.type) {
           case CSSRule.STYLE_RULE: {
             // Basic style rule
-            const thisSelectorText = rule.selectorText;
-            if (!container.hasOwnProperty(thisSelectorText)) {
-              container[thisSelectorText] = {};
+            const selectorText = rule.selectorText;
+            if (!container.hasOwnProperty(selectorText)) {
+              container[selectorText] = {};
             }
             for (const prop of rule.style) {
               const value = rule.style.getPropertyValue(prop).trim();
               if (value.length > 0) {
-                container[thisSelectorText][prop] = value;
+                container[selectorText][prop] = value;
               }
             }
             break;
           }
           case CSSRule.MEDIA_RULE: {
             // Media queries
+            const identifier = generateIdentifier();
+            const mediaStyleSheetName = `@stylesheet-media-${identifier}`;
             const media = `@media ${rule.conditionText}`;
-            if (!container.hasOwnProperty(media)) {
-              container[media] = {};
-            }
-            processRules(rule.cssRules, container[media]);
+            container[mediaStyleSheetName] = {};
+            container[mediaStyleSheetName][media] = {};
+            processRules(rule.cssRules, container[mediaStyleSheetName][media]);
             break;
           }
           /*
