@@ -12,6 +12,7 @@
 // @exclude      *://*.google.com/*
 // @exclude      *://*.youtube.com/*
 // @exclude      *://github.*/*
+// @exclude      *://*.github.com/*
 // @exclude      *://twitter.*/*
 // @exclude      *://x.*/*
 // ==/UserScript==
