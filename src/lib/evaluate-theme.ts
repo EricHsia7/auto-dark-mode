@@ -38,9 +38,10 @@ export function evaluateTheme(backgroundColor: ParsedColorRGBA, textColor: Parse
   const textColorSaturation = textColorMax === 0 ? 0 : textColorDelta / textColorMax;
   const textColorValue = textColorMax;
 
-  if (backgroundColor.rgba[3] === 0 || textColor.rgba[3] === 0) {
+  if (backgroundColor.rgba[3] === 0 && textColorSaturation < 0.38 && textColorValue < 0.5) {
     return 'light';
   }
+
   if (backgroundColorValue >= textColorValue && backgroundColorSaturation < 0.38 && textColorSaturation < 0.38) {
     return 'light';
   } else {
