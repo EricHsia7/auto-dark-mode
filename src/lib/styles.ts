@@ -122,13 +122,15 @@ export function getStyles() {
           case CSSRule.STYLE_RULE: {
             // Basic style rule
             const selectorText = rule.selectorText;
-            if (!container.hasOwnProperty(selectorText)) {
-              container[selectorText] = {};
-            }
-            for (const prop of rule.style) {
-              const value = rule.style.getPropertyValue(prop).trim();
-              if (value.length > 0) {
-                container[selectorText][prop] = value;
+            if (rule.style.length > 0) {
+              if (!container.hasOwnProperty(selectorText)) {
+                container[selectorText] = {};
+              }
+              for (const prop of rule.style) {
+                const value = rule.style.getPropertyValue(prop).trim();
+                if (value.length > 0) {
+                  container[selectorText][prop] = value;
+                }
               }
             }
             break;
