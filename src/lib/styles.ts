@@ -73,7 +73,7 @@ export function getStyles() {
         if (!sheet.cssRules) continue; // No access
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
-        const title = `@${sheet.ownerNode?.id}` || `@${sheet.ownerNode?.getAttribute?.('href')}` || `@inline${generateIdentifier()}`;
+        const title = `__${sheet.ownerNode?.id}` || `__${sheet.ownerNode?.getAttribute?.('href')}` || `__inline${generateIdentifier()}`;
         result[title] = sheetObj;
       } catch (e) {
         // Security/CORS error – skip this stylesheet
