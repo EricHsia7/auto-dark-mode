@@ -5,6 +5,9 @@ import { invertParsedColor, parseColor, parsedColorToString } from './parse-colo
 export function getStyles() {
   const result = {
     '@stylesheet-default': {
+      '*': {
+        transition: 'color 0.5s ease, background-color 0.5s ease, border-top-color 0.5s ease, border-left-color 0.5s ease, border-right-color 0.5s ease, border-bottom-color 0.5s ease'
+      },
       'html, body': {
         'background-color': '#fdfdfd',
         'color': '#1a1a1a'
