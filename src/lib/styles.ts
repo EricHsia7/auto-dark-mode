@@ -12,7 +12,7 @@ export function getStyles() {
       'h1, h2, h3, h4, h5, h6': {
         color: '#1a1a1a'
       },
-      'p': {
+      'p, span, div': {
         color: '#2c2c2c'
       },
       'strong': {
