@@ -9,7 +9,6 @@
 // @updateURL    https://erichsia7.github.io/auto-dark-mode/auto-dark-mode.user.js
 // @downloadURL  https://erichsia7.github.io/auto-dark-mode/auto-dark-mode.user.js
 // @match        *://*/*
-// @noframes     
 // @exclude      *://*.google.com/*
 // @exclude      *://*.youtube.com/*
 // @exclude      *://github.*/*
