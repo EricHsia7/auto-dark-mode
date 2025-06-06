@@ -1,7 +1,6 @@
 import { generateIdentifier } from './generate-identifier';
-import { invertColor } from './invert-color';
 import { isColorRelatedProperty } from './is-color-related-property';
-import { parseColor, parsedColorToString } from './parse-color';
+import { invertParsedColor, parseColor, parsedColorToString } from './parse-color';
 
 export function getStyles() {
   if ('styleSheets' in document) {
@@ -94,7 +93,7 @@ export function invertStyles(styles: any, path: string[] = []): any {
       if (isColorRelatedProperty(key, value)) {
         const parsedColor = parseColor(value);
         if (parsedColor) {
-          const invertedColor = invertColor(parsedColor);
+          const invertedColor = invertParsedColor(parsedColor);
           newStyles[key] = parsedColorToString(invertedColor);
         } else {
           newStyles[key] = value; // If parsing fails, keep original
