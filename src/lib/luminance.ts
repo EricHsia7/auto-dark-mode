@@ -28,8 +28,10 @@ export function evaluateTheme(backgroundColor: ParsedColorRGBA, textColor: Parse
   const L2: number = calculateRelativeLuminance(textColor);
   const contrast: number = (L1 + 0.05) / (L2 + 0.05);
   if (contrast > 1 / contrast) {
+    console.log(0, contrast, 1 / contrast, backgroundColor, textColor);
     return 'light';
   } else {
+    console.log(1, contrast, 1 / contrast, backgroundColor, textColor);
     return 'dark';
   }
 }
