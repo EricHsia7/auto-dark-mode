@@ -1,6 +1,6 @@
 {
   "name": "@erichsia7/auto-dark-mode",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Darken Any Website",
   "main": "auto-dark-mode.user.js",
   "private": false,
@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/EricHsia7/auto-dark-mode.git"
   },
-  "keywords": ["auto-dark-mode", "extension", "userscript"],
+  "keywords": ["auto-dark-mode", "userscript"],
   "author": "EricHsia7",
   "bugs": {
     "url": "https://github.com/erichsia7/auto-dark-mode/issues"

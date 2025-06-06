@@ -132,7 +132,7 @@ export function flattenStyles(styles: Record<string, any>): any {
   return merged;
 }
 
-export function stylesToString(styles: any, indent = ''): string {
+export function stylesToString(styles: any): string {
   let result = '';
   let basicRules = '';
 
@@ -142,27 +142,23 @@ export function stylesToString(styles: any, indent = ''): string {
       // Check if this is a nested block (e.g., @media, @keyframes, or keyframe steps)
       const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
       if (isNestedBlock) {
-        result += `${indent}${selector} {\n`;
-        result += stylesToString(properties, indent + '  ');
-        result += `${indent}}\n`;
+        result += `${selector} {`;
+        result += stylesToString(properties);
+        result += '}'
       } else {
         // Collect basic rules to wrap later
-        basicRules += `${indent}${selector} {\n`;
+        basicRules += `${selector} {`;
         for (const prop in properties) {
-          basicRules += `${indent}  ${prop}: ${properties[prop]};\n`;
+          basicRules += `${prop}:${properties[prop]};`;
         }
-        basicRules += `${indent}}\n`;
+        basicRules += '}';
       }
     }
   }
 
   // If there are basic rules, wrap them in the dark mode media query
   if (basicRules) {
-    result =
-      `${indent}@media (prefers-color-scheme: dark) {\n` +
-      basicRules.replace(/^/gm, indent + '  ') + // indent all lines
-      `${indent}}\n` +
-      result;
+    result = `@media (prefers-color-scheme: dark) {${basicRules}} ${result}`;
   }
 
   return result;
