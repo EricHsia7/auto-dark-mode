@@ -3,7 +3,65 @@ import { isInvertible } from './is-invertible';
 import { invertParsedColor, parseColor, parsedColorToString } from './parse-color';
 
 export function getStyles() {
-  const result = {};
+  const result = {
+    ____default____: {
+      'body': {
+        'background-color': '#fdfdfd',
+        'color': '#2c2c2c'
+      },
+      'h1, h2, h3, h4, h5, h6': {
+        color: '#1a1a1a'
+      },
+      'p': {
+        color: '#2c2c2c'
+      },
+      'strong': {
+        'font-weight': 'bold',
+        'color': '#000'
+      },
+      'em': {
+        'color': '#444'
+      },
+      'a': {
+        'color': '#0077cc',
+        'text-decoration': 'none'
+      },
+      'a:hover, a:focus': {
+        'color': '#005fa3',
+        'text-decoration': 'underline'
+      },
+      'blockquote': {
+        'border-left': '4px solid #cccccc',
+        'color': '#555',
+        'background-color': '#f9f9f9',
+      },
+      'code': {
+        'background-color': '#f5f5f5',
+        'color': '#c7254e'
+      },
+      'pre': {
+        'background-color': '#f3f3f3',
+        'color': '#333'
+      },
+      'ul, ol': {
+        color: '#2c2c2c'
+      },
+      'li': {
+        color: '#2c2c2c'
+      },
+      'hr': {
+        border: 'none',
+        background: '#e0e0e0'
+      },
+      'small': {
+        color: '#888'
+      },
+      'mark': {
+        'background-color': '#fffd75',
+        'color': '#000'
+      }
+    }
+  };
   if ('styleSheets' in document) {
     function processRules(rules, container) {
       for (const rule of rules) {
@@ -68,13 +126,15 @@ export function getStyles() {
       }
     }
 
+    let index = 0;
     for (const sheet of document.styleSheets) {
       try {
         if (!sheet.cssRules) continue; // No access
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
-        const identifier = '__'.concat(sheet.ownerNode?.id || sheet.ownerNode?.getAttribute?.('href') || `inline${generateIdentifier()}`);
+        const identifier = `__${index}__`.concat(sheet.ownerNode?.id || sheet.ownerNode?.getAttribute?.('href') || `inline${generateIdentifier()}`);
         result[identifier] = sheetObj;
+        index++;
       } catch (e) {
         // Security/CORS error – skip this stylesheet
         // console.warn('Skipping inaccessible stylesheet:', e);
