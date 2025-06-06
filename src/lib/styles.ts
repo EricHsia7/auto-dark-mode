@@ -253,9 +253,9 @@ export function invertStyles(styles: any, path: string[] = []): any {
         } else {
           newStyles[key] = value; // If parsing fails, keep original
         }
-      } else {
+      } /* else {
         newStyles[key] = value;
-      }
+      } */
     }
   }
 
