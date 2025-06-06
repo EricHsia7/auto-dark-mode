@@ -24,12 +24,24 @@ export function calculateRelativeLuminance(color: ParsedColorRGBA): number {
 export type theme = 'light' | 'dark';
 
 export function evaluateTheme(backgroundColor: ParsedColorRGBA, textColor: ParsedColorRGBA): theme {
-  const backgroundColorValue = Math.max(...backgroundColor.rgba.slice(0, 3)) / 255;
-  const textColorValue = Math.max(...backgroundColor.rgba.slice(0, 3)) / 255;
+  const backgroundColorRGB = backgroundColor.rgba.slice(0, 3);
+  const backgroundColorMax = Math.max(...backgroundColorRGB) / 255;
+  const backgroundColorMin = Math.min(...backgroundColorRGB) / 255;
+  const backgroundColorDelta = backgroundColorMax - backgroundColorMin;
+  const backgroundColorSaturation = backgroundColorMax === 0 ? 0 : backgroundColorDelta / backgroundColorMax;
+  const backgroundColorValue = backgroundColorMax;
+
+  const textColorRGB = textColor.rgba.slice(0, 3);
+  const textColorMax = Math.max(...textColorRGB) / 255;
+  const textColorMin = Math.min(...textColorRGB) / 255;
+  const textColorDelta = textColorMax - textColorMin;
+  const textColorSaturation = textColorMax === 0 ? 0 : textColorDelta / textColorMax;
+  const textColorValue = textColorMax;
+
   if (backgroundColor.rgba[3] === 0 || textColor.rgba[3] === 0) {
     return 'light';
   }
-  if (backgroundColorValue >= textColorValue) {
+  if (backgroundColorValue >= textColorValue && backgroundColorSaturation < 0.38 && textColorSaturation < 0.38) {
     return 'light';
   } else {
     return 'dark';
