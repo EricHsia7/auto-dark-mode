@@ -262,11 +262,11 @@ export function invertStyles(styles: any, path: string[] = []): any {
   return newStyles;
 }
 
-export function stylesToStrings(styles: any): Array<string> {
+export function stylesToStrings(styles: any, nested: boolean = false): Array<string> {
   const results: string[] = [];
 
   for (const sheet in styles) {
-    const header = `/* ${sheet} */`;
+    const header = nested ? '' : `/* ${sheet} */`;
     let result = '';
     let basicRules = '';
 
@@ -277,10 +277,7 @@ export function stylesToStrings(styles: any): Array<string> {
         const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
 
         if (isNestedBlock) {
-          const nestedContent = stylesToStrings({ nested: properties })
-            .map((str) => str.replace(/^\/\* nested \*\/\s*/, '')) // remove dummy sheet header
-            .join('\n');
-
+          const nestedContent = stylesToStrings({ nested: properties }, true).join(' ');
           result += ` ${selector} { ${nestedContent} } `;
         } else {
           let rule = ` ${selector} {`;
@@ -295,10 +292,14 @@ export function stylesToStrings(styles: any): Array<string> {
     }
 
     if (basicRules.trim()) {
-      result = `@media (prefers-color-scheme: dark) {\n${basicRules}}\n${result}`;
+      if (nested) {
+        result = `${basicRules} ${result}`;
+      } else {
+        result = `@media (prefers-color-scheme: dark) { ${basicRules} } ${result}`;
+      }
     }
 
-    results.push(`${header}\n${result}`);
+    results.push(`${header} ${result}`);
   }
 
   return results;

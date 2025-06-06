@@ -8,7 +8,7 @@ export function initialize(): void {
   const invertedStyles = invertStyles(styles);
 
   // Styles String
-  const strings = stylesToStrings(invertedStyles);
+  const strings = stylesToStrings(invertedStyles, false);
 
   // Inject stylesheets
   const fragment = new DocumentFragment();
