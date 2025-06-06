@@ -1,6 +1,5 @@
-import { getDefaultValue } from './default-colors';
 import { generateIdentifier } from './generate-identifier';
-import { isColorRelatedProperty } from './is-color-related-property';
+import { isInvertible } from './is-invertible';
 import { invertParsedColor, parseColor, parsedColorToString } from './parse-color';
 
 export function getStyles() {
@@ -19,11 +18,6 @@ export function getStyles() {
               const value = rule.style.getPropertyValue(prop).trim();
               if (value.length > 0) {
                 container[thisSelectorText][prop] = value;
-              } else {
-                const defaultValue = getDefaultValue(prop);
-                if (defaultValue) {
-                  container[thisSelectorText][prop] = defaultValue;
-                }
               }
             }
             break;
@@ -102,7 +96,7 @@ export function invertStyles(styles: any, path: string[] = []): any {
       newStyles[key] = invertStyles(value, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
-      if (isColorRelatedProperty(key, value)) {
+      if (isInvertible(key, value)) {
         const parsedColor = parseColor(value);
         if (parsedColor) {
           const invertedColor = invertParsedColor(parsedColor);

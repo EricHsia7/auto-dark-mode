@@ -23,7 +23,7 @@ function looksLikeColorValue(value: string): boolean {
   return false;
 }
 
-export function isColorRelatedProperty(property: string, value: string): boolean {
+export function isInvertible(property: string, value: string): boolean {
   const colorRelatedCSSProperties = [
     // General color properties
     'color',
