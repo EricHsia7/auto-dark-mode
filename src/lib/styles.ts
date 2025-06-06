@@ -15,7 +15,10 @@ export function getStyles() {
               container[thisSelectorText] = {};
             }
             for (const prop of rule.style) {
-              container[thisSelectorText][prop] = rule.style.getPropertyValue(prop).trim();
+              const value = rule.style.getPropertyValue(prop).trim();
+              if (value.length > 0) {
+                container[thisSelectorText][prop] = value;
+              }
             }
             break;
           }
@@ -37,7 +40,10 @@ export function getStyles() {
             for (const kf of rule.cssRules) {
               container[name][kf.keyText] = {};
               for (const prop of kf.style) {
-                container[name][kf.keyText][prop] = kf.style.getPropertyValue(prop).trim();
+                const value = kf.style.getPropertyValue(prop).trim();
+                if (value.length > 0) {
+                  container[name][kf.keyText][prop] = value;
+                }
               }
             }
             break;
@@ -67,7 +73,7 @@ export function getStyles() {
         if (!sheet.cssRules) continue; // No access
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
-        const title = sheet.ownerNode?.id || sheet.ownerNode?.getAttribute?.('href') || `inline${generateIdentifier()}`;
+        const title = `@${sheet.ownerNode?.id}` || `@${sheet.ownerNode?.getAttribute?.('href')}` || `@inline${generateIdentifier()}`;
         result[title] = sheetObj;
       } catch (e) {
         // Security/CORS error – skip this stylesheet
@@ -90,7 +96,7 @@ export function invertStyles(styles: any, path: string[] = []): any {
       newStyles[key] = invertStyles(value, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
-      if (isColorRelatedProperty(key, value) && value.length > 0) {
+      if (isColorRelatedProperty(key, value)) {
         const parsedColor = parseColor(value);
         if (parsedColor) {
           const invertedColor = invertParsedColor(parsedColor);
