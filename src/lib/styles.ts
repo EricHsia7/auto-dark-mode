@@ -149,7 +149,9 @@ export function getStyles() {
               container[name] = {};
             }
             for (const kf of rule.cssRules) {
-              container[name][kf.keyText] = {};
+              if (!container[name].hasOwnProperty(kf.keyText)) {
+                container[name][kf.keyText] = {};
+              }
               for (const prop of kf.style) {
                 const value = kf.style.getPropertyValue(prop).trim();
                 if (value.length > 0) {
