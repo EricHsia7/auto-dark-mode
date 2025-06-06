@@ -244,7 +244,7 @@ export function invertStyles(styles: any, path: string[] = []): any {
 
   for (const key in styles) {
     const value = styles[key];
-    const currentPath = [...path, key];
+    const currentPath = path.concat(key);
 
     if (typeof value === 'object' && value !== null) {
       newStyles[key] = invertStyles(value, currentPath); // Recursive copy
