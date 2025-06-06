@@ -1,4 +1,4 @@
-import { flattenStyles, getStyles, invertStyles, stylesToStrings } from './lib/styles';
+import { getStyles, invertStyles, stylesToStrings } from './lib/styles';
 
 export function initialize(): void {
   // Extract styles
