@@ -135,12 +135,11 @@ export function getStyles() {
           }
           case CSSRule.MEDIA_RULE: {
             // Media queries
-            const identifier = generateIdentifier();
-            const mediaStyleSheetName = `@stylesheet-media-${identifier}`;
             const media = `@media ${rule.conditionText}`;
-            container[mediaStyleSheetName] = {};
-            container[mediaStyleSheetName][media] = {};
-            processRules(rule.cssRules, container[mediaStyleSheetName][media]);
+            if (!container.hasOwnProperty(media)) {
+              container[media] = {};
+            }
+            processRules(rule.cssRules, container[media]);
             break;
           }
           /*
@@ -191,7 +190,7 @@ export function getStyles() {
         if (!sheet.cssRules) continue; // No access
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
-        const identifier = sheet.ownerNode?.id || `${generateIdentifier()}`;
+        const identifier = sheet.ownerNode?.id || generateIdentifier();
         const name = sheet.ownerNode?.nodeName;
         const sheetName = `@stylesheet-${name}-${index}-${identifier}`;
         result[sheetName] = sheetObj;
