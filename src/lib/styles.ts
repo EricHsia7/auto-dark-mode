@@ -142,16 +142,16 @@ export function stylesToString(styles: any): string {
       // Check if this is a nested block (e.g., @media, @keyframes, or keyframe steps)
       const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
       if (isNestedBlock) {
-        result += `${selector} {`;
+        result += ` ${selector} {`;
         result += stylesToString(properties);
-        result += '}'
+        result += '} ';
       } else {
         // Collect basic rules to wrap later
-        basicRules += `${selector} {`;
+        basicRules += ` ${selector} {`;
         for (const prop in properties) {
           basicRules += `${prop}:${properties[prop]};`;
         }
-        basicRules += '}';
+        basicRules += '} ';
       }
     }
   }
