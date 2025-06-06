@@ -20,7 +20,7 @@ export function getStyles() {
         'color': '#000'
       },
       'em': {
-        'color': '#444'
+        color: '#444'
       },
       'a': {
         'color': '#0077cc',
@@ -33,7 +33,7 @@ export function getStyles() {
       'blockquote': {
         'border-left': '4px solid #cccccc',
         'color': '#555',
-        'background-color': '#f9f9f9',
+        'background-color': '#f9f9f9'
       },
       'code': {
         'background-color': '#f5f5f5',
@@ -59,9 +59,20 @@ export function getStyles() {
       'mark': {
         'background-color': '#fffd75',
         'color': '#000'
+      },
+      'input[type="text"]': {
+        'background-color': '#fdfdfd',
+        'color': '#2c2c2c',
+        'border-color': '#cccccc',
+        'border-style': 'solid',
+        'border-width': '1px'
+      },
+      'input[type="text"]::placeholder': {
+        color: '#888888'
       }
     }
   };
+
   if ('styleSheets' in document) {
     function processRules(rules, container) {
       for (const rule of rules) {
