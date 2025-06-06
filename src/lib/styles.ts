@@ -142,6 +142,7 @@ export function getStyles() {
             processRules(rule.cssRules, container[media]);
             break;
           }
+          /*
           case CSSRule.KEYFRAMES_RULE: {
             // Keyframes
             const name = `@keyframes ${rule.name}`;
@@ -162,6 +163,7 @@ export function getStyles() {
             }
             break;
           }
+          */
           case CSSRule.IMPORT_RULE: {
             if (rule.styleSheet) {
               // Import rules with nested stylesheets
@@ -175,7 +177,7 @@ export function getStyles() {
           }
           default: {
             // Other types can be added here if needed
-            container[`@unknown-${rule.type}`] = rule.cssText;
+            // container[`@unknown-${rule.type}`] = rule.cssText;
             break;
           }
         }
@@ -273,11 +275,9 @@ export function stylesToStrings(styles: any): Array<string> {
         // Check if this is a nested block (e.g., @media, @keyframes, or keyframe steps)
         const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
         if (isNestedBlock) {
-          if (!selector.startsWith('@keyframes')) {
-            result += ` ${selector} {`;
-            result += stylesToStrings(properties);
-            result += '} ';
-          }
+          result += ` ${selector} {`;
+          result += stylesToStrings(properties);
+          result += '} ';
           // TODO: handle keyframes
         } else {
           // Collect basic rules to wrap later
