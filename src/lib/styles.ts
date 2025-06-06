@@ -60,15 +60,55 @@ export function getStyles() {
         'background-color': '#fffd75',
         'color': '#000'
       },
-      'input[type="text"]': {
+      'input[type="text"], textarea': {
         'background-color': '#fdfdfd',
         'color': '#2c2c2c',
         'border-color': '#cccccc',
         'border-style': 'solid',
         'border-width': '1px'
       },
-      'input[type="text"]::placeholder': {
+      'input[type="text"]::placeholder, textarea::placeholder': {
         color: '#888888'
+      },
+      'table': {
+        'border-collapse': 'collapse',
+        'color': '#2c2c2c'
+      },
+      'caption': {      
+        'color': '#666',
+      },
+      'colgroup': {
+        border: 'none'
+      },
+      'col': {
+        'background-color': '#fafafa'
+      },
+      'thead': {
+        'background-color': '#f0f0f0',
+        'border-bottom-color': '#2c2c2c',
+        'border-bottom-style': 'solid',
+        'border-bottom-width': '2px'
+      },
+      'tfoot': {
+        'background-color': '#f9f9f9',
+        'border-top-color': '#2c2c2c',
+        'border-top-style': 'solid',
+        'border-top-width': '2px'
+      },
+      'tbody': {
+        'background-color': '#fff'
+      },
+      'tr': {
+        'border-bottom-color': '#e0e0e0',
+        'border-bottom-style': 'solid',
+        'border-bottom-width': '1px'
+      },
+      'th': {
+        'background-color': '#f8f8f8',
+        'color': '#222'
+      },
+      'td': {
+        color: '#333'
       }
     }
   };
