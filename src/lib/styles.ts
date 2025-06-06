@@ -4,8 +4,8 @@ import { isColorRelatedProperty } from './is-color-related-property';
 import { invertParsedColor, parseColor, parsedColorToString } from './parse-color';
 
 export function getStyles() {
+  const result = {};
   if ('styleSheets' in document) {
-    const result = {};
     function processRules(rules, container) {
       for (const rule of rules) {
         switch (rule.type) {
@@ -86,9 +86,9 @@ export function getStyles() {
         // console.warn('Skipping inaccessible stylesheet:', e);
       }
     }
-
-    return result;
   }
+  // TODO: capture style attribute (lambda styles)
+  return result;
 }
 
 export function invertStyles(styles: any, path: string[] = []): any {
