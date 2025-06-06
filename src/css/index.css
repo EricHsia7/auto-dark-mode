@@ -9,6 +9,7 @@
   -webkit-backdrop-filter: brightness(35%);
   opacity: 1;
   transition: opacity 0.5s ease;
+  z-index: 99999;
 }
 
 .auto_dark_mode_mask.auto_dark_mode_fade_out {
