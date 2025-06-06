@@ -19,19 +19,16 @@ export function getStyles() {
         color: '#2c2c2c'
       },
       'strong': {
-        'font-weight': 'bold',
-        'color': '#1a1a1a'
+        color: '#1a1a1a'
       },
       'em': {
-        color: '#444'
+        color: '#1a1a1a'
       },
       'a': {
-        'color': '#249cff',
-        'text-decoration': 'none'
+        color: '#249cff'
       },
       'a:hover, a:focus': {
-        'color': '#249cff',
-        'text-decoration': 'underline'
+        color: '#249cff'
       },
       'blockquote': {
         'border-left-color': '#cccccc',
