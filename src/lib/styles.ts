@@ -73,8 +73,8 @@ export function getStyles() {
         if (!sheet.cssRules) continue; // No access
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
-        const title = `__${sheet.ownerNode?.id}` || `__${sheet.ownerNode?.getAttribute?.('href')}` || `__inline${generateIdentifier()}`;
-        result[title] = sheetObj;
+        const identifier = '__'.concat(sheet.ownerNode?.id || sheet.ownerNode?.getAttribute?.('href') || `inline${generateIdentifier()}`);
+        result[identifier] = sheetObj;
       } catch (e) {
         // Security/CORS error – skip this stylesheet
         // console.warn('Skipping inaccessible stylesheet:', e);
