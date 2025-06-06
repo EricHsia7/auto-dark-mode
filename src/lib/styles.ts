@@ -263,44 +263,42 @@ export function invertStyles(styles: any, path: string[] = []): any {
 }
 
 export function stylesToStrings(styles: any): Array<string> {
-  const results = [];
+  const results: string[] = [];
 
   for (const sheet in styles) {
     const header = `/* ${sheet} */`;
     let result = '';
     let basicRules = '';
+
     for (const selector in styles[sheet]) {
       const properties = styles[sheet][selector];
+
       if (typeof properties === 'object' && properties !== null && !Array.isArray(properties)) {
-        // Check if this is a nested block (e.g., @media, @keyframes, or keyframe steps)
         const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
+
         if (isNestedBlock) {
-          result += ` ${selector} {`;
-          result += stylesToStrings(properties);
-          result += '} ';
-          // TODO: handle keyframes
+          const nestedContent = stylesToStrings({ nested: properties })
+            .map((str) => str.replace(/^\/\* nested \*\/\s*/, '')) // remove dummy sheet header
+            .join('\n');
+
+          result += ` ${selector} { ${nestedContent} } `;
         } else {
-          // Collect basic rules to wrap later
-          basicRules += ` ${selector} {`;
-          if (sheet === '@stylesheet-lambda') {
-            for (const prop in properties) {
-              basicRules += `${prop}:${properties[prop]} !important;`;
-            }
-          } else {
-            for (const prop in properties) {
-              basicRules += `${prop}:${properties[prop]};`;
-            }
+          let rule = ` ${selector} {`;
+          for (const prop in properties) {
+            const val = properties[prop];
+            rule += `${prop}:${val}${sheet === '@stylesheet-lambda' ? ' !important' : ''};`;
           }
-          basicRules += '} ';
+          rule += '} ';
+          basicRules += rule;
         }
       }
     }
-    // If there are basic rules, wrap them in the dark mode media query
-    if (basicRules) {
-      result = `@media (prefers-color-scheme: dark) {${basicRules}} ${result}`;
+
+    if (basicRules.trim()) {
+      result = `@media (prefers-color-scheme: dark) {\n${basicRules}}\n${result}`;
     }
 
-    results.push(`${header}${result}`);
+    results.push(`${header}\n${result}`);
   }
 
   return results;
