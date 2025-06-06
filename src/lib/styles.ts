@@ -4,7 +4,7 @@ import { invertParsedColor, parseColor, parsedColorToString } from './parse-colo
 
 export function getStyles() {
   const result = {
-    ____default____: {
+    '@stylesheet-default': {
       'html, body': {
         'background-color': '#fdfdfd',
         'color': '#2c2c2c'
@@ -175,7 +175,7 @@ export function getStyles() {
           }
           default: {
             // Other types can be added here if needed
-            container[`@unknown_${rule.type}`] = rule.cssText;
+            container[`@unknown-${rule.type}`] = rule.cssText;
             break;
           }
         }
@@ -188,8 +188,10 @@ export function getStyles() {
         if (!sheet.cssRules) continue; // No access
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
-        const identifier = `__${index}__`.concat(sheet.ownerNode?.id || sheet.ownerNode?.getAttribute?.('href') || `inline${generateIdentifier()}`);
-        result[identifier] = sheetObj;
+        const identifier = sheet.ownerNode?.id || `${generateIdentifier()}`;
+        const name = sheet.ownerNode?.nodeName;
+        const sheetName = `@stylesheet-${name}-${index}-${identifier}`;
+        result[sheetName] = sheetObj;
         index++;
       } catch (e) {
         // Security/CORS error – skip this stylesheet
@@ -222,7 +224,7 @@ export function getStyles() {
     }
   }
 
-  result['____lambda____'] = lambdaStyles;
+  result['@stylesheet-lambda'] = lambdaStyles;
 
   return result;
 }
@@ -287,8 +289,14 @@ export function stylesToStrings(styles: any): Array<string> {
         } else {
           // Collect basic rules to wrap later
           basicRules += ` ${selector} {`;
-          for (const prop in properties) {
-            basicRules += `${prop}:${properties[prop]};`;
+          if (sheet === '@stylesheet-lambda') {
+            for (const prop in properties) {
+              basicRules += `${prop}:${properties[prop]} !important;`;
+            }
+          } else {
+            for (const prop in properties) {
+              basicRules += `${prop}:${properties[prop]};`;
+            }
           }
           basicRules += '} ';
         }
