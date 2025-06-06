@@ -27,11 +27,13 @@ export function evaluateTheme(backgroundColor: ParsedColorRGBA, textColor: Parse
   const L1: number = calculateRelativeLuminance(backgroundColor);
   const L2: number = calculateRelativeLuminance(textColor);
   const contrast: number = (L1 + 0.05) / (L2 + 0.05);
-  if (contrast > 1 / contrast) {
-    console.log(0, contrast, 1 / contrast, backgroundColor, textColor);
+  if (backgroundColor.rgba[3] === 0 || textColor.rgba[3] === 0) {
     return 'light';
-  } else {
-    console.log(1, contrast, 1 / contrast, backgroundColor, textColor);
+  }
+  if (contrast > 1 / contrast) {
+    return 'light';
+  }
+  if (1 / contrast > contrast) {
     return 'dark';
   }
 }
