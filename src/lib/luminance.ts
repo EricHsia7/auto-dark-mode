@@ -24,16 +24,16 @@ export function calculateRelativeLuminance(color: ParsedColorRGBA): number {
 export type theme = 'light' | 'dark';
 
 export function evaluateTheme(backgroundColor: ParsedColorRGBA, textColor: ParsedColorRGBA): theme {
-  const L1: number = calculateRelativeLuminance(backgroundColor);
-  const L2: number = calculateRelativeLuminance(textColor);
-  const contrast: number = (L1 + 0.05) / (L2 + 0.05);
+  const L1 = calculateRelativeLuminance(backgroundColor);
+  const L2 = calculateRelativeLuminance(textColor);
+  // const contrast: number = (L1 + 0.05) / (L2 + 0.05);
   if (backgroundColor.rgba[3] === 0 || textColor.rgba[3] === 0) {
     return 'light';
   }
-  if (contrast > 1 / contrast) {
+  if (L1 >= L2) {
     return 'light';
   }
-  if (1 / contrast > contrast) {
+  if (L1 < L2) {
     return 'dark';
   }
 }
