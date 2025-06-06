@@ -1,3 +1,4 @@
+import { getDefaultValue } from './default-colors';
 import { generateIdentifier } from './generate-identifier';
 import { isColorRelatedProperty } from './is-color-related-property';
 import { invertParsedColor, parseColor, parsedColorToString } from './parse-color';
@@ -18,6 +19,11 @@ export function getStyles() {
               const value = rule.style.getPropertyValue(prop).trim();
               if (value.length > 0) {
                 container[thisSelectorText][prop] = value;
+              } else {
+                const defaultValue = getDefaultValue(prop);
+                if (defaultValue) {
+                  container[thisSelectorText][prop] = defaultValue;
+                }
               }
             }
             break;
