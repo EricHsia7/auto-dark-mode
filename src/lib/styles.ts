@@ -277,15 +277,15 @@ export function stylesToStrings(styles: any, nested: boolean = false): Array<str
         const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
 
         if (isNestedBlock) {
-          const nestedContent = stylesToStrings({ nested: properties }, true).join(' ');
-          result += ` ${selector} { ${nestedContent} } `;
+          const nestedContent = stylesToStrings({ nested: properties }, true).join('');
+          result += `${selector}{${nestedContent}}`;
         } else {
-          let rule = ` ${selector} {`;
+          let rule = `${selector}{`;
           for (const prop in properties) {
             const val = properties[prop];
-            rule += `${prop}:${val}${sheet === '@stylesheet-lambda' ? ' !important' : ''};`;
+            rule += `${prop}:${val}${sheet === '@stylesheet-lambda' ? '!important' : ''};`;
           }
-          rule += '} ';
+          rule += '}';
           basicRules += rule;
         }
       }
@@ -295,7 +295,7 @@ export function stylesToStrings(styles: any, nested: boolean = false): Array<str
       if (nested) {
         result = `${basicRules} ${result}`;
       } else {
-        result = `@media (prefers-color-scheme: dark) { ${basicRules} } ${result}`;
+        result = `@media (prefers-color-scheme: dark) {${basicRules}} ${result}`;
       }
     }
 
