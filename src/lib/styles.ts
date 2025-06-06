@@ -148,14 +148,15 @@ export function getStyles() {
             if (!container.hasOwnProperty(name)) {
               container[name] = {};
             }
-            for (const kf of rule.cssRules) {
-              if (!container[name].hasOwnProperty(kf.keyText)) {
-                container[name][kf.keyText] = {};
+            for (const keyframe of rule.cssRules) {
+              const keyText = keyframe.keyText;
+              if (!container[name].hasOwnProperty(keyText)) {
+                container[name][keyText] = {};
               }
-              for (const prop of kf.style) {
-                const value = kf.style.getPropertyValue(prop).trim();
+              for (const prop of keyframe.style) {
+                const value = keyframe.style.getPropertyValue(prop).trim();
                 if (value.length > 0) {
-                  container[name][kf.keyText][prop] = value;
+                  container[name][keyText][prop] = value;
                 }
               }
             }
@@ -196,7 +197,33 @@ export function getStyles() {
       }
     }
   }
-  // TODO: capture style attribute (lambda styles)
+
+  // Capture all inline styles (lambda styles)
+  function generateElementSelector(element: HTMLElement): string {
+    const tag = element.tagName.toLowerCase();
+    const id = element.id ? `#${element.id}` : '';
+    const classes = element.classList.length > 0 ? `.${Array.from(element.classList).join('.')}` : '';
+    return `${tag}${id}${classes}`;
+  }
+
+  const lambdaStyles = {};
+  const elementsWithInlineStyle = document.querySelectorAll('[style]');
+  for (const element of elementsWithInlineStyle) {
+    const selector = generateElementSelector(element);
+    if (!lambdaStyles.hasOwnProperty(selector)) {
+      lambdaStyles[selector] = {};
+    }
+
+    for (const prop of element.style) {
+      const value = element.style.getPropertyValue(prop).trim();
+      if (value.length > 0) {
+        lambdaStyles[selector][prop] = value;
+      }
+    }
+  }
+
+  result['____lambda____'] = lambdaStyles;
+
   return result;
 }
 
@@ -228,7 +255,7 @@ export function invertStyles(styles: any, path: string[] = []): any {
   return newStyles;
 }
 
-export function flattenStyles(styles: Record<string, any>): any {
+function flattenStyles(styles: Record<string, any>): any {
   const merged: Record<string, any> = {};
   for (const sheetName in styles) {
     for (const key in styles[sheetName]) {
@@ -241,34 +268,39 @@ export function flattenStyles(styles: Record<string, any>): any {
   return merged;
 }
 
-export function stylesToString(styles: any): string {
-  let result = '';
-  let basicRules = '';
+export function stylesToStrings(styles: any): Array<string> {
+  const results = [];
 
-  for (const selector in styles) {
-    const properties = styles[selector];
-    if (typeof properties === 'object' && properties !== null && !Array.isArray(properties)) {
-      // Check if this is a nested block (e.g., @media, @keyframes, or keyframe steps)
-      const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
-      if (isNestedBlock) {
-        result += ` ${selector} {`;
-        result += stylesToString(properties);
-        result += '} ';
-      } else {
-        // Collect basic rules to wrap later
-        basicRules += ` ${selector} {`;
-        for (const prop in properties) {
-          basicRules += `${prop}:${properties[prop]};`;
+  for (const sheet in styles) {
+    const header = `/* ${sheet} */`;
+    let result = '';
+    let basicRules = '';
+    for (const selector in styles[sheet]) {
+      const properties = styles[sheet][selector];
+      if (typeof properties === 'object' && properties !== null && !Array.isArray(properties)) {
+        // Check if this is a nested block (e.g., @media, @keyframes, or keyframe steps)
+        const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
+        if (isNestedBlock) {
+          result += ` ${selector} {`;
+          result += stylesToStrings(properties);
+          result += '} ';
+        } else {
+          // Collect basic rules to wrap later
+          basicRules += ` ${selector} {`;
+          for (const prop in properties) {
+            basicRules += `${prop}:${properties[prop]};`;
+          }
+          basicRules += '} ';
         }
-        basicRules += '} ';
       }
     }
+    // If there are basic rules, wrap them in the dark mode media query
+    if (basicRules) {
+      result = `@media (prefers-color-scheme: dark) {${basicRules}} ${result}`;
+    }
+
+    results.push(`${header}${result}`);
   }
 
-  // If there are basic rules, wrap them in the dark mode media query
-  if (basicRules) {
-    result = `@media (prefers-color-scheme: dark) {${basicRules}} ${result}`;
-  }
-
-  return result;
+  return results;
 }
