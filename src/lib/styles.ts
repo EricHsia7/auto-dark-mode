@@ -7,7 +7,7 @@ export function getStyles() {
     '@stylesheet-default': {
       'html, body': {
         'background-color': '#fdfdfd',
-        'color': '#2c2c2c'
+        'color': '#1a1a1a'
       },
       'h1, h2, h3, h4, h5, h6': {
         color: '#1a1a1a'
@@ -17,33 +17,32 @@ export function getStyles() {
       },
       'strong': {
         'font-weight': 'bold',
-        'color': '#000'
+        'color': '#1a1a1a'
       },
       'em': {
         color: '#444'
       },
       'a': {
-        'color': '#0077cc',
+        'color': '#249cff',
         'text-decoration': 'none'
       },
       'a:hover, a:focus': {
-        'color': '#005fa3',
+        'color': '#249cff',
         'text-decoration': 'underline'
       },
       'blockquote': {
         'border-left-color': '#cccccc',
         'border-left-style': 'solid',
         'border-left-width': '4px',
-        'color': '#555',
+        'color': '#1a1a1a',
         'background-color': '#f9f9f9'
       },
       'code': {
-        'background-color': '#f5f5f5',
-        'color': '#c7254e'
+        color: '#2c2c2c'
       },
       'pre': {
         'background-color': '#f3f3f3',
-        'color': '#333'
+        'color': '#1a1a1a'
       },
       'ul, ol': {
         color: '#2c2c2c'
@@ -60,11 +59,11 @@ export function getStyles() {
       },
       'mark': {
         'background-color': '#fffd75',
-        'color': '#000'
+        'color': '#1a1a1a'
       },
       'input[type="text"], textarea': {
         'background-color': '#fdfdfd',
-        'color': '#2c2c2c',
+        'color': '#1a1a1a',
         'border-color': '#cccccc',
         'border-style': 'solid',
         'border-width': '1px'
@@ -107,7 +106,7 @@ export function getStyles() {
       },
       'th': {
         'background-color': '#f8f8f8',
-        'color': '#222'
+        'color': '#1a1a1a'
       },
       'td': {
         color: '#333'
