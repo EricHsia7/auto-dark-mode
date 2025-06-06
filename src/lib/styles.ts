@@ -90,7 +90,7 @@ export function invertStyles(styles: any, path: string[] = []): any {
       newStyles[key] = invertStyles(value, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
-      if (isColorRelatedProperty(key, value)) {
+      if (isColorRelatedProperty(key, value) && value.length > 0) {
         const parsedColor = parseColor(value);
         if (parsedColor) {
           const invertedColor = invertParsedColor(parsedColor);
