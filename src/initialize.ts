@@ -16,5 +16,5 @@ export function initialize(): void {
   // Create stylesheet
   const styleSheet = document.createElement('style');
   styleSheet.textContent = string;
-  document.head.appendChild(styleSheet);
+  document.body.appendChild(styleSheet);
 }
