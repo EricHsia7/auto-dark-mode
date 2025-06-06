@@ -1,6 +1,6 @@
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
-import { evaluateTheme } from './luminance';
+import { evaluateTheme } from './evaluate-theme';
 import { invertParsedColor, parseColor, parsedColorToString } from './parse-color';
 
 export function getStyles() {
