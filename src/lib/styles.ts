@@ -5,7 +5,7 @@ import { invertParsedColor, parseColor, parsedColorToString } from './parse-colo
 export function getStyles() {
   const result = {
     ____default____: {
-      'body': {
+      'html, body': {
         'background-color': '#fdfdfd',
         'color': '#2c2c2c'
       },
