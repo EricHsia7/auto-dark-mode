@@ -216,11 +216,13 @@ export function getStyles() {
   const lambdaStyles = {};
   const elementsWithInlineStyle = document.querySelectorAll('[style]');
   for (const element of elementsWithInlineStyle) {
-    const selector = generateElementSelector(element);
-    if (!lambdaStyles.hasOwnProperty(selector)) {
-      lambdaStyles[selector] = {};
+    let selector = '';
+    if (element.style.length > 0) {
+      selector = generateElementSelector(element);
+      if (!lambdaStyles.hasOwnProperty(selector)) {
+        lambdaStyles[selector] = {};
+      }
     }
-
     for (const prop of element.style) {
       const value = element.style.getPropertyValue(prop).trim();
       if (value.length > 0) {
