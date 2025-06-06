@@ -3,14 +3,14 @@ import { flattenStyles, getStyles, invertStyles, stylesToString } from './lib/st
 export function initialize(): void {
   // Extract styles
   const styles = getStyles();
-  console.log(styles)
+  console.log(styles);
 
   // Invert styles
   const invertedStyles = invertStyles(styles);
 
   // Flatten styles
-  const flattenStyles = flattenStyles(invertedStyles);
-  console.log(flattenStyles)
+  const flattenedStyles = flattenStyles(invertedStyles);
+  console.log(flattenedStyles);
 
   // Styles String
   const string = stylesToString(flattenStyles);
