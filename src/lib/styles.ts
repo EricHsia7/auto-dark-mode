@@ -108,7 +108,7 @@ export function invertStyles(styles: any, path: string[] = []): any {
   return newStyles;
 }
 
-export function flattenStyleSheets(styles: Record<string, any>): any {
+export function flattenStyles(styles: Record<string, any>): any {
   const merged: Record<string, any> = {};
   for (const sheetName in styles) {
     for (const key in styles[sheetName]) {

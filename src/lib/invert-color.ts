@@ -76,7 +76,7 @@ export function invertColor(color: ParsedColor): ParsedColor {
       break;
     }
     case 'variable': {
-      return color; // Variables are not inverted
+      return color; // Referenced variables are not inverted
       break;
     }
     case 'linear-gradient': {

@@ -92,11 +92,13 @@ export function isColorRelatedProperty(property: string, value: string): boolean
     'column-rule'
   ];
 
+  console.log('isColorRelatedProperty', property, value);
+
   if (colorRelatedCSSProperties.indexOf(property) > -1) {
     return true;
   } else {
     if (property.startsWith('--')) {
-      // css variable
+      // invert css variable definition
       if (looksLikeColorValue(value)) {
         return true;
       }

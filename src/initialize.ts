@@ -1,14 +1,16 @@
-import { flattenStyleSheets, getStyles, invertStyles, stylesToString } from './lib/styles';
+import { flattenStyles, getStyles, invertStyles, stylesToString } from './lib/styles';
 
 export function initialize(): void {
   // Extract styles
   const styles = getStyles();
+  console.log(styles)
 
   // Invert styles
   const invertedStyles = invertStyles(styles);
 
   // Flatten styles
-  const flattenStyles = flattenStyleSheets(invertedStyles);
+  const flattenStyles = flattenStyles(invertedStyles);
+  console.log(flattenStyles)
 
   // Styles String
   const string = stylesToString(flattenStyles);
