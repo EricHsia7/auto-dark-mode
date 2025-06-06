@@ -93,17 +93,14 @@ export function isColorRelatedProperty(property: string, value: string): boolean
   ];
 
   if (colorRelatedCSSProperties.indexOf(property) > -1) {
-    console.log('isColorRelatedProperty', property, value, true);
     return true;
   } else {
     if (property.startsWith('--')) {
       // invert css variable definition
       if (looksLikeColorValue(value)) {
-        console.log('isColorRelatedProperty', property, value, true);
         return true;
       }
     }
-    console.log('isColorRelatedProperty', property, value, false);
     return false;
   }
 }

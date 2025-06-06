@@ -54,7 +54,7 @@ export function getStyles() {
               try {
                 processRules(rule.styleSheet.cssRules, container);
               } catch (e) {
-                console.warn('Cannot access imported stylesheet:', e);
+                // console.warn('Cannot access imported stylesheet:', e);
               }
             }
             break;
