@@ -297,7 +297,7 @@ export function invertStyles(styles: any, path: string[] = []): any {
   if (originalTheme === 'light') {
     return newStyles;
   } else {
-    return {};
+    return styles;
   }
 }
 
