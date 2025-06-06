@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Auto Dark Mode
-// @version      0.3.3
+// @version      0.3.4
 // @description  Darken Any Website
 // @namespace    http://erichsia7.github.io/
 // @run-at       document-idle
