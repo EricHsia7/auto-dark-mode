@@ -1,6 +1,19 @@
 import { getStyles, invertStyles, stylesToStrings } from './lib/styles';
 
 export function initialize(): void {
+  // Add mask
+  const mask = document.createElement('div');
+  mask.classList.add('auto_dark_mode_mask');
+  mask.addEventListener(
+    'transitionend',
+    function (event: Event) {
+      const target = event.target as HTMLElement;
+      target.remove();
+    },
+    { once: true }
+  );
+  document.documentElement.appendChild(mask);
+
   // Extract styles
   const styles = getStyles();
 
@@ -18,4 +31,7 @@ export function initialize(): void {
     fragment.appendChild(styleSheet);
   }
   document.documentElement.appendChild(fragment);
+
+  // Remove mask
+  document.querySelector('.auto_dark_mode_mask')?.classList.add('auto_dark_mode_fade_out');
 }
