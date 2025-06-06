@@ -260,19 +260,6 @@ export function invertStyles(styles: any, path: string[] = []): any {
   return newStyles;
 }
 
-function flattenStyles(styles: Record<string, any>): any {
-  const merged: Record<string, any> = {};
-  for (const sheetName in styles) {
-    for (const key in styles[sheetName]) {
-      if (!merged.hasOwnProperty(key)) {
-        merged[key] = {};
-      }
-      merged[key] = Object.assign(merged[key], styles[sheetName][key]);
-    }
-  }
-  return merged;
-}
-
 export function stylesToStrings(styles: any): Array<string> {
   const results = [];
 
@@ -286,9 +273,12 @@ export function stylesToStrings(styles: any): Array<string> {
         // Check if this is a nested block (e.g., @media, @keyframes, or keyframe steps)
         const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
         if (isNestedBlock) {
-          result += ` ${selector} {`;
-          result += stylesToStrings(properties);
-          result += '} ';
+          if (!selector.startsWith('@keyframes')) {
+            result += ` ${selector} {`;
+            result += stylesToStrings(properties);
+            result += '} ';
+          }
+          // TODO: handle keyframes
         } else {
           // Collect basic rules to wrap later
           basicRules += ` ${selector} {`;
