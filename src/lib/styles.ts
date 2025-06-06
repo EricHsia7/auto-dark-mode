@@ -31,7 +31,9 @@ export function getStyles() {
         'text-decoration': 'underline'
       },
       'blockquote': {
-        'border-left': '4px solid #cccccc',
+        'border-left-color': '#cccccc',
+        'border-left-style': 'solid',
+        'border-left-width': '4px',
         'color': '#555',
         'background-color': '#f9f9f9'
       },
@@ -74,8 +76,8 @@ export function getStyles() {
         'border-collapse': 'collapse',
         'color': '#2c2c2c'
       },
-      'caption': {      
-        'color': '#666',
+      'caption': {
+        color: '#666'
       },
       'colgroup': {
         border: 'none'
