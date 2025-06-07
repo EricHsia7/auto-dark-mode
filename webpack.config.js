@@ -74,14 +74,7 @@ module.exports = (env, argv) => {
               loader: 'postcss-loader',
               options: {
                 postcssOptions: {
-                  plugins: [
-                    [
-                      'postcss-preset-env',
-                      {
-                        // Options
-                      }
-                    ]
-                  ]
+                  plugins: [['postcss-preset-env', {}], require('cssnano')({ preset: 'default' })]
                 }
               }
             }
