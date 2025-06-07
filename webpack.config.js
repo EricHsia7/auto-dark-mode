@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
 const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 var userscriptHeader = require('./config/header.json');
 var userscriptExclusionList = require('./config/exclusion_list.json');
@@ -80,7 +81,8 @@ module.exports = (env, argv) => {
         new TerserPlugin({
           //terserOptions: {},
           extractComments: false
-        })
+        }),
+        new CssMinimizerPlugin()
       ]
     }
   };
