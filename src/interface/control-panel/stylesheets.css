@@ -72,7 +72,7 @@
   position: absolute;
   top: 0px;
   left: 30px;
-  width: calc(100% - 30px - 90px);
+  width: calc(100% - 30px - 45px);
   height: 45px;
   color: var(--auto-dark-mode-333333);
   font-size: 16px;
@@ -90,6 +90,60 @@
   position: absolute;
   top: 0px;
   right: 0px;
-  width: 90px;
+  width: 45px;
   height: 45px;
+}
+
+/* stylesheets > body > stylesheet > toggle > off */
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
+
+/* state: off */
+.auto_dark_mode_control_panel[displayed="true"] .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle[state="off"] .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off {
+  visibility: visible;
+}
+
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg {
+  width: 20px;
+  height: 20px;
+}
+
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg path {
+  fill: var(--auto-dark-mode-333333);
+}
+
+/* stylesheets > body > stylesheet > toggle > on */
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
+
+/* state: on */
+.auto_dark_mode_control_panel[displayed="true"] .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle[state="on"] .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on {
+  visibility: visible;
+}
+
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg {
+  width: 20px;
+  height: 20px;
+}
+
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg path {
+  fill: var(--auto-dark-mode-333333);
 }
