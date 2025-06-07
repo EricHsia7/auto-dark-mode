@@ -8,6 +8,7 @@
   border-bottom-color: var(--auto-dark-mode-c2c2c2);
   border-bottom-style: solid;
   border-bottom-width: 1px;
+  box-sizing: border-box;
   color: var(--auto-dark-mode-333333);
   font-size: 17px;
   font-family: sans-serif;
