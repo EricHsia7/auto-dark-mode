@@ -56,8 +56,8 @@ export function initializeControlPanel(stylesStrings): void {
     stylesheetToggle.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_toggle');
     stylesheetToggle.setAttribute('state', 'on');
     stylesheetToggle.setAttribute('name', stylesString.name);
-    (() => {
-      stylesheetToggle.addEventListener('click', function (event: Event) {
+    ((stylesheetToggle2) => {
+      stylesheetToggle2.addEventListener('click', function (event: Event) {
         const target = event.target as HTMLElement;
         console.log(target.tagName);
         const currentState = target.getAttribute('state');
@@ -74,7 +74,7 @@ export function initializeControlPanel(stylesStrings): void {
           styleTag.disabled = false;
         }
       });
-    })();
+    })(stylesheetToggle);
 
     const stylesheetToggleOff = document.createElement('div');
     stylesheetToggleOff.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off');
