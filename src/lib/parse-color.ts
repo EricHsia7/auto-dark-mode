@@ -161,6 +161,7 @@ export function parseColor(value: string): ParsedColor {
         alpha = 1;
         break;
       case 9:
+        // #ffffffff
         red = parseInt(value.slice(1, 3), 16);
         green = parseInt(value.slice(3, 5), 16);
         blue = parseInt(value.slice(5, 7), 16);
@@ -310,7 +311,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
   function invertStops(colorStops: ParsedColorStopArray) {
     const colorStopsLength = colorStops.length;
     const invertedStops: ParsedColorStopArray = [];
-    for (let i = 0; i < colorStopsLength; i++) {
+    for (let i = colorStopsLength - 1; i >= 0; i--) {
       const stop = colorStops[i];
       if (stop.type === 'stop') {
         const invertedColor = invertParsedColor(stop.color) as ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorVariable;
@@ -319,7 +320,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
           color: invertedColor,
           position: stop.position
         };
-        invertedStops.push(invertedColorStop);
+        invertedStops.unshift(invertedColorStop);
       }
     }
     return invertedStops;
