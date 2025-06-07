@@ -1,4 +1,4 @@
-import { ParsedColorRGBA } from './parse-color';
+import { isParsedColorDark, ParsedColorRGBA } from './parse-color';
 
 export function calculateRelativeLuminance(color: ParsedColorRGBA): number {
   function calculateScalar(value: number): number {
@@ -21,7 +21,7 @@ export function calculateRelativeLuminance(color: ParsedColorRGBA): number {
   return L;
 }
 
-export type theme = 'light' | 'dark';
+export type theme = 'light' | 'dark' | 'unknown';
 
 export function evaluateTheme(backgroundColor: ParsedColorRGBA, textColor: ParsedColorRGBA): theme {
   const backgroundColorRGB = backgroundColor.rgba.slice(0, 3);
@@ -29,22 +29,27 @@ export function evaluateTheme(backgroundColor: ParsedColorRGBA, textColor: Parse
   const backgroundColorMin = Math.min(...backgroundColorRGB) / 255;
   const backgroundColorDelta = backgroundColorMax - backgroundColorMin;
   const backgroundColorSaturation = backgroundColorMax === 0 ? 0 : backgroundColorDelta / backgroundColorMax;
-  const backgroundColorValue = backgroundColorMax;
+  // const backgroundColorValue = backgroundColorMax;
 
   const textColorRGB = textColor.rgba.slice(0, 3);
   const textColorMax = Math.max(...textColorRGB) / 255;
   const textColorMin = Math.min(...textColorRGB) / 255;
   const textColorDelta = textColorMax - textColorMin;
   const textColorSaturation = textColorMax === 0 ? 0 : textColorDelta / textColorMax;
-  const textColorValue = textColorMax;
+  // const textColorValue = textColorMax;
 
-  if (backgroundColor.rgba[3] === 0 && textColorSaturation < 0.38 && textColorValue < 0.5) {
-    return 'light';
+  if (backgroundColor.rgba[3] === 0 || textColor.rgba[3]) {
+    return 'unknown';
   }
 
-  if (backgroundColorValue >= textColorValue && backgroundColorSaturation < 0.38 && textColorSaturation < 0.38) {
-    return 'light';
+  if (backgroundColorSaturation < 0.38 && textColorSaturation < 0.38) {
+    if (isParsedColorDark(backgroundColor) < 0.5 && isParsedColorDark(textColor) > 0.5) {
+      return 'light';
+    }
+    if (isParsedColorDark(backgroundColor) > 0.5 && isParsedColorDark(textColor) < 0.5) {
+      return 'dark';
+    }
   } else {
-    return 'dark';
+    return 'unknown';
   }
 }
