@@ -1,6 +1,9 @@
 import { initialize } from './initialize';
 
-import './interface/control-panel/theme.css';
+import './interface/theme.css';
+
+import './interface/button/index.css';
+
 import './interface/control-panel/animation.css';
 import './interface/control-panel/mask.css';
 import './interface/control-panel/panel.css';
