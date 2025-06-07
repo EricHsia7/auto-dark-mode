@@ -347,7 +347,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
         else originalHue = ((r - g) / delta + 4) / 6;
       }
 
-      if (originalSaturation > 0.38 && originalValue > 0.46) {
+      if (originalSaturation > 0.55 && originalValue > 0.6) {
         return color;
       }
 

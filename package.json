@@ -1,6 +1,6 @@
 {
   "name": "@erichsia7/auto-dark-mode",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "description": "Darken Any Website",
   "main": "auto-dark-mode.user.js",
   "private": false,
