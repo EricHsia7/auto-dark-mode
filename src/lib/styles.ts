@@ -32,7 +32,7 @@ export function getStyles() {
         color: '#249cff'
       },
       'blockquote': {
-        'border-left-color': '#cccccc',
+        'border-left-color': '#ccc',
         'border-left-style': 'solid',
         'border-left-width': '4px',
         'color': '#1a1a1a',
@@ -62,10 +62,10 @@ export function getStyles() {
         'background-color': '#fffd75',
         'color': '#1a1a1a'
       },
-      'input[type="text"], textarea': {
+      'input[type="text"], textarea, select, button': {
         'background-color': '#fdfdfd',
         'color': '#1a1a1a',
-        'border-color': '#cccccc',
+        'border-color': '#ccc',
         'border-style': 'solid',
         'border-width': '1px'
       },
