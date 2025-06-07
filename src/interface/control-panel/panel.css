@@ -19,7 +19,7 @@
 .auto_dark_mode_control_panel.auto_dark_mode_control_panel_slide_in {
   animation-name: auto-dark-mode-control-panel-slide-in;
   animation-duration: 0.35s;
-  animation-fill-mode: backwards;
+  animation-fill-mode: forwards;
   animation-direction: normal;
 }
 
