@@ -92,6 +92,6 @@ export function openControlPanel(): void {
     { once: true }
   );
 
-  mask.classList.remove('auto_dark_mode_control_panel_mask_fade_in');
+  mask.classList.add('auto_dark_mode_control_panel_mask_fade_in');
   panel.classList.add('auto_dark_mode_control_panel_slide_in');
 }
