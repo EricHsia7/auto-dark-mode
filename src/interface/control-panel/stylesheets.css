@@ -71,8 +71,8 @@
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_name {
   position: absolute;
   top: 0px;
-  left: 30px;
-  width: calc(100% - 30px - 45px);
+  left: 5px;
+  width: calc(100% - 5px - 45px);
   height: 45px;
   color: var(--auto-dark-mode-333333);
   font-size: 16px;
@@ -92,6 +92,12 @@
   right: 0px;
   width: 45px;
   height: 45px;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* stylesheets > body > stylesheet > toggle > off */
