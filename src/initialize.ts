@@ -1,3 +1,4 @@
+import { initializeControlPanel } from './interface/control-panel/index';
 import { generateIdentifier } from './lib/generate-identifier';
 import { getStyles, invertStyles, stylesToStrings } from './lib/styles';
 
@@ -32,4 +33,7 @@ export function initialize(): void {
   setTimeout(function () {
     document.querySelector(`#${identifier}`)?.remove();
   }, 1000);
+
+  // Prepare control panel
+  initializeControlPanel(strings);
 }
