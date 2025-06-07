@@ -10,11 +10,11 @@ export function getStyles() {
   const styles = {
     '@stylesheet-default': {
       'html, body': {
-        'background-color': '#f9fafb',
-        'color': '#111827'
+        'background-color': '#f9fafc',
+        'color': '#0f1113'
       },
       'h1, h2, h3, h4, h5, h6, p, span': {
-        color: '#111827'
+        color: '#0f1113'
       },
       'a': {
         color: '#1472ff'
@@ -26,8 +26,8 @@ export function getStyles() {
         'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px',
-        'background-color': '#f9fafb',
-        'color': '#111827'
+        'background-color': '#f9fafc',
+        'color': '#0f1113'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
         color: '#888888'
@@ -53,7 +53,7 @@ export function getStyles() {
       },
       'th': {
         'background-color': '#f3f4f6',
-        'color': '#111827'
+        'color': '#0f1113'
       },
       'tr': {
         'border-bottom-color': '#e5e7eb',
@@ -93,11 +93,11 @@ export function getStyles() {
         'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px',
-        'color': '#111827'
+        'color': '#0f1113'
       },
       'code': {
         'background-color': '#f3f4f6',
-        'color': '#111827'
+        'color': '#0f1113'
       },
       'hr': {
         'border': 'none',
@@ -125,26 +125,26 @@ export function getStyles() {
         'background-color': '#f3f4f6'
       },
       'summary': {
-        color: '#111827'
+        color: '#0f1113'
       },
       'small': {
-        color: '#111827'
+        color: '#0f1113'
       },
       'strong': {
-        color: '#111827'
+        color: '#0f1113'
       },
       'em': {
-        color: '#111827'
+        color: '#0f1113'
       },
       'ul, ol': {
-        color: '#111827'
+        color: '#0f1113'
       },
       'li': {
-        color: '#111827'
+        color: '#0f1113'
       },
       'mark': {
         'background-color': '#fffd75',
-        'color': '#111827'
+        'color': '#0f1113'
       }
     }
   };
