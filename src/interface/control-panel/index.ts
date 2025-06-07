@@ -60,15 +60,13 @@ export function initializeControlPanel(stylesStrings): void {
       const target = event.target as HTMLElement;
       const currentState = target.getAttribute('state');
       const stylesheetName = target.getAttribute('name');
-      const styleTag = document.querySelector(`style[auto-dark-mode-stylesheet-name="${stylesheetName}"]`) as HTMLStyleElement;
-      if (styleTag) {
-        if (currentState === 'on') {
-          target.setAttribute('state', 'off');
-          styleTag.disabled = true;
-        } else {
-          target.setAttribute('state', 'on');
-          styleTag.disabled = false;
-        }
+      const styleTag = document.documentElement.querySelector(`style[auto-dark-mode-stylesheet-name="${stylesheetName}"]`) as HTMLStyleElement;
+      if (currentState === 'on') {
+        target.setAttribute('state', 'off');
+        styleTag.disabled = true;
+      } else {
+        target.setAttribute('state', 'on');
+        styleTag.disabled = false;
       }
     });
 
