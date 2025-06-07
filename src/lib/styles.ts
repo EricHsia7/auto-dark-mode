@@ -52,8 +52,7 @@ export function getStyles() {
         color: '#2c2c2c'
       },
       'hr': {
-        border: 'none',
-        background: '#e0e0e0'
+        'background-color': '#e0e0e0'
       },
       'small': {
         color: '#888'

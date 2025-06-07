@@ -352,7 +352,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
       }
 
       const newHue = originalHue;
-      const newSaturation = originalSaturation * 0.99;
+      const newSaturation = originalSaturation * 0.98;
       const newValue = Math.max(1 - originalValue, 0.08);
 
       const i = Math.floor(newHue * 6);
