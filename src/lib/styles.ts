@@ -10,106 +10,141 @@ export function getStyles() {
   const styles = {
     '@stylesheet-default': {
       'html, body': {
-        'background-color': '#fdfdfd',
-        'color': '#1a1a1a'
+        'background-color': '#f9fafb',
+        'color': '#111827'
       },
-      'h1, h2, h3, h4, h5, h6': {
-        color: '#1a1a1a'
-      },
-      'p, span': {
-        color: '#2c2c2c'
-      },
-      'strong': {
-        color: '#1a1a1a'
-      },
-      'em': {
-        color: '#1a1a1a'
+      'h1, h2, h3, h4, h5, h6, p, span': {
+        color: '#111827'
       },
       'a': {
-        color: '#249cff'
+        color: '#1472ff'
       },
-      'a:hover, a:focus': {
-        color: '#249cff'
+      'a:hover': {
+        color: '#187dff'
       },
-      'blockquote': {
-        'border-left-color': '#ccc',
-        'border-left-style': 'solid',
-        'border-left-width': '4px',
-        'color': '#1a1a1a',
-        'background-color': '#f9f9f9'
+      'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
+        'border-color': '#e5e7eb',
+        'border-style': 'solid',
+        'border-width': '1px',
+        'background-color': '#f9fafb',
+        'color': '#111827'
       },
-      'code': {
-        color: '#2c2c2c'
+      'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
+        color: '#888888'
       },
-      'pre': {
-        'background-color': '#f3f3f3',
-        'color': '#1a1a1a'
-      },
-      'ul, ol': {
-        color: '#2c2c2c'
-      },
-      'li': {
-        color: '#2c2c2c'
-      },
-      'hr': {
-        'background-color': '#e0e0e0'
-      },
-      'small': {
-        color: '#888'
-      },
-      'mark': {
-        'background-color': '#fffd75',
-        'color': '#1a1a1a'
-      },
-      'input[type="text"], textarea, select, button': {
-        'background-color': '#fdfdfd',
-        'color': '#1a1a1a',
-        'border-color': '#ccc',
+      'input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="number"]:focus, textarea:focus, select:focus': {
+        'border-color': '#1472ff',
         'border-style': 'solid',
         'border-width': '1px'
       },
-      'input[type="text"]::placeholder, textarea::placeholder': {
-        color: '#888888'
+      'button:disabled, input:disabled, textarea:disabled, select:disabled': {
+        'background-color': '#f3f4f6',
+        'color': '#6b7280',
+        'border-color': '#e5e7eb',
+        'opacity': '0.7'
       },
       'table': {
-        'border-collapse': 'collapse',
-        'color': '#2c2c2c'
+        'background-color': '#f3f4f6'
       },
-      'caption': {
-        color: '#666'
+      'th, td': {
+        'border-color': '#e5e7eb',
+        'border-style': 'solid',
+        'border-width': '1px'
+      },
+      'th': {
+        'background-color': '#f3f4f6',
+        'color': '#111827'
+      },
+      'tr': {
+        'border-bottom-color': '#e5e7eb',
+        'border-bottom-style': 'solid',
+        'border-bottom-width': '1px'
+      },
+      'thead': {
+        'background-color': '#f3f4f6',
+        'border-bottom-color': '#e5e7eb',
+        'border-bottom-style': 'solid',
+        'border-bottom-width': '2px'
+      },
+      'tbody': {
+        'background-color': '#f3f4f6'
+      },
+      'tfoot': {
+        'background-color': '#f3f4f6',
+        'border-top-color': '#e5e7eb',
+        'border-top-style': 'solid',
+        'border-top-width': '2px'
       },
       'colgroup': {
         border: 'none'
       },
       'col': {
-        'background-color': '#fafafa'
+        'background-color': '#f3f4f6'
       },
-      'thead': {
-        'background-color': '#f0f0f0',
-        'border-bottom-color': '#2c2c2c',
-        'border-bottom-style': 'solid',
-        'border-bottom-width': '2px'
+      'blockquote': {
+        'border-left-color': '#e5e7eb',
+        'border-left-style': 'solid',
+        'border-left-width': '4px',
+        'padding-left': '20px',
+        'color': '#6b7280'
       },
-      'tfoot': {
-        'background-color': '#f9f9f9',
-        'border-top-color': '#2c2c2c',
-        'border-top-style': 'solid',
-        'border-top-width': '2px'
+      'pre': {
+        'background-color': '#f3f4f6',
+        'border-color': '#e5e7eb',
+        'border-style': 'solid',
+        'border-width': '1px',
+        'color': '#111827'
       },
-      'tbody': {
-        'background-color': '#fff'
+      'code': {
+        'background-color': '#f3f4f6',
+        'color': '#111827'
       },
-      'tr': {
-        'border-bottom-color': '#e0e0e0',
-        'border-bottom-style': 'solid',
-        'border-bottom-width': '1px'
+      'hr': {
+        'border': 'none',
+        'background-color': '#e5e7eb'
       },
-      'th': {
-        'background-color': '#f8f8f8',
-        'color': '#1a1a1a'
+      'figcaption, caption': {
+        color: '#6b7280'
       },
-      'td': {
-        color: '#333'
+      'progress': {
+        'background-color': '#e5e7eb'
+      },
+      'progress::-webkit-progress-bar': {
+        'background-color': '#e5e7eb'
+      },
+      'progress::-webkit-progress-value': {
+        'background-color': '#1472ff'
+      },
+      'progress::-moz-progress-bar': {
+        'background-color': '#1472ff'
+      },
+      'details': {
+        'border-color': '#e5e7eb',
+        'border-style': 'solid',
+        'border-width': '1px',
+        'background-color': '#f3f4f6'
+      },
+      'summary': {
+        color: '#111827'
+      },
+      'small': {
+        color: '#111827'
+      },
+      'strong': {
+        color: '#111827'
+      },
+      'em': {
+        color: '#111827'
+      },
+      'ul, ol': {
+        color: '#111827'
+      },
+      'li': {
+        color: '#111827'
+      },
+      'mark': {
+        'background-color': '#fffd75',
+        'color': '#111827'
       }
     }
   };
