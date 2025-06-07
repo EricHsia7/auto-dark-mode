@@ -254,6 +254,8 @@ export function getStyles() {
     referenceMap: cssVariableReferenceMap
   };
 
+  console.log(results);
+
   return results;
 }
 
