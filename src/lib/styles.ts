@@ -238,7 +238,7 @@ export function getStyles() {
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
         const identifier = sheet.ownerNode?.id || generateIdentifier();
-        const name = sheet.ownerNode?.nodeName;
+        const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
         const sheetName = `@stylesheet-${name}-${index}-${identifier}`;
         styles[sheetName] = sheetObj;
         index++;
