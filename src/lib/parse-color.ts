@@ -108,11 +108,13 @@ export function parseColor(value: string): ParsedColor {
             }
           : parseInt(variableMatches[2], 10);
         let a = 1;
-        if (variableMatches[3].match(/^var\((\s*--[^\)]+)\)/)) {
-          a = variableMatches[3];
-        }
-        if (variableMatches[3].match(/^\d+/)) {
-          a = parseFloat(variableMatches[3]);
+        if (variableMatches[3]) {
+          if (variableMatches[3].match(/^var\((\s*--[^\)]+)\)/)) {
+            a = variableMatches[3];
+          }
+          if (variableMatches[3].match(/^\d+/)) {
+            a = parseFloat(variableMatches[3]);
+          }
         }
         const result: ParsedColorRGBAWithVariable = {
           type: 'rgba-v',
