@@ -11,10 +11,10 @@ export function getStyles() {
     '@stylesheet-default': {
       'html, body': {
         'background-color': '#f9fafc',
-        'color': '#08090a'
+        'color': '#111111'
       },
       'h1, h2, h3, h4, h5, h6, p, span': {
-        color: '#08090a'
+        color: '#111111'
       },
       'a': {
         color: '#1472ff'
@@ -27,7 +27,7 @@ export function getStyles() {
         'border-style': 'solid',
         'border-width': '1px',
         'background-color': '#f9fafc',
-        'color': '#08090a'
+        'color': '#111111'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
         color: '#888888'
@@ -53,7 +53,7 @@ export function getStyles() {
       },
       'th': {
         'background-color': '#f3f4f6',
-        'color': '#08090a'
+        'color': '#111111'
       },
       'tr': {
         'border-bottom-color': '#e5e7eb',
@@ -93,11 +93,11 @@ export function getStyles() {
         'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px',
-        'color': '#08090a'
+        'color': '#111111'
       },
       'code': {
         'background-color': '#f3f4f6',
-        'color': '#08090a'
+        'color': '#111111'
       },
       'hr': {
         'border': 'none',
@@ -125,26 +125,26 @@ export function getStyles() {
         'background-color': '#f3f4f6'
       },
       'summary': {
-        color: '#08090a'
+        color: '#111111'
       },
       'small': {
-        color: '#08090a'
+        color: '#111111'
       },
       'strong': {
-        color: '#08090a'
+        color: '#111111'
       },
       'em': {
-        color: '#08090a'
+        color: '#111111'
       },
       'ul, ol': {
-        color: '#08090a'
+        color: '#111111'
       },
       'li': {
-        color: '#08090a'
+        color: '#111111'
       },
       'mark': {
         'background-color': '#fffd75',
-        'color': '#08090a'
+        'color': '#111111'
       }
     }
   };
