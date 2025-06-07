@@ -369,8 +369,8 @@ export function invertStyles(styles: any, referenceMap: any, path: string[] = []
   }
 }
 
-export function stylesToStrings(styles: any, nested: boolean = false): Array<string> {
-  const results: string[] = [];
+export function stylesToStrings(styles: any, nested: boolean = false): Array<{ name: string; css: string }> {
+  const results: Array<{ name: string; css: string }> = [];
 
   for (const sheet in styles) {
     const header = nested ? '' : `/* ${sheet} */`;
@@ -384,7 +384,9 @@ export function stylesToStrings(styles: any, nested: boolean = false): Array<str
         const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
 
         if (isNestedBlock) {
-          const nestedContent = stylesToStrings({ nested: properties }, true).join('');
+          const nestedContent = stylesToStrings({ nested: properties }, true)
+            .map((obj) => obj.css)
+            .join('');
           result += `${selector}{${nestedContent}}`;
         } else {
           let rule = `${selector}{`;
@@ -406,7 +408,10 @@ export function stylesToStrings(styles: any, nested: boolean = false): Array<str
       }
     }
 
-    results.push(`${header}${result}`);
+    results.push({
+      name: sheet,
+      css: `${header}${result}`
+    });
   }
 
   return results;

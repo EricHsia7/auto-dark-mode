@@ -22,7 +22,8 @@ export function initialize(): void {
   const fragment = new DocumentFragment();
   for (const string of strings) {
     const styleSheet = document.createElement('style');
-    styleSheet.textContent = string;
+    styleSheet.textContent = string.css;
+    styleSheet.setAttribute('auto-dark-mode-stylesheet-name', string.name);
     fragment.appendChild(styleSheet);
   }
   document.documentElement.appendChild(fragment);
