@@ -131,7 +131,7 @@ export function getStyles() {
                   container[selectorText][prop] = value;
 
                   // Check if value refers to a CSS variable
-                  const cssVarMatch = value.match(/^var\(\s*--[^)]+\)/);
+                  const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
                   if (cssVarMatch !== null) {
                     const cssVariableKey = cssVarMatch[1];
                     if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
