@@ -125,8 +125,8 @@ export function getStyles() {
             if (!container.hasOwnProperty(selectorText)) {
               container[selectorText] = {};
             }
-            const ruleStyleArray = Array.from(rule.style).concat(['background', 'border']);
-            for (const prop of ruleStyleArray) {
+            const extendedRuleStyle = Array.from(rule.style).concat(['background' /*, 'border' */]);
+            for (const prop of extendedRuleStyle) {
               const value = rule.style.getPropertyValue(prop).trim();
               if (value.length > 0) {
                 container[selectorText][prop] = value;
