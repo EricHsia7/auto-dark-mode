@@ -1,0 +1,18 @@
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body {
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  width: 100%;
+  height: calc(100% - 50px);
+  background-color: var(--auto-dark-mode-ffffff);
+  overflow-x: hidden;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body::-webkit-scrollbar {
+  display: none;
+}
