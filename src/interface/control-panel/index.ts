@@ -58,9 +58,13 @@ export function initializeControlPanel(stylesStrings): void {
     stylesheetToggle.setAttribute('name', stylesString.name);
     stylesheetToggle.addEventListener('click', function (event: Event) {
       const target = event.target as HTMLElement;
+      console.log(target.tagName);
       const currentState = target.getAttribute('state');
+      console.log(currentState)
       const nameValue = target.getAttribute('name');
+      console.log(0, nameValue);
       const styleTag = document.querySelector(`style[auto-dark-mode-stylesheet-name="${nameValue}"]`) as HTMLStyleElement;
+      console.log(1, styleTag);
       if (currentState === 'on') {
         target.setAttribute('state', 'off');
         styleTag.disabled = true;
