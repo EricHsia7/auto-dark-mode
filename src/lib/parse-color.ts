@@ -412,6 +412,6 @@ export function parsedColorToString(parsedColor: ParsedColor): string {
 }
 
 export function isParsedColorDark(color: ParsedColorRGBA): number {
-  return -0.002315205943 * color.rgba[0] + 0.724916473719 + -0.00518915994 * color.rgba[1] + 1.093306292424 - 0.001444153598 * color.rgba[2] + 0.627977492263;
+  return Math.min(Math.max(-0.002315205943 * color.rgba[0] + 0.724916473719 + -0.00518915994 * color.rgba[1] + 1.093306292424 - 0.001444153598 * color.rgba[2] + 0.627977492263, 0), 1);
   // higher number means higher probability
 }
