@@ -1,6 +1,6 @@
 {
   "name": "@erichsia7/auto-dark-mode",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Darken Any Website",
   "main": "auto-dark-mode.user.js",
   "private": false,
@@ -23,11 +23,16 @@
     "@babel/plugin-syntax-flow": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "babel-preset-modules": "^0.0.2",
+    "css-minimizer-webpack-plugin": "^1.1.1",
     "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1",
     "gh-pages": "^6.3.0",
     "css-loader": "^7.1.2",
-    "style-loader": "^4.0.0"
+    "style-loader": "^4.0.0",
+    "postcss": "^8.5.4",
+    "postcss-loader": "^8.1.1",
+    "postcss-preset-env": "^10.2.1",
+    "cssnano": "^7.0.7"
   },
   "dependencies": {}
 }

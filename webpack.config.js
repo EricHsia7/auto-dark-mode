@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
 const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 var userscriptHeader = require('./config/header.json');
 var userscriptExclusionList = require('./config/exclusion_list.json');
@@ -65,8 +66,19 @@ module.exports = (env, argv) => {
           }
         },
         {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader']
+          test: /\.css$/i,
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  plugins: [['postcss-preset-env', {}], require('cssnano')({ preset: 'default' })]
+                }
+              }
+            }
+          ] // applied in reverse
         }
       ]
     },
@@ -80,7 +92,8 @@ module.exports = (env, argv) => {
         new TerserPlugin({
           //terserOptions: {},
           extractComments: false
-        })
+        }),
+        new CssMinimizerPlugin()
       ]
     }
   };

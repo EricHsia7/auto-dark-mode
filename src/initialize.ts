@@ -1,3 +1,5 @@
+import { initializeButton } from './interface/button/index';
+import { initializeControlPanel, openControlPanel } from './interface/control-panel/index';
 import { generateIdentifier } from './lib/generate-identifier';
 import { getStyles, invertStyles, stylesToStrings } from './lib/styles';
 
@@ -22,7 +24,8 @@ export function initialize(): void {
   const fragment = new DocumentFragment();
   for (const string of strings) {
     const styleSheet = document.createElement('style');
-    styleSheet.textContent = string;
+    styleSheet.textContent = string.css;
+    styleSheet.setAttribute('auto-dark-mode-stylesheet-name', string.name);
     fragment.appendChild(styleSheet);
   }
   document.documentElement.appendChild(fragment);
@@ -31,4 +34,10 @@ export function initialize(): void {
   setTimeout(function () {
     document.querySelector(`#${identifier}`)?.remove();
   }, 1000);
+
+  // Prepare button
+  initializeButton();
+
+  // Prepare control panel
+  initializeControlPanel(strings);
 }
