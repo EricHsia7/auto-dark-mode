@@ -9,6 +9,9 @@ export function initializeControlPanel(stylesStrings): void {
 
   const mask = document.createElement('div');
   mask.classList.add('auto_dark_mode_control_panel_mask');
+  mask.addEventListener('click', function () {
+    closeControlPanel();
+  });
 
   const panel = document.createElement('div');
   panel.classList.add('auto_dark_mode_control_panel');
@@ -94,4 +97,31 @@ export function openControlPanel(): void {
 
   mask.classList.add('auto_dark_mode_control_panel_mask_fade_in');
   panel.classList.add('auto_dark_mode_control_panel_slide_in');
+}
+
+export function closeControlPanel(): void {
+  const mask = document.querySelector('.auto_dark_mode_control_panel_mask') as HTMLElement;
+  const panel = document.querySelector('.auto_dark_mode_control_panel') as HTMLElement;
+
+  mask.addEventListener(
+    'animationend',
+    function (event: Event) {
+      const target = event.target as HTMLElement;
+      target.classList.remove('auto_dark_mode_control_panel_mask_fade_out');
+      mask.setAttribute('displayed', 'false');
+    },
+    { once: true }
+  );
+  panel.addEventListener(
+    'animationend',
+    function (event: Event) {
+      const target = event.target as HTMLElement;
+      target.classList.remove('auto_dark_mode_control_panel_slide_out');
+      panel.setAttribute('displayed', 'false');
+    },
+    { once: true }
+  );
+
+  mask.classList.add('auto_dark_mode_control_panel_mask_fade_out');
+  panel.classList.add('auto_dark_mode_control_panel_slide_out');
 }
