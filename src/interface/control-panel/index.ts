@@ -56,25 +56,21 @@ export function initializeControlPanel(stylesStrings): void {
     stylesheetToggle.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_toggle');
     stylesheetToggle.setAttribute('state', 'on');
     stylesheetToggle.setAttribute('name', stylesString.name);
-    ((stylesheetToggle2) => {
-      stylesheetToggle2.addEventListener('click', function (event: Event) {
-        const target = event.target as HTMLElement;
-        console.log(target.tagName);
-        const currentState = target.getAttribute('state');
-        console.log(currentState);
-        const nameValue = target.getAttribute('name');
-        console.log(0, nameValue);
-        const styleTag = document.querySelector(`style[auto-dark-mode-stylesheet-name="${nameValue}"]`) as HTMLStyleElement;
-        console.log(1, styleTag);
-        if (currentState === 'on') {
-          target.setAttribute('state', 'off');
-          styleTag.disabled = true;
-        } else {
-          target.setAttribute('state', 'on');
-          styleTag.disabled = false;
-        }
-      });
-    })(stylesheetToggle);
+    stylesheetToggle.addEventListener('click', function () {
+      const currentState = stylesheetToggle.getAttribute('state');
+      console.log(currentState);
+      const nameValue = stylesheetToggle.getAttribute('name');
+      console.log(0, nameValue);
+      const styleTag = document.querySelector(`style[auto-dark-mode-stylesheet-name="${nameValue}"]`) as HTMLStyleElement;
+      console.log(1, styleTag);
+      if (currentState === 'on') {
+        stylesheetToggle.setAttribute('state', 'off');
+        styleTag.disabled = true;
+      } else {
+        stylesheetToggle.setAttribute('state', 'on');
+        styleTag.disabled = false;
+      }
+    });
 
     const stylesheetToggleOff = document.createElement('div');
     stylesheetToggleOff.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off');
