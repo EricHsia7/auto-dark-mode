@@ -1,4 +1,4 @@
-import { initializeControlPanel } from './interface/control-panel/index';
+import { initializeControlPanel, openControlPanel } from './interface/control-panel/index';
 import { generateIdentifier } from './lib/generate-identifier';
 import { getStyles, invertStyles, stylesToStrings } from './lib/styles';
 
@@ -36,4 +36,6 @@ export function initialize(): void {
 
   // Prepare control panel
   initializeControlPanel(strings);
+
+  openControlPanel()
 }
