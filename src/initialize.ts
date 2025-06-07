@@ -13,7 +13,7 @@ export function initialize(): void {
   const styles = getStyles();
 
   // Invert styles
-  const invertedStyles = invertStyles(styles);
+  const invertedStyles = invertStyles(styles.styles, styles.referenceMap);
 
   // Styles String
   const strings = stylesToStrings(invertedStyles, false);

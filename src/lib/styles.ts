@@ -4,7 +4,10 @@ import { evaluateTheme } from './evaluate-theme';
 import { invertParsedColor, parseColor, parsedColorToString } from './parse-color';
 
 export function getStyles() {
-  const result = {
+  const cssVariableReferenceMap: {
+    [cssVariableKey: string]: [backgroundColorCount: number, textColorCount: number];
+  } = {};
+  const styles = {
     '@stylesheet-default': {
       'html, body': {
         'background-color': '#fdfdfd',
@@ -117,7 +120,6 @@ export function getStyles() {
       for (const rule of rules) {
         switch (rule.type) {
           case CSSRule.STYLE_RULE: {
-            // Basic style rule
             const selectorText = rule.selectorText;
             if (rule.style.length > 0) {
               if (!container.hasOwnProperty(selectorText)) {
@@ -127,13 +129,28 @@ export function getStyles() {
                 const value = rule.style.getPropertyValue(prop).trim();
                 if (value.length > 0) {
                   container[selectorText][prop] = value;
+
+                  // Check if value refers to a CSS variable
+                  const cssVarMatch = value.match(/^var\(\s*--[^)]+\)/);
+                  if (cssVarMatch !== null) {
+                    const cssVariableKey = cssVarMatch[1];
+                    if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
+                      cssVariableReferenceMap[cssVariableKey] = [0, 0];
+                    }
+                    if (prop === 'background' || prop === 'background-color') {
+                      cssVariableReferenceMap[cssVariableKey][0] += 1;
+                    }
+                    if (prop === 'color') {
+                      cssVariableReferenceMap[cssVariableKey][1] += 1;
+                    }
+                  }
                 }
               }
             }
             break;
           }
+
           case CSSRule.MEDIA_RULE: {
-            // Media queries
             const media = `@media ${rule.conditionText}`;
             if (!container.hasOwnProperty(media)) {
               container[media] = {};
@@ -169,7 +186,7 @@ export function getStyles() {
               try {
                 processRules(rule.styleSheet.cssRules, container);
               } catch (e) {
-                // console.warn('Cannot access imported stylesheet:', e);
+                // Skipped due to CORS/security
               }
             }
             break;
@@ -186,17 +203,16 @@ export function getStyles() {
     let index = 0;
     for (const sheet of document.styleSheets) {
       try {
-        if (!sheet.cssRules) continue; // No access
+        if (!sheet.cssRules) continue;
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
         const identifier = sheet.ownerNode?.id || generateIdentifier();
         const name = sheet.ownerNode?.nodeName;
         const sheetName = `@stylesheet-${name}-${index}-${identifier}`;
-        result[sheetName] = sheetObj;
+        styles[sheetName] = sheetObj;
         index++;
       } catch (e) {
-        // Security/CORS error – skip this stylesheet
-        // console.warn('Skipping inaccessible stylesheet:', e);
+        // Skipped due to access restrictions
       }
     }
   }
@@ -231,12 +247,17 @@ export function getStyles() {
     }
   }
 
-  result['@stylesheet-lambda'] = lambdaStyles;
+  styles['@stylesheet-lambda'] = lambdaStyles;
 
-  return result;
+  const results = {
+    styles: styles,
+    referenceMap: cssVariableReferenceMap
+  };
+
+  return results;
 }
 
-export function invertStyles(styles: any, path: string[] = []): any {
+export function invertStyles(styles: any, referenceMap: any, path: string[] = []): any {
   const newStyles: any = {};
 
   let backgroundColorRed = 0;
@@ -254,7 +275,7 @@ export function invertStyles(styles: any, path: string[] = []): any {
     const currentPath = path.concat(key);
 
     if (typeof value === 'object' && value !== null) {
-      newStyles[key] = invertStyles(value, currentPath); // Recursive copy
+      newStyles[key] = invertStyles(value, referenceMap, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
@@ -274,6 +295,22 @@ export function invertStyles(styles: any, path: string[] = []): any {
               textColorGreen += parsedColor.rgba[1] / 255;
               textColorBlue += parsedColor.rgba[2] / 255;
               textColorQuantity += 1;
+            }
+            if (key.startsWith('--')) {
+              if (referenceMap.hasOwnProperty(key)) {
+                if (referenceMap[key][0] > referenceMap[key][1]) {
+                  backgroundColorRed += parsedColor.rgba[0] / 255;
+                  backgroundColorGreen += parsedColor.rgba[1] / 255;
+                  backgroundColorBlue += parsedColor.rgba[2] / 255;
+                  backgroundColorQuantity += 1;
+                }
+                if (referenceMap[key][0] < referenceMap[key][1]) {
+                  textColorRed += parsedColor.rgba[0] / 255;
+                  textColorGreen += parsedColor.rgba[1] / 255;
+                  textColorBlue += parsedColor.rgba[2] / 255;
+                  textColorQuantity += 1;
+                }
+              }
             }
           }
         } else {
