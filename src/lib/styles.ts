@@ -121,32 +121,32 @@ export function getStyles() {
         switch (rule.type) {
           case CSSRule.STYLE_RULE: {
             const selectorText = rule.selectorText;
-            if (rule.style.length > 0) {
-              if (!container.hasOwnProperty(selectorText)) {
-                container[selectorText] = {};
-              }
-              for (const prop of rule.style) {
-                const value = rule.style.getPropertyValue(prop).trim();
-                if (value.length > 0) {
-                  container[selectorText][prop] = value;
-
-                  // Check if value refers to a CSS variable
-                  const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
-                  if (cssVarMatch !== null) {
-                    const cssVariableKey = cssVarMatch[1];
-                    if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
-                      cssVariableReferenceMap[cssVariableKey] = [0, 0];
-                    }
-                    if (prop === 'background' || prop === 'background-color') {
-                      cssVariableReferenceMap[cssVariableKey][0] += 1;
-                    }
-                    if (prop === 'color') {
-                      cssVariableReferenceMap[cssVariableKey][1] += 1;
-                    }
+            // if (ruleStyleArray.length > 0) {
+            if (!container.hasOwnProperty(selectorText)) {
+              container[selectorText] = {};
+            }
+            const ruleStyleArray = Array.from(rule.style).concat(['background', 'border']);
+            for (const prop of ruleStyleArray) {
+              const value = rule.style.getPropertyValue(prop).trim();
+              if (value.length > 0) {
+                container[selectorText][prop] = value;
+                // Check if value refers to a CSS variable
+                const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
+                if (cssVarMatch !== null) {
+                  const cssVariableKey = cssVarMatch[1];
+                  if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
+                    cssVariableReferenceMap[cssVariableKey] = [0, 0];
+                  }
+                  if (prop === 'background' || prop === 'background-color') {
+                    cssVariableReferenceMap[cssVariableKey][0] += 1;
+                  }
+                  if (prop === 'color') {
+                    cssVariableReferenceMap[cssVariableKey][1] += 1;
                   }
                 }
               }
             }
+            // }
             break;
           }
 
