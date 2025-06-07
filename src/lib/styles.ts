@@ -104,7 +104,7 @@ export function getStyles() {
         'background-color': '#e5e7eb'
       },
       'figcaption, caption': {
-        color: '#6b7280'
+        color: '#808080'
       },
       'progress': {
         'background-color': '#e5e7eb'
