@@ -121,7 +121,6 @@ export function getStyles() {
         switch (rule.type) {
           case CSSRule.STYLE_RULE: {
             const selectorText = rule.selectorText;
-            // if (ruleStyleArray.length > 0) {
             if (!container.hasOwnProperty(selectorText)) {
               container[selectorText] = {};
             }
@@ -146,7 +145,6 @@ export function getStyles() {
                 }
               }
             }
-            // }
             break;
           }
 
@@ -192,7 +190,6 @@ export function getStyles() {
             break;
           }
           default: {
-            // Other types can be added here if needed
             // container[`@unknown-${rule.type}`] = rule.cssText;
             break;
           }
@@ -318,9 +315,7 @@ export function invertStyles(styles: any, referenceMap: any, path: string[] = []
         } else {
           newStyles[key] = value; // If parsing fails, keep original
         }
-      } /* else {
-        newStyles[key] = value;
-      } */
+      }
     }
   }
 
@@ -371,13 +366,13 @@ export function stylesToStrings(styles: any, nested: boolean = false): Array<str
 
     if (basicRules.trim()) {
       if (nested) {
-        result = `${basicRules} ${result}`;
+        result = `${basicRules}${result}`;
       } else {
-        result = `@media (prefers-color-scheme: dark) {${basicRules}} ${result}`;
+        result = `@media (prefers-color-scheme:dark){${basicRules}}${result}`;
       }
     }
 
-    results.push(`${header} ${result}`);
+    results.push(`${header}${result}`);
   }
 
   return results;

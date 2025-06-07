@@ -352,7 +352,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
       }
 
       const newHue = originalHue;
-      const newSaturation = originalSaturation;
+      const newSaturation = originalSaturation * 0.99;
       const newValue = Math.max(1 - originalValue, 0.08);
 
       const i = Math.floor(newHue * 6);
@@ -434,33 +434,33 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
   }
 }
 
-export function parsedColorToString(parsedColor: ParsedColor): string {
-  switch (parsedColor.type) {
+export function parsedColorToString(color: ParsedColor): string {
+  switch (color.type) {
     case 'rgba': {
-      const [r, g, b, a] = parsedColor.rgba;
+      const [r, g, b, a] = color.rgba;
       return a < 1 ? `rgba(${r},${g},${b},${a})` : `rgb(${r},${g},${b})`;
     }
     case 'rgba-v': {
-      const [r, g, b, a] = parsedColor.rgba;
+      const [r, g, b, a] = color.rgba;
       return `rgba(${typeof r === 'number' ? r : r.ref},${typeof g === 'number' ? g : g.ref},${typeof b === 'number' ? b : b.ref},${typeof a === 'number' ? a : a.ref})`;
     }
     case 'variable': {
-      return parsedColor.ref;
+      return color.ref;
     }
     case 'linear-gradient': {
-      const linearStops = parsedColor.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
-      return `linear-gradient(${parsedColor.direction},${linearStops})`;
+      const linearStops = color.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
+      return `linear-gradient(${color.direction},${linearStops})`;
     }
     case 'radial-gradient': {
-      const radialStops = parsedColor.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
-      return `radial-gradient(${parsedColor.shape} ${parsedColor.size} at ${parsedColor.position},${radialStops})`;
+      const radialStops = color.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
+      return `radial-gradient(${color.shape} ${color.size} at ${color.position},${radialStops})`;
     }
     case 'conic-gradient': {
-      const conicStops = parsedColor.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(', ');
-      return `conic-gradient(${parsedColor.angle},${conicStops})`;
+      const conicStops = color.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(', ');
+      return `conic-gradient(${color.angle},${conicStops})`;
     }
     case 'url': {
-      return parsedColor.ref;
+      return color.ref;
     }
     default: {
       break;
