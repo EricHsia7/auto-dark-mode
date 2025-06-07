@@ -41,11 +41,10 @@
   left: 30px;
   width: calc(100% - 30px);
   height: 30px;
-  display: flex;
-  align-items: center;
   font-size: 13px;
   font-family: sans-serif;
   font-weight: normal;
+  line-height: 30px;
   color: var(--auto-dark-mode-333333);
   white-space: nowrap;
   word-break: keep-all;
@@ -77,14 +76,13 @@
   height: 45px;
   color: var(--auto-dark-mode-333333);
   font-size: 16px;
+  line-height: 45px;
   font-family: sans-serif;
   font-weight: normal;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   word-break: keep-all;
-  display: flex;
-  align-items: center;
 }
 
 /* stylesheets > body > stylesheet > toggle */
