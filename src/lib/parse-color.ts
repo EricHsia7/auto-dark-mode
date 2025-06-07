@@ -5,6 +5,11 @@ export interface ParsedColorRGBA {
   rgba: [red: number, green: number, blue: number, alpha: number];
 }
 
+export interface ParsedColorRGBAWithVariable {
+  type: 'rgba-v';
+  rgba: [red: ParsedColorVariable | number, green: ParsedColorVariable | number, blue: ParsedColorVariable | number, alpha: ParsedColorVariable | number];
+}
+
 export interface ParsedColorVariable {
   type: 'variable';
   ref: string; // var(--name)
@@ -12,7 +17,7 @@ export interface ParsedColorVariable {
 
 export interface ParsedColorStop {
   type: 'stop';
-  color: ParsedColorRGBA | ParsedColorVariable;
+  color: ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorVariable;
   position: string;
 }
 
@@ -43,7 +48,7 @@ export interface ParsedColorURL {
   ref: string; // url(https://example.com/example.png)
 }
 
-export type ParsedColor = ParsedColorRGBA | ParsedColorVariable | ParsedColorLinearGradient | ParsedColorRdialGradient | ParsedColorConicGradient | ParsedColorURL;
+export type ParsedColor = ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorVariable | ParsedColorLinearGradient | ParsedColorRdialGradient | ParsedColorConicGradient | ParsedColorURL;
 
 export function parseColor(value: string): ParsedColor {
   function parseColorStops(components: Array<string>): ParsedColorStopArray {
@@ -80,14 +85,49 @@ export function parseColor(value: string): ParsedColor {
 
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
-    const matches = value.match(/rgba?\((\d+),\s{0,}(\d+),\s{0,}(\d+)(?:,\s{0,}(\d+\.?\d*))?\)/);
-    if (!matches) {
-      return fallbackColor;
+    const normalRGBMatches = value.match(/rgba?\((\d+),\s{0,}(\d+),\s{0,}(\d+)(?:,\s{0,}(\d+\.?\d*))?\)/);
+    if (!normalRGBMatches) {
+      const variableMatches = value.match(/(var\((\s*--[^\)]+)\)|\d+)/g);
+      if (variableMatches !== null) {
+        const r = variableMatches[0].match(/^var\((\s*--[^\)]+)\)/)
+          ? {
+              type: 'variable',
+              ref: variableMatches[0]
+            }
+          : parseInt(variableMatches[0], 10);
+        const g = variableMatches[1].match(/^var\((\s*--[^\)]+)\)/)
+          ? {
+              type: 'variable',
+              ref: variableMatches[1]
+            }
+          : parseInt(variableMatches[1], 10);
+        const b = variableMatches[2].match(/^var\((\s*--[^\)]+)\)/)
+          ? {
+              type: 'variable',
+              ref: variableMatches[2]
+            }
+          : parseInt(variableMatches[2], 10);
+        let a = 1;
+        if (variableMatches[3].match(/^var\((\s*--[^\)]+)\)/)) {
+          a = variableMatches[3];
+        }
+        if (variableMatches[3].match(/^\d+/)) {
+          a = parseFloat(variableMatches[3]);
+        }
+        const result: ParsedColorRGBAWithVariable = {
+          type: 'rgba-v',
+          rgba: [r, g, b, a]
+        };
+        return result;
+      } else {
+        return fallbackColor;
+      }
     }
-    const r = parseInt(matches[1], 10);
-    const g = parseInt(matches[2], 10);
-    const b = parseInt(matches[3], 10);
-    const a = matches[4] !== undefined ? parseFloat(matches[4]) : 1;
+
+    const r = parseInt(normalRGBMatches[1], 10);
+    const g = parseInt(normalRGBMatches[2], 10);
+    const b = parseInt(normalRGBMatches[3], 10);
+    const a = normalRGBMatches[4] !== undefined ? parseFloat(normalRGBMatches[4]) : 1;
     const result: ParsedColorRGBA = {
       type: 'rgba',
       rgba: [r, g, b, a]
@@ -271,7 +311,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
     for (let i = 0; i < colorStopsLength; i++) {
       const stop = colorStops[i];
       if (stop.type === 'stop') {
-        const invertedColor = invertParsedColor(stop.color) as ParsedColorRGBA | ParsedColorVariable;
+        const invertedColor = invertParsedColor(stop.color) as ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorVariable;
         const invertedColorStop: ParsedColorStop = {
           type: 'stop',
           color: invertedColor,
@@ -336,7 +376,10 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
       return result;
       break;
     }
-
+    case 'rgba-v': {
+      return color; // Color with referenced variables are not inverted
+      break;
+    }
     case 'variable': {
       return color; // Referenced variables are not inverted
       break;
@@ -391,23 +434,35 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
 
 export function parsedColorToString(parsedColor: ParsedColor): string {
   switch (parsedColor.type) {
-    case 'rgba':
+    case 'rgba': {
       const [r, g, b, a] = parsedColor.rgba;
       return a < 1 ? `rgba(${r},${g},${b},${a})` : `rgb(${r},${g},${b})`;
-    case 'variable':
+    }
+    case 'rgba-v': {
+      const [r, g, b, a] = parsedColor.rgba;
+      return `rgba(${typeof r === 'number' ? r : r.ref},${typeof g === 'number' ? g : g.ref},${typeof b === 'number' ? b : b.ref},${typeof a === 'number' ? a : a.ref})`;
+    }
+    case 'variable': {
       return parsedColor.ref;
-    case 'linear-gradient':
+    }
+    case 'linear-gradient': {
       const linearStops = parsedColor.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
       return `linear-gradient(${parsedColor.direction},${linearStops})`;
-    case 'radial-gradient':
+    }
+    case 'radial-gradient': {
       const radialStops = parsedColor.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
       return `radial-gradient(${parsedColor.shape} ${parsedColor.size} at ${parsedColor.position},${radialStops})`;
-    case 'conic-gradient':
+    }
+    case 'conic-gradient': {
       const conicStops = parsedColor.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(', ');
       return `conic-gradient(${parsedColor.angle},${conicStops})`;
-    case 'url':
+    }
+    case 'url': {
       return parsedColor.ref;
-    default:
+    }
+    default: {
+      break;
+    }
   }
 }
 
