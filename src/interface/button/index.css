@@ -15,6 +15,10 @@
   font-family: sans-serif;
   font-size: 17px;
   font-weight: bold;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   user-select: none;
   -webkit-user-select: none;
   display: flex;
