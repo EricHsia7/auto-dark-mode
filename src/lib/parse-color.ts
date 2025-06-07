@@ -347,12 +347,12 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
         else originalHue = ((r - g) / delta + 4) / 6;
       }
 
-      if (originalSaturation > 0.55 && originalValue > 0.55) {
+      if (originalSaturation > 0.35 && originalValue > 0.55) {
         return color;
       }
 
       const newHue = originalHue;
-      const newSaturation = originalSaturation * 0.98;
+      const newSaturation = originalSaturation;
       const newValue = Math.max(1 - originalValue, 0.08);
 
       const i = Math.floor(newHue * 6);
