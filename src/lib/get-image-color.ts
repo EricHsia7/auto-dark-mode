@@ -40,6 +40,10 @@ export async function getImageColor(url: string): Promise<ParsedColorRGBA | fals
         }
       };
 
+      img.onerror = function () {
+        resolve(false);
+      };
+
       img.src = url;
     } catch (error) {
       resolve(false);
