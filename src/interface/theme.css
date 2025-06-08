@@ -4,6 +4,14 @@
   --auto-dark-mode-333333: #333333;
 }
 
+@media (prefers-color-scheme:dark) {
+  :root {
+    --auto-dark-mode-ffffff: #101112;
+    --auto-dark-mode-c2c2c2: #151619;
+    --auto-dark-mode-333333: #ffffff;
+  }
+}
+
 :root {
   --auto-dark-mode-safe-area-left: 0px;
   --auto-dark-mode-safe-area-right: 0px;

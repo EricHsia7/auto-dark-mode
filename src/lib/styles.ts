@@ -24,25 +24,14 @@ export function getStyles() {
         color: '#187dff'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
-        'border-color': '#e5e7eb',
+        'border-color': '#111111',
         'border-style': 'solid',
         'border-width': '1px',
-        'background-color': '#f9fafc',
+        'background-color': 'rgba(0, 0, 0, 0)',
         'color': '#111111'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
         color: '#888888'
-      },
-      'input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="number"]:focus, textarea:focus, select:focus': {
-        'border-color': '#1472ff',
-        'border-style': 'solid',
-        'border-width': '1px'
-      },
-      'button:disabled, input:disabled, textarea:disabled, select:disabled': {
-        'background-color': '#f3f4f6',
-        'color': '#6b7280',
-        'border-color': '#e5e7eb',
-        'opacity': '0.7'
       },
       'table': {
         'background-color': 'rgba(0, 0, 0, 0)'
