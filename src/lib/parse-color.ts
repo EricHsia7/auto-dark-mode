@@ -52,14 +52,14 @@ export interface ParsedColorURL {
 export type ParsedColor = ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorVariable | ParsedColorLinearGradient | ParsedColorRdialGradient | ParsedColorConicGradient | ParsedColorURL;
 
 export async function parseColor(value: string): Promise<ParsedColor> {
- async function parseColorStops(components: Array<string>): ParsedColorStopArray {
+  async function parseColorStops(components: Array<string>): ParsedColorStopArray {
     const positionRegex = /(\d+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
     const colorStops: ParsedColorStopArray = [];
     for (const component of components) {
       const trimmedComponent = component.trim();
       const matches = trimmedComponent.match(positionRegex);
       if (matches) {
-        const color = await parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ParsedColorRGBA | ParsedColorVariable;
+        const color = (await parseColor(trimmedComponent.replace(positionRegex, '').trim())) as ParsedColorRGBA | ParsedColorVariable;
         const position = matches[0].trim();
         colorStops.push({
           type: 'stop',
@@ -288,7 +288,7 @@ export async function parseColor(value: string): Promise<ParsedColor> {
 
   // handle url
   if (value.startsWith('url')) {
-    const urlMatch = value.match(/url\(\s*(['"]?)(.*?)\1\s*\)/i);
+    const urlMatch = value.match(/url\(\s*(['"]?)((?:https?:\/\/|data:)[^'"()\s]+?(?::\d{2,5})?(?:\/[^'"()\s]*)?)\1\s*\)/i);
     if (urlMatch !== null) {
       const url = urlMatch[2];
       const color = await getImageColor(url);
