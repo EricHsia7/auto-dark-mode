@@ -289,6 +289,7 @@ export async function parseColor(value: string): Promise<ParsedColor> {
 
   // handle url
   if (value.startsWith('url')) {
+    /*
     const urlMatch = value.match(/url\(\s*(['"]?)((?:https?:\/\/|data:|\.{0,2}\/|\/)[^'"()\s]+?)\1\s*\)/i);
     if (urlMatch !== null) {
       const url = urlMatch[2];
@@ -300,6 +301,7 @@ export async function parseColor(value: string): Promise<ParsedColor> {
       };
       return coloredResult;
     }
+    */
 
     const result: ParsedColorURL = {
       type: 'url',
