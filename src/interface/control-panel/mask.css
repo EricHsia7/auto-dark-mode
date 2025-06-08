@@ -9,6 +9,7 @@
   -webkit-user-select: none;
   visibility: hidden;
   opacity: 0;
+  z-index: 99998;
 }
 
 .auto_dark_mode_control_panel_mask[displayed="true"] {

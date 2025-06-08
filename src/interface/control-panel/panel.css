@@ -10,6 +10,7 @@
   -webkit-user-select: none;
   visibility: hidden;
   transform: translateY(100%);
+  z-index: 99999;
 }
 
 .auto_dark_mode_control_panel[displayed="true"] {
