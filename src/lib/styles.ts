@@ -13,7 +13,7 @@ export function getStyles() {
         'background-color': '#f9fafc',
         'color': '#111111'
       },
-      'h1, h2, h3, h4, h5, h6, p, span': {
+      'h1, h2, h3, h4, h5, h6, p, span, time': {
         color: '#111111'
       },
       'a': {

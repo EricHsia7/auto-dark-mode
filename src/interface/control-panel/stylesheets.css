@@ -75,8 +75,8 @@
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_name {
   position: absolute;
   top: 0px;
-  left: 5px;
-  width: calc(100% - 5px - 45px);
+  left: 10px;
+  width: calc(100% - 10px - 45px);
   height: 45px;
   color: var(--auto-dark-mode-333333);
   font-size: 18px;
