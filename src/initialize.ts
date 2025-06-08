@@ -1,6 +1,7 @@
 import { initializeButton } from './interface/button/index';
-import { initializeControlPanel, openControlPanel } from './interface/control-panel/index';
+import { initializeControlPanel } from './interface/control-panel/index';
 import { generateIdentifier } from './lib/generate-identifier';
+import { isFramed } from './lib/is-framed';
 import { getStyles, invertStyles, stylesToStrings } from './lib/styles';
 
 export function initialize(): void {
@@ -35,9 +36,11 @@ export function initialize(): void {
     document.querySelector(`#${identifier}`)?.remove();
   }, 1000);
 
-  // Prepare button
-  initializeButton();
+  if (!isFramed()) {
+    // Prepare button
+    initializeButton();
 
-  // Prepare control panel
-  initializeControlPanel(strings);
+    // Prepare control panel
+    initializeControlPanel(strings);
+  }
 }
