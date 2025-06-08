@@ -47,6 +47,7 @@ export interface ParsedColorConicGradient {
 export interface ParsedColorURL {
   type: 'url';
   ref: string; // url(https://example.com/example.png)
+  color: ParsedColorRGBA | false;
 }
 
 export type ParsedColor = ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorVariable | ParsedColorLinearGradient | ParsedColorRdialGradient | ParsedColorConicGradient | ParsedColorURL;
@@ -292,11 +293,17 @@ export async function parseColor(value: string): Promise<ParsedColor> {
     if (urlMatch !== null) {
       const url = urlMatch[2];
       const color = await getImageColor(url);
-      return color;
+      const coloredResult: ParsedColorURL = {
+        type: 'url',
+        ref: value,
+        color: color
+      };
+      return coloredResult;
     }
     const result: ParsedColorURL = {
       type: 'url',
-      ref: value
+      ref: value,
+      color: false
     };
     return result;
   }
@@ -431,7 +438,18 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
     }
 
     case 'url': {
-      return color; // URLs are not inverted
+      if (color.color !== false) {
+        if (color.color.type === 'rgba') {
+          const invertedColor = invertParsedColor(color.color) as ParsedColorRGBA;
+          const result: ParsedColorURL = {
+            type: 'url',
+            ref: color.ref,
+            color: invertedColor
+          };
+          return result;
+        }
+      }
+      return color;
       break;
     }
 
@@ -468,6 +486,16 @@ export function parsedColorToString(color: ParsedColor): string {
       return `conic-gradient(${color.angle},${conicStops})`;
     }
     case 'url': {
+      if (color.color !== false) {
+        if (color.color.type === 'rgba') {
+          const width = 128;
+          const height = 128;
+          const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="${parsedColorToString(color.color)}"/></svg>`
+          // Encode special characters for safe embedding in a data URL
+          const encoded = encodeURIComponent(svg).replace(/'/g, '%27').replace(/"/g, '%22');
+          return `url("data:image/svg+xml,${encoded}")`;
+        }
+      }
       return color.ref;
     }
     default: {
