@@ -2,7 +2,6 @@
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets {
   position: relative;
   width: calc(100% - 20px);
-  top: 10px;
   left: 10px;
   margin-bottom: var(--auto-dark-mode-safe-area-bottom);
   background-color: var(--auto-dark-mode-ffffff);
