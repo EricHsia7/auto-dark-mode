@@ -1,5 +1,6 @@
 import { getImageColor } from './get-image-color';
 import { namedColors } from './named-colors';
+import { resolveRelativePath } from './resolve-relative-path';
 
 export interface ParsedColorRGBA {
   type: 'rgba';
@@ -289,9 +290,16 @@ export async function parseColor(value: string): Promise<ParsedColor> {
 
   // handle url
   if (value.startsWith('url')) {
-    const urlMatch = value.match(/url\(\s*(['"]?)((?:https?:\/\/|data:)[^'"()\s]+?(?::\d{2,5})?(?:\/[^'"()\s]*)?)\1\s*\)/i);
+    const urlMatch = value.match(/url\(\s*(['"]?)((?:https?:\/\/|data:|\.{0,2}\/|\/)[^'"()\s]+?)\1\s*\)/i);
     if (urlMatch !== null) {
       const url = urlMatch[2];
+      let fullURL = ''
+      if(url.startsWith('http') || url.startsWith('data')) {
+        fullURL = url
+      }
+      else {
+        fullURL = resolveRelativePath(url);
+      }
       const color = await getImageColor(url);
       const coloredResult: ParsedColorURL = {
         type: 'url',
@@ -300,6 +308,7 @@ export async function parseColor(value: string): Promise<ParsedColor> {
       };
       return coloredResult;
     }
+
     const result: ParsedColorURL = {
       type: 'url',
       ref: value,
