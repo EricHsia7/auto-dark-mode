@@ -3,3 +3,28 @@
   --auto-dark-mode-c2c2c2: #c2c2c2;
   --auto-dark-mode-333333: #333333;
 }
+
+:root {
+  --auto-dark-mode-safe-area-left: 0px;
+  --auto-dark-mode-safe-area-right: 0px;
+  --auto-dark-mode-safe-area-top: 0px;
+  --auto-dark-mode-safe-area-bottom: 0px;
+}
+
+@supports (bottom: constant(safe-area-inset-top)) {
+  :root {
+    --auto-dark-mode-safe-area-left: constant(safe-area-inset-left);
+    --auto-dark-mode-safe-area-right: constant(safe-area-inset-right);
+    --auto-dark-mode-safe-area-top: constant(safe-area-inset-top);
+    --auto-dark-mode-safe-area-bottom: constant(safe-area-inset-bottom);
+  }
+}
+
+@supports (bottom: env(safe-area-inset-top)) {
+  :root {
+    --auto-dark-mode-safe-area-left: env(safe-area-inset-left);
+    --auto-dark-mode-safe-area-right: env(safe-area-inset-right);
+    --auto-dark-mode-safe-area-top: env(safe-area-inset-top);
+    --auto-dark-mode-safe-area-bottom: env(safe-area-inset-bottom);
+  }
+}

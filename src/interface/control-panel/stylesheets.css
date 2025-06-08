@@ -67,6 +67,10 @@
   height: 45px;
 }
 
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet:last-child {
+  margin-bottom: var(--auto-dark-mode-safe-area-bottom);
+}
+
 /* stylesheets > body > stylesheet > name */
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_name {
   position: absolute;
