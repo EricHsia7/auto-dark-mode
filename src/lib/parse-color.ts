@@ -1,3 +1,4 @@
+import { getImageColor } from './get-image-color';
 import { namedColors } from './named-colors';
 
 export interface ParsedColorRGBA {
@@ -50,15 +51,15 @@ export interface ParsedColorURL {
 
 export type ParsedColor = ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorVariable | ParsedColorLinearGradient | ParsedColorRdialGradient | ParsedColorConicGradient | ParsedColorURL;
 
-export function parseColor(value: string): ParsedColor {
-  function parseColorStops(components: Array<string>): ParsedColorStopArray {
+export async function parseColor(value: string): Promise<ParsedColor> {
+ async function parseColorStops(components: Array<string>): ParsedColorStopArray {
     const positionRegex = /(\d+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
     const colorStops: ParsedColorStopArray = [];
     for (const component of components) {
       const trimmedComponent = component.trim();
       const matches = trimmedComponent.match(positionRegex);
       if (matches) {
-        const color = parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ParsedColorRGBA | ParsedColorVariable;
+        const color = await parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ParsedColorRGBA | ParsedColorVariable;
         const position = matches[0].trim();
         colorStops.push({
           type: 'stop',
@@ -203,7 +204,7 @@ export function parseColor(value: string): ParsedColor {
     }
 
     // Process remaining parts as color stops
-    const colorStops = parseColorStops(components);
+    const colorStops = await parseColorStops(components);
 
     const result: ParsedColorLinearGradient = {
       type: 'linear-gradient',
@@ -255,7 +256,7 @@ export function parseColor(value: string): ParsedColor {
     }
 
     // Extract color stops
-    const colorStops = parseColorStops(components.slice(index));
+    const colorStops = await parseColorStops(components.slice(index));
 
     const result: ParsedColorRdialGradient = {
       type: 'radial-gradient',
@@ -274,7 +275,7 @@ export function parseColor(value: string): ParsedColor {
     const matches = value.match(regex);
     const components = matches[1].split(/,(.+)/);
     const angle = components[0].trim();
-    const colorStops = parseColorStops(components[1]);
+    const colorStops = await parseColorStops(components[1]);
 
     const result: ParsedColorConicGradient = {
       type: 'conic-gradient',
@@ -287,6 +288,12 @@ export function parseColor(value: string): ParsedColor {
 
   // handle url
   if (value.startsWith('url')) {
+    const urlMatch = value.match(/url\(\s*(['"]?)(.*?)\1\s*\)/i);
+    if (urlMatch !== null) {
+      const url = urlMatch[2];
+      const color = await getImageColor(url);
+      return color;
+    }
     const result: ParsedColorURL = {
       type: 'url',
       ref: value

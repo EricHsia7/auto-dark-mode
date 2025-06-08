@@ -34,5 +34,7 @@
     "webpack-cli": "^6.0.1",
     "webpack": "^5.99.9"
   },
-  "dependencies": {}
+  "dependencies": {
+    "colorthief": "^2.6.0"
+  }
 }
