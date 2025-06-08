@@ -8,7 +8,7 @@ export async function getImageColor(url: string): Promise<ParsedColorRGBA | fals
       const img = new Image();
       img.onload = function () {
         const colorThief = new ColorThief();
-        const colors = colorThief.getPalette(img, 5);
+        const colors = colorThief.getPalette(img, 3);
         const colorsQuantity = colors.length;
         let totalRed = 0;
         let totalGreen = 0;
@@ -31,7 +31,7 @@ export async function getImageColor(url: string): Promise<ParsedColorRGBA | fals
 
       img.src = url;
     } catch (error) {
-      resolve(false)
+      resolve(false);
     }
   });
 }
