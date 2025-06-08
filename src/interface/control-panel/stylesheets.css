@@ -3,7 +3,7 @@
   position: relative;
   width: calc(100% - 20px);
   left: 10px;
-  margin-bottom: var(--auto-dark-mode-safe-area-bottom);
+  margin-bottom: calc(10px + var(--auto-dark-mode-safe-area-bottom));
   background-color: var(--auto-dark-mode-ffffff);
   border-radius: 15px;
 }
