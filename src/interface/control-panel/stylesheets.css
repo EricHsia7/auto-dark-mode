@@ -79,7 +79,7 @@
   width: calc(100% - 5px - 45px);
   height: 45px;
   color: var(--auto-dark-mode-333333);
-  font-size: 16px;
+  font-size: 18px;
   line-height: 45px;
   font-family: sans-serif;
   font-weight: normal;
@@ -123,8 +123,8 @@
 }
 
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
 }
 
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg path {
@@ -150,8 +150,8 @@
 }
 
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
 }
 
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg path {

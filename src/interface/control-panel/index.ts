@@ -97,8 +97,8 @@ export function initializeControlPanel(stylesStrings): void {
 }
 
 export function openControlPanel(): void {
-  const mask = document.querySelector('.auto_dark_mode_control_panel_mask') as HTMLElement;
-  const panel = document.querySelector('.auto_dark_mode_control_panel') as HTMLElement;
+  const mask: HTMLElement = openControlPanel.mask || (openControlPanel.mask = document.querySelector('.auto_dark_mode_control_panel_mask'));
+  const panel: HTMLElement = openControlPanel.panel || (openControlPanel.panel = document.querySelector('.auto_dark_mode_control_panel'));
   mask.setAttribute('displayed', 'true');
   panel.setAttribute('displayed', 'true');
 
@@ -126,8 +126,8 @@ export function openControlPanel(): void {
 }
 
 export function closeControlPanel(): void {
-  const mask = document.querySelector('.auto_dark_mode_control_panel_mask') as HTMLElement;
-  const panel = document.querySelector('.auto_dark_mode_control_panel') as HTMLElement;
+  const mask: HTMLElement = closeControlPanel.mask || (closeControlPanel.mask = document.querySelector('.auto_dark_mode_control_panel_mask'));
+  const panel: HTMLElement = closeControlPanel.panel || (closeControlPanel.panel = document.querySelector('.auto_dark_mode_control_panel'));
 
   mask.addEventListener(
     'animationend',

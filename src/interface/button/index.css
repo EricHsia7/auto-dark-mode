@@ -1,7 +1,7 @@
 .auto_dark_mode_button {
   position: fixed;
   left: 20px;
-  bottom: 20px;
+  bottom: calc(var(--auto-dark-mode-safe-area-bottom) + 20px);
   width: 75px;
   height: 35px;
   border-radius: 10px;
