@@ -3,7 +3,7 @@
   bottom: 0px;
   left: 0px;
   width: 100vw;
-  height: 85vh;
+  height: clamp(100px, 85vh, 85%);
   background-color: var(--auto-dark-mode-ffffff);
   overflow: hidden;
   user-select: none;
