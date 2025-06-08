@@ -44,7 +44,7 @@ export function getStyles() {
         'opacity': '0.7'
       },
       'table': {
-        'background-color': '#f3f4f6'
+        'background-color': 'rgba(0, 0, 0, 0)'
       },
       'th, td': {
         'border-color': '#e5e7eb',
@@ -52,7 +52,7 @@ export function getStyles() {
         'border-width': '1px'
       },
       'th': {
-        'background-color': '#f3f4f6',
+        'background-color': 'rgba(0, 0, 0, 0)',
         'color': '#111111'
       },
       'tr': {
@@ -61,16 +61,16 @@ export function getStyles() {
         'border-bottom-width': '1px'
       },
       'thead': {
-        'background-color': '#f3f4f6',
+        'background-color': 'rgba(0, 0, 0, 0)',
         'border-bottom-color': '#e5e7eb',
         'border-bottom-style': 'solid',
         'border-bottom-width': '2px'
       },
       'tbody': {
-        'background-color': '#f3f4f6'
+        'background-color': 'rgba(0, 0, 0, 0)'
       },
       'tfoot': {
-        'background-color': '#f3f4f6',
+        'background-color': 'rgba(0, 0, 0, 0)',
         'border-top-color': '#e5e7eb',
         'border-top-style': 'solid',
         'border-top-width': '2px'
@@ -79,7 +79,7 @@ export function getStyles() {
         border: 'none'
       },
       'col': {
-        'background-color': '#f3f4f6'
+        'background-color': 'rgba(0, 0, 0, 0)'
       },
       'blockquote': {
         'border-left-color': '#e5e7eb',
@@ -89,14 +89,14 @@ export function getStyles() {
         'color': '#6b7280'
       },
       'pre': {
-        'background-color': '#f3f4f6',
+        'background-color': 'rgba(0, 0, 0, 0)',
         'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px',
         'color': '#111111'
       },
       'code': {
-        'background-color': '#f3f4f6',
+        'background-color': 'rgba(0, 0, 0, 0)',
         'color': '#111111'
       },
       'hr': {
@@ -122,7 +122,7 @@ export function getStyles() {
         'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px',
-        'background-color': '#f3f4f6'
+        'background-color': 'rgba(0, 0, 0, 0)'
       },
       'summary': {
         color: '#111111'
