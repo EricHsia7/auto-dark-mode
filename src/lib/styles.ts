@@ -2,13 +2,39 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { invertParsedColor, parseColor, parsedColorToString } from './parse-color';
+import { invertParsedColor, parseColor, ParsedColorRGBA, parsedColorToString } from './parse-color';
 
-export function getStyles() {
-  const cssVariableReferenceMap: {
-    [cssVariableKey: string]: [backgroundColorCount: number, textColorCount: number];
-  } = {};
-  const styles = {
+export type CSSProperties = {
+  [property: string]: string;
+};
+
+export type StyleSheet = {
+  [selector: string]: CSSProperties;
+};
+
+export type StylesCollection = {
+  [sheetName: string]: StyleSheet;
+};
+
+export type CSSVariableReferenceMap = {
+  [cssVariableKey: string]: [backgroundColorCount: number, textColorCount: number];
+};
+
+export interface Styles {
+  stylesCollection: StylesCollection;
+  referenceMap: CSSVariableReferenceMap;
+}
+
+export interface StyleSheetCSSItem {
+  css: string;
+  name: string;
+}
+
+export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
+
+export function getStyles(): Styles {
+  const cssVariableReferenceMap: CSSVariableReferenceMap = {};
+  const stylesCollection: StylesCollection = {
     '@stylesheet-default': {
       'html, body': {
         'background-color': '#f9fafc',
@@ -146,17 +172,18 @@ export function getStyles() {
   };
 
   if ('styleSheets' in document) {
-    function processRules(rules, container) {
+    function processRules(rules: CSSRuleList, container: { [key: string]: any }) {
       for (const rule of rules) {
         switch (rule.type) {
           case CSSRule.STYLE_RULE: {
-            const selectorText = rule.selectorText;
+            const styleRule = rule as CSSStyleRule;
+            const selectorText = styleRule.selectorText;
             if (!container.hasOwnProperty(selectorText)) {
               container[selectorText] = {};
             }
-            const extendedRuleStyle = Array.from(rule.style).concat(['background' /*, 'border' */]);
+            const extendedRuleStyle = Array.from(styleRule.style).concat(['background' /*, 'border' */]);
             for (const prop of extendedRuleStyle) {
-              const value = rule.style.getPropertyValue(prop).trim();
+              const value = styleRule.style.getPropertyValue(prop).trim();
               if (value.length > 0) {
                 container[selectorText][prop] = value;
                 // Check if value refers to a CSS variable
@@ -179,11 +206,12 @@ export function getStyles() {
           }
 
           case CSSRule.MEDIA_RULE: {
-            const media = `@media ${rule.conditionText}`;
+            const mediaRule = rule as CSSMediaRule;
+            const media = `@media ${mediaRule.conditionText}`;
             if (!container.hasOwnProperty(media)) {
               container[media] = {};
             }
-            processRules(rule.cssRules, container[media]);
+            processRules(mediaRule.cssRules, container[media]);
             break;
           }
           /*
@@ -209,10 +237,11 @@ export function getStyles() {
           }
           */
           case CSSRule.IMPORT_RULE: {
-            if (rule.styleSheet) {
+            const importRule = rule as CSSImportRule;
+            if (importRule.styleSheet) {
               // Import rules with nested stylesheets
               try {
-                processRules(rule.styleSheet.cssRules, container);
+                processRules(importRule.styleSheet.cssRules, container);
               } catch (e) {
                 // Skipped due to CORS/security
               }
@@ -236,7 +265,7 @@ export function getStyles() {
         const identifier = sheet.ownerNode?.id || generateIdentifier();
         const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
         const sheetName = `@stylesheet-${name}-${index}-${identifier}`;
-        styles[sheetName] = sheetObj;
+        stylesCollection[sheetName] = sheetObj;
         index++;
       } catch (e) {
         // Skipped due to access restrictions
@@ -244,7 +273,7 @@ export function getStyles() {
     }
   }
 
-  // Capture all inline styles (lambda styles)
+  // Capture all inline stylesCollection (lambda stylesCollection)
   function generateElementSelector(element: HTMLElement): string {
     const tag = element.tagName.toLowerCase();
     if (!element.id) {
@@ -255,8 +284,8 @@ export function getStyles() {
     return `${tag}${id}${classes}`;
   }
 
-  const lambdaStyles = {};
-  const elementsWithInlineStyle = document.querySelectorAll('[style]');
+  const lambdaStyles: StyleSheet = {};
+  const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
   for (const element of elementsWithInlineStyle) {
     if (element.style.length > 0) {
       const selector = generateElementSelector(element);
@@ -274,21 +303,18 @@ export function getStyles() {
     }
   }
 
-  styles['@stylesheet-lambda'] = lambdaStyles;
+  stylesCollection['@stylesheet-lambda'] = lambdaStyles;
 
   const results = {
-    styles: styles,
+    stylesCollection: stylesCollection,
     referenceMap: cssVariableReferenceMap
   };
-
-  console.log(results);
 
   return results;
 }
 
-export function invertStyles(styles: any, referenceMap: any, path: string[] = []): any {
+export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
   const newStyles: any = {};
-
   let backgroundColorRed = 0;
   let backgroundColorGreen = 0;
   let backgroundColorBlue = 0;
@@ -299,8 +325,8 @@ export function invertStyles(styles: any, referenceMap: any, path: string[] = []
   let textColorBlue = 0;
   let textColorQuantity = 0;
 
-  for (const key in styles) {
-    const value = styles[key];
+  for (const key in object) {
+    const value = object[key];
     const currentPath = path.concat(key);
 
     if (typeof value === 'object' && value !== null) {
@@ -351,11 +377,11 @@ export function invertStyles(styles: any, referenceMap: any, path: string[] = []
     }
   }
 
-  const mainBackgroundColor = {
+  const mainBackgroundColor: ParsedColorRGBA = {
     type: 'rgba',
     rgba: backgroundColorQuantity > 0 ? [(backgroundColorRed / backgroundColorQuantity) * 255, (backgroundColorGreen / backgroundColorQuantity) * 255, (backgroundColorBlue / backgroundColorQuantity) * 255, 1] : [0, 0, 0, 0]
   };
-  const mainTextColor = {
+  const mainTextColor: ParsedColorRGBA = {
     type: 'rgba',
     rgba: textColorQuantity > 0 ? [(textColorRed / textColorQuantity) * 255, (textColorGreen / textColorQuantity) * 255, (textColorBlue / textColorQuantity) * 255, 1] : [0, 0, 0, 0]
   };
@@ -363,26 +389,26 @@ export function invertStyles(styles: any, referenceMap: any, path: string[] = []
   if (originalTheme === 'light') {
     return newStyles;
   } else {
-    return styles;
+    return object;
   }
 }
 
-export function stylesToStrings(styles: any, nested: boolean = false): Array<{ name: string; css: string }> {
-  const results: Array<{ name: string; css: string }> = [];
+export function generateCssFromStyles(object: StylesCollection | StyleSheet, nested: boolean = false): StyleSheetCSSArray {
+  const results: StyleSheetCSSArray = [];
 
-  for (const sheet in styles) {
+  for (const sheet in object) {
     const header = nested ? '' : `/* ${sheet} */`;
     let result = '';
     let basicRules = '';
 
-    for (const selector in styles[sheet]) {
-      const properties = styles[sheet][selector];
+    for (const selector in object[sheet]) {
+      const properties = object[sheet][selector];
 
       if (typeof properties === 'object' && properties !== null && !Array.isArray(properties)) {
         const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
 
         if (isNestedBlock) {
-          const nestedContent = stylesToStrings({ nested: properties }, true)
+          const nestedContent = generateCssFromStyles({ nested: properties }, true)
             .map((obj) => obj.css)
             .join('');
           result += `${selector}{${nestedContent}}`;

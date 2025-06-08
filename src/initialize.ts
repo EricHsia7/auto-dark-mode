@@ -2,7 +2,7 @@ import { initializeButton } from './interface/button/index';
 import { initializeControlPanel } from './interface/control-panel/index';
 import { generateIdentifier } from './lib/generate-identifier';
 import { isFramed } from './lib/is-framed';
-import { getStyles, invertStyles, stylesToStrings } from './lib/styles';
+import { getStyles, invertStyles, generateCssFromStyles, StylesCollection } from './lib/styles';
 
 export function initialize(): void {
   // Add transition
@@ -16,10 +16,10 @@ export function initialize(): void {
   const styles = getStyles();
 
   // Invert styles
-  const invertedStyles = invertStyles(styles.styles, styles.referenceMap);
+  const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection
 
   // Styles String
-  const strings = stylesToStrings(invertedStyles, false);
+  const strings = generateCssFromStyles(invertedStyles, false);
 
   // Inject stylesheets
   const fragment = new DocumentFragment();
