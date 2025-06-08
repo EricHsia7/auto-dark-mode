@@ -12,6 +12,7 @@
   -webkit-user-select: none;
   visibility: hidden;
   transform: translateY(100%);
+  opacity: 0.7;
   z-index: 99999;
 }
 
@@ -29,6 +30,7 @@
 
 .auto_dark_mode_control_panel.auto_dark_mode_control_panel_slided_in {
   transform: translateY(0%);
+  opacity: 1;
 }
 
 .auto_dark_mode_control_panel.auto_dark_mode_control_panel_slide_out {
