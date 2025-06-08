@@ -2,7 +2,7 @@ import { ParsedColorRGBA } from './parse-color';
 
 const ColorThief = require('colorthief/dist/color-thief.umd.js');
 
-export async function getImageColor(url: string): Promise<ParsedColorRGBA> {
+export async function getImageColor(url: string): Promise<ParsedColorRGBA | false> {
   return await new Promise((resolve, reject) => {
     try {
       const img = new Image();
@@ -31,7 +31,7 @@ export async function getImageColor(url: string): Promise<ParsedColorRGBA> {
 
       img.src = url;
     } catch (error) {
-      reject(error);
+      resolve(false)
     }
   });
 }
