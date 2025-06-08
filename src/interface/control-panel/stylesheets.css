@@ -1,7 +1,12 @@
 /* stylesheets */
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets {
   position: relative;
-  width: 100%;
+  width: calc(100% - 20px);
+  top: 10px;
+  left: 10px;
+  margin-bottom: var(--auto-dark-mode-safe-area-bottom);
+  background-color: var(--auto-dark-mode-ffffff);
+  border-radius: 15px;
 }
 
 /* stylesheets > stylesheet */
@@ -9,10 +14,6 @@
   position: relative;
   width: 100%;
   height: 45px;
-}
-
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet:last-child {
-  margin-bottom: var(--auto-dark-mode-safe-area-bottom);
 }
 
 /* stylesheets > stylesheet > name */
