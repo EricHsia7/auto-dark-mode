@@ -1,6 +1,7 @@
 import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
+import { isPreserved } from './is-preserved';
 import { invertParsedColor, parseColor, parsedColorToString } from './parse-color';
 
 export function getStyles() {
@@ -145,6 +146,12 @@ export function getStyles() {
       'mark': {
         'background-color': '#fffd75',
         'color': '#111111'
+      }
+    },
+    '@stylesheet-image-dimming': {
+      img: {
+        'filter': 'brightness(70%)',
+        '-webkit-filter': 'brightness(70%)'
       }
     }
   };
@@ -349,6 +356,8 @@ export function invertStyles(styles: any, referenceMap: any, path: string[] = []
         } else {
           newStyles[key] = value; // If parsing fails, keep original
         }
+      } else if (isPreserved(key)) {
+        newStyles[key] = value;
       }
     }
   }
