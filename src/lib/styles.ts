@@ -105,14 +105,14 @@ export function getStyles(): Styles {
         'color': '#6b7280'
       },
       'pre': {
-        'background-color': 'rgba(0, 0, 0, 0)',
+        'background-color': '#f9fafc',
         'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px',
         'color': '#111111'
       },
       'code': {
-        'background-color': 'rgba(0, 0, 0, 0)',
+        'background-color': '#f9fafc',
         'color': '#111111'
       },
       'hr': {
