@@ -4,75 +4,19 @@
   width: 100%;
 }
 
-/* stylesheets > head */
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_head {
-  position: relative;
-  width: 100%;
-  height: 30px;
-}
-
-/* stylesheets > head > icon */
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_head .auto_dark_mode_control_panel_stylesheets_head_icon {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_head .auto_dark_mode_control_panel_stylesheets_head_icon svg {
-  width: 20px;
-  height: 20px;
-}
-
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_head .auto_dark_mode_control_panel_stylesheets_head_icon svg path {
-  fill: var(--auto-dark-mode-333333);
-}
-
-/* stylesheets > head > title */
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_head .auto_dark_mode_control_panel_stylesheets_head_title {
-  position: absolute;
-  top: 0px;
-  left: 30px;
-  width: calc(100% - 30px);
-  height: 30px;
-  font-size: 13px;
-  font-family: sans-serif;
-  font-weight: normal;
-  line-height: 30px;
-  color: var(--auto-dark-mode-333333);
-  white-space: nowrap;
-  word-break: keep-all;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-/* stylesheets > body */
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body {
-  position: relative;
-  width: 100%;
-}
-
-/* stylesheets > body > stylesheet */
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet {
+/* stylesheets > stylesheet */
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet {
   position: relative;
   width: 100%;
   height: 45px;
 }
 
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet:last-child {
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet:last-child {
   margin-bottom: var(--auto-dark-mode-safe-area-bottom);
 }
 
-/* stylesheets > body > stylesheet > name */
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_name {
+/* stylesheets > stylesheet > name */
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_name {
   position: absolute;
   top: 0px;
   left: 10px;
@@ -89,8 +33,8 @@
   word-break: keep-all;
 }
 
-/* stylesheets > body > stylesheet > toggle */
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle {
+/* stylesheets > stylesheet > toggle */
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle {
   position: absolute;
   top: 0px;
   right: 0px;
@@ -104,8 +48,8 @@
   -webkit-user-select: none;
 }
 
-/* stylesheets > body > stylesheet > toggle > off */
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off {
+/* stylesheets > stylesheet > toggle > off */
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -118,21 +62,21 @@
 }
 
 /* state: off */
-.auto_dark_mode_control_panel[displayed="true"] .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle[state="off"] .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off {
+.auto_dark_mode_control_panel[displayed="true"] .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle[state="off"] .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off {
   visibility: visible;
 }
 
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg {
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg {
   width: 25px;
   height: 25px;
 }
 
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg path {
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg path {
   fill: var(--auto-dark-mode-333333);
 }
 
-/* stylesheets > body > stylesheet > toggle > on */
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on {
+/* stylesheets > stylesheet > toggle > on */
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -145,15 +89,15 @@
 }
 
 /* state: on */
-.auto_dark_mode_control_panel[displayed="true"] .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle[state="on"] .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on {
+.auto_dark_mode_control_panel[displayed="true"] .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle[state="on"] .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on {
   visibility: visible;
 }
 
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg {
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg {
   width: 25px;
   height: 25px;
 }
 
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_body .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg path {
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg path {
   fill: var(--auto-dark-mode-333333);
 }
