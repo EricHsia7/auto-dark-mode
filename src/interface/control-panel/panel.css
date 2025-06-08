@@ -2,7 +2,8 @@
   position: fixed;
   bottom: 0px;
   left: 0px;
-  min-height: 85%;
+  width: 100vw;
+  height: 85vh;
   background-color: var(--auto-dark-mode-ffffff);
   overflow: hidden;
   user-select: none;
