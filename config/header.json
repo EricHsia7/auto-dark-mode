@@ -1,6 +1,6 @@
 {
   "name": "auto-dark-mode",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Darken Any Website",
   "namespace": "http://erichsia7.github.io/",
   "run-at": "document-idle",
