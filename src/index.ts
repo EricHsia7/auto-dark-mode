@@ -9,6 +9,7 @@ import './interface/control-panel/mask.css';
 import './interface/control-panel/panel.css';
 import './interface/control-panel/head.css';
 import './interface/control-panel/body.css';
+import './interface/control-panel/switch-all-button.css';
 import './interface/control-panel/stylesheets.css';
 
 var autoDarkMode = {
