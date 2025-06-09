@@ -30,7 +30,7 @@ export async function inlineCSS() {
       link.remove(); // Remove the original link tag
       console.log(`Inlined CSS from ${link.href}`);
     } catch (error) {
-      alert(`Could not inline CSS from ${link.href}`);
+      alert(`Could not inline CSS from ${link.href}. ${error}`);
       console.warn(`Could not inline CSS from ${link.href}`, error);
     }
   }
