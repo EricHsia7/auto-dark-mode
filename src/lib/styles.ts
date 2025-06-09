@@ -42,7 +42,7 @@ export function getStyles(): Styles {
         '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb',
         '--auto-dark-mode-stylesheet-default-fffd75': '#fffd75'
       },
-      'html, body, section, article': {
+      'html, body, section, header, main, footer, article': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
         'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
