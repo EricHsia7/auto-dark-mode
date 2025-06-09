@@ -18,7 +18,7 @@ function fetchCSS(url) {
   });
 }
 
-async function inlineCSS() {
+export async function inlineCSS() {
   const linkElements = Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'));
 
   for (const link of linkElements) {
