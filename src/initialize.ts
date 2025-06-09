@@ -1,20 +1,10 @@
 import { initializeButton } from './interface/button/index';
 import { initializeControlPanel } from './interface/control-panel/index';
-import { generateIdentifier } from './lib/generate-identifier';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { getStyles, invertStyles, generateCssFromStyles, StylesCollection } from './lib/styles';
 
 export async function initialize(): void {
-  /*
-  // Add transition
-  const identifier = `_${generateIdentifier()}`;
-  const transitionStyleTag = document.createElement('style');
-  transitionStyleTag.textContent = '* {transition: color 0.5s ease, background-color 0.5s ease, border-top-color 0.5s ease, border-left-color 0.5s ease, border-right-color 0.5s ease, border-bottom-color 0.5s ease;}';
-  transitionStyleTag.id = identifier;
-  document.documentElement.appendChild(transitionStyleTag);
-  */
-
   // Inline external/foreign CSS
   await inlineCSS();
 
@@ -36,13 +26,6 @@ export async function initialize(): void {
     fragment.appendChild(styleSheet);
   }
   document.documentElement.appendChild(fragment);
-
-  /*
-  // Remove transition
-  setTimeout(function () {
-    document.querySelector(`#${identifier}`)?.remove();
-  }, 1000);
-  */
 
   if (!isFramed()) {
     // Prepare button
