@@ -4,7 +4,7 @@ import { generateIdentifier } from './lib/generate-identifier';
 import { isFramed } from './lib/is-framed';
 import { getStyles, invertStyles, generateCssFromStyles, StylesCollection } from './lib/styles';
 
-export async function initialize(): void {
+export function initialize(): void {
   // Add transition
   const identifier = `_${generateIdentifier()}`;
   const transitionStyleTag = document.createElement('style');
@@ -16,7 +16,7 @@ export async function initialize(): void {
   const styles = getStyles();
 
   // Invert styles
-  const invertedStyles = (await invertStyles(styles.stylesCollection, styles.referenceMap)) as StylesCollection;
+  const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
 
   // Styles String
   const strings = generateCssFromStyles(invertedStyles, false);

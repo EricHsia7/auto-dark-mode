@@ -1,4 +1,3 @@
-import { getImageColor } from './get-image-color';
 import { namedColors } from './named-colors';
 
 export interface ParsedColorRGBA {
@@ -47,20 +46,19 @@ export interface ParsedColorConicGradient {
 export interface ParsedColorURL {
   type: 'url';
   ref: string; // url(https://example.com/example.png)
-  color: ParsedColorRGBA | false;
 }
 
 export type ParsedColor = ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorVariable | ParsedColorLinearGradient | ParsedColorRdialGradient | ParsedColorConicGradient | ParsedColorURL;
 
-export async function parseColor(value: string): Promise<ParsedColor> {
-  async function parseColorStops(components: Array<string>): ParsedColorStopArray {
+export function parseColor(value: string): ParsedColor {
+  function parseColorStops(components: Array<string>): ParsedColorStopArray {
     const positionRegex = /(\d+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
     const colorStops: ParsedColorStopArray = [];
     for (const component of components) {
       const trimmedComponent = component.trim();
       const matches = trimmedComponent.match(positionRegex);
       if (matches) {
-        const color = (await parseColor(trimmedComponent.replace(positionRegex, '').trim())) as ParsedColorRGBA | ParsedColorVariable;
+        const color = parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ParsedColorRGBA | ParsedColorVariable;
         const position = matches[0].trim();
         colorStops.push({
           type: 'stop',
@@ -205,7 +203,7 @@ export async function parseColor(value: string): Promise<ParsedColor> {
     }
 
     // Process remaining parts as color stops
-    const colorStops = await parseColorStops(components);
+    const colorStops = parseColorStops(components);
 
     const result: ParsedColorLinearGradient = {
       type: 'linear-gradient',
@@ -257,7 +255,7 @@ export async function parseColor(value: string): Promise<ParsedColor> {
     }
 
     // Extract color stops
-    const colorStops = await parseColorStops(components.slice(index));
+    const colorStops = parseColorStops(components.slice(index));
 
     const result: ParsedColorRdialGradient = {
       type: 'radial-gradient',
@@ -276,7 +274,7 @@ export async function parseColor(value: string): Promise<ParsedColor> {
     const matches = value.match(regex);
     const components = matches[1].split(/,(.+)/);
     const angle = components[0].trim();
-    const colorStops = await parseColorStops(components[1]);
+    const colorStops = parseColorStops(components[1]);
 
     const result: ParsedColorConicGradient = {
       type: 'conic-gradient',
@@ -289,24 +287,9 @@ export async function parseColor(value: string): Promise<ParsedColor> {
 
   // handle url
   if (value.startsWith('url')) {
-    /*
-    const urlMatch = value.match(/url\(\s*(['"]?)((?:https?:\/\/|data:|\.{0,2}\/|\/)[^'"()\s]+?)\1\s*\)/i);
-    if (urlMatch !== null) {
-      const url = urlMatch[2];
-      const color = await getImageColor(url);
-      const coloredResult: ParsedColorURL = {
-        type: 'url',
-        ref: value,
-        color: color
-      };
-      return coloredResult;
-    }
-    */
-
     const result: ParsedColorURL = {
       type: 'url',
-      ref: value,
-      color: false
+      ref: value
     };
     return result;
   }
@@ -441,17 +424,6 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
     }
 
     case 'url': {
-      if (color.color !== false) {
-        if (color.color.type === 'rgba') {
-          const invertedColor = invertParsedColor(color.color) as ParsedColorRGBA;
-          const result: ParsedColorURL = {
-            type: 'url',
-            ref: color.ref,
-            color: invertedColor
-          };
-          return result;
-        }
-      }
       return color;
       break;
     }
@@ -489,16 +461,6 @@ export function parsedColorToString(color: ParsedColor): string {
       return `conic-gradient(${color.angle},${conicStops})`;
     }
     case 'url': {
-      if (color.color !== false) {
-        if (color.color.type === 'rgba') {
-          const width = 128;
-          const height = 128;
-          const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="${parsedColorToString(color.color)}"/></svg>`
-          // Encode special characters for safe embedding in a data URL
-          const encoded = encodeURIComponent(svg).replace(/'/g, '%27').replace(/"/g, '%22');
-          return `url("data:image/svg+xml,${encoded}")`;
-        }
-      }
       return color.ref;
     }
     default: {

@@ -1,6 +1,6 @@
 {
   "name": "@erichsia7/auto-dark-mode",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "description": "Darken Any Website",
   "main": "auto-dark-mode.user.js",
   "private": false,
@@ -34,7 +34,5 @@
     "webpack-cli": "^6.0.1",
     "webpack": "^5.99.9"
   },
-  "dependencies": {
-    "colorthief": "^2.6.0"
-  }
+  "dependencies": {}
 }

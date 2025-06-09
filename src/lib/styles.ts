@@ -313,7 +313,7 @@ export function getStyles(): Styles {
   return results;
 }
 
-export async function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): Promise<CSSProperties | StyleSheet | StylesCollection> {
+export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
   const newStyles: any = {};
   let backgroundColorRed = 0;
   let backgroundColorGreen = 0;
@@ -330,11 +330,11 @@ export async function invertStyles(object: StylesCollection | StyleSheet | CSSPr
     const currentPath = path.concat(key);
 
     if (typeof value === 'object' && value !== null) {
-      newStyles[key] = await invertStyles(value, referenceMap, currentPath); // Recursive copy
+      newStyles[key] = invertStyles(value, referenceMap, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
-        const parsedColor = await parseColor(value);
+        const parsedColor = parseColor(value);
         if (parsedColor) {
           const invertedColor = invertParsedColor(parsedColor);
           newStyles[key] = parsedColorToString(invertedColor);
