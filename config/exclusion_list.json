@@ -16,6 +16,11 @@
       "description": ""
     },
     {
+      "name": "Github Dev",
+      "pattern": "*://*.github.dev/*",
+      "description": ""
+    },
+    {
       "name": "Github Sites",
       "pattern": "*://*.github.com/*",
       "description": ""
