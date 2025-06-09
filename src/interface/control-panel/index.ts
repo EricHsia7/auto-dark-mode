@@ -26,10 +26,9 @@ export function initializeControlPanel(stylesStrings): void {
   const switchAllButton = document.createElement('div');
   switchAllButton.classList.add('auto_dark_mode_switch_all_button');
   switchAllButton.innerText = 'Turn Off All';
-  switchAllButton.setAttribute(
-    'state',
-    'on'
-  )((switchAllButton2) => {
+  switchAllButton.setAttribute('state', 'on');
+
+  ((switchAllButton2) => {
     switchAllButton2.addEventListener('click', function () {
       const state = switchAllButton2.getAttribute('state');
       const styleTags = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]') as NodeListOf<HTMLStyleElement>;
@@ -71,6 +70,7 @@ export function initializeControlPanel(stylesStrings): void {
     stylesheetToggle.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_toggle');
     stylesheetToggle.setAttribute('state', 'on');
     stylesheetToggle.setAttribute('name', stylesString.name);
+
     ((stylesheetToggle2) => {
       stylesheetToggle2.addEventListener('click', function () {
         const currentState = stylesheetToggle2.getAttribute('state');
