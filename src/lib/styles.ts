@@ -36,25 +36,25 @@ export function getStyles(): Styles {
   const cssVariableReferenceMap: CSSVariableReferenceMap = {};
   const stylesCollection: StylesCollection = {
     '@stylesheet-default': {
+      ':root': {
+        '--auto-dark-mode-stylesheet-default-f9fafc': '#f9fafc',
+        '--auto-dark-mode-stylesheet-default-111111': '#111111',
+        '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb',
+        '--auto-dark-mode-stylesheet-default-fffd75': '#fffd75'
+      },
       'html, body, section, article': {
-        'background-color': '#f9fafc',
-        'color': '#111111'
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
+        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
-      'h1, h2, h3, h4, h5, h6, p, span, time': {
-        color: '#111111'
-      },
-      'a': {
-        color: '#1472ff'
-      },
-      'a:hover': {
-        color: '#187dff'
+      'h1, h2, h3, h4, h5, h6, p, span, time, a, a:hover': {
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
-        'border-color': '#111111',
+        'border-color': 'var(--auto-dark-mode-stylesheet-default-111111)',
         'border-style': 'solid',
         'border-width': '1px',
         'background-color': 'rgba(0, 0, 0, 0)',
-        'color': '#111111'
+        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
         color: '#888888'
@@ -63,22 +63,22 @@ export function getStyles(): Styles {
         'background-color': 'rgba(0, 0, 0, 0)'
       },
       'th, td': {
-        'border-color': '#e5e7eb',
+        'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-style': 'solid',
         'border-width': '1px'
       },
       'th': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'color': '#111111'
+        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'tr': {
-        'border-bottom-color': '#e5e7eb',
+        'border-bottom-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-bottom-style': 'solid',
         'border-bottom-width': '1px'
       },
       'thead': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'border-bottom-color': '#e5e7eb',
+        'border-bottom-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-bottom-style': 'solid',
         'border-bottom-width': '2px'
       },
@@ -87,7 +87,7 @@ export function getStyles(): Styles {
       },
       'tfoot': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'border-top-color': '#e5e7eb',
+        'border-top-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-top-style': 'solid',
         'border-top-width': '2px'
       },
@@ -98,69 +98,57 @@ export function getStyles(): Styles {
         'background-color': 'rgba(0, 0, 0, 0)'
       },
       'blockquote': {
-        'border-left-color': '#e5e7eb',
+        'border-left-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-left-style': 'solid',
         'border-left-width': '4px',
         'padding-left': '20px',
-        'color': '#6b7280'
+        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'pre': {
-        'background-color': '#f9fafc',
-        'border-color': '#e5e7eb',
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
+        'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-style': 'solid',
         'border-width': '1px',
-        'color': '#111111'
+        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'code': {
-        'background-color': '#f9fafc',
-        'color': '#111111'
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
+        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'hr': {
         'border': 'none',
-        'background-color': '#e5e7eb'
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)'
       },
       'figcaption, caption': {
-        color: '#808080'
-      },
-      'progress': {
-        'background-color': '#e5e7eb'
-      },
-      'progress::-webkit-progress-bar': {
-        'background-color': '#e5e7eb'
-      },
-      'progress::-webkit-progress-value': {
-        'background-color': '#1472ff'
-      },
-      'progress::-moz-progress-bar': {
-        'background-color': '#1472ff'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'details': {
-        'border-color': '#e5e7eb',
+        'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-style': 'solid',
         'border-width': '1px',
         'background-color': 'rgba(0, 0, 0, 0)'
       },
       'summary': {
-        color: '#111111'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'small': {
-        color: '#111111'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'strong': {
-        color: '#111111'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'em': {
-        color: '#111111'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'ul, ol': {
-        color: '#111111'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'li': {
-        color: '#111111'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'mark': {
-        'background-color': '#fffd75',
-        'color': '#111111'
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-fffd75)',
+        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       }
     },
     '@stylesheet-image-dimming': {
