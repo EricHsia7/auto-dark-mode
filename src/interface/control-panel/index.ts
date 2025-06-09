@@ -23,6 +23,39 @@ export function initializeControlPanel(stylesStrings): void {
   const panelBody = document.createElement('div');
   panelBody.classList.add('auto_dark_mode_control_panel_body');
 
+  const switchAllButton = document.createElement('div');
+  switchAllButton.classList.add('auto_dark_mode_switch_all_button');
+  switchAllButton.innerText = 'Turn Off All';
+  switchAllButton.setAttribute(
+    'state',
+    'on'
+  )((switchAllButton2) => {
+    switchAllButton2.addEventListener('click', function () {
+      const state = switchAllButton2.getAttribute('state');
+      const styleTags = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]') as NodeListOf<HTMLStyleElement>;
+      const toggles = document.querySelectorAll('.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle') as NodeListOf<HTMLElement>;
+      let disabled = true;
+      let newState = 'off';
+      let text = 'Turn On All';
+      if (state === 'on') {
+        disabled = true;
+        newState = 'off';
+        text = 'Turn On All';
+      } else {
+        disabled = false;
+        newState = 'on';
+        text = 'Turn Off All';
+      }
+      for (const styleTag of styleTags) {
+        styleTag.disabled = disabled;
+      }
+      for (const toggle of toggles) {
+        toggle.setAttribute('state', newState);
+      }
+      switchAllButton2.innerText = text;
+    });
+  })(switchAllButton);
+
   const stylesheets = document.createElement('div');
   stylesheets.classList.add('auto_dark_mode_control_panel_stylesheets');
 
@@ -68,6 +101,7 @@ export function initializeControlPanel(stylesStrings): void {
     stylesheets.appendChild(stylesheet);
   }
 
+  panelBody.appendChild(switchAllButton);
   panelBody.appendChild(stylesheets);
   panel.appendChild(panelHead);
   panel.appendChild(panelBody);

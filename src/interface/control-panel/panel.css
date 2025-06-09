@@ -25,10 +25,8 @@
   .auto_dark_mode_control_panel {
     top: 0px;
     left: 0px;
-    width: clamp(300px, 33%, 450px);
+    width: clamp(300px, 30%, 400px);
     height: 100%;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
     transform: translateX(-100%);
   }
 }

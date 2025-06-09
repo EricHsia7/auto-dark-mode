@@ -1,0 +1,14 @@
+.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_switch_all_button {
+  position: relative;
+  width: calc(100% - 20px);
+  height: 45px;
+  border-radius: 15px;
+  background-color: var(--auto-dark-mode-22a8f9);
+  color: var(--auto-dark-mode-333333);
+  font-family: sans-serif;
+  font-weight: normal;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
