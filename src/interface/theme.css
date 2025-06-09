@@ -3,7 +3,7 @@
   --auto-dark-mode-f9f9fb: #f9f9fb;
   --auto-dark-mode-c2c2c2: #c2c2c2;
   --auto-dark-mode-333333: #333333;
-  --auto-dark-mode-22a8f9: rgba(34, 168, 249, 0.15);
+  --auto-dark-mode-22a8f9: #22a8f9;
 }
 
 @media (prefers-color-scheme:dark) {
