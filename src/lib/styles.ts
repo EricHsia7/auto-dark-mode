@@ -50,6 +50,7 @@ export function getStyles(): Styles {
         color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
         'border-color': 'var(--auto-dark-mode-stylesheet-default-111111)',
         'border-style': 'solid',
         'border-width': '1px',
@@ -96,10 +97,12 @@ export function getStyles(): Styles {
         'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'pre': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
+        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'code': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
+        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'hr': {
         'border': 'none',
