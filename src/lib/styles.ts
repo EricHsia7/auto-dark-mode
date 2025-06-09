@@ -36,7 +36,7 @@ export function getStyles(): Styles {
   const cssVariableReferenceMap: CSSVariableReferenceMap = {};
   const stylesCollection: StylesCollection = {
     '@stylesheet-default': {
-      'html, body': {
+      'html, body, section, article': {
         'background-color': '#f9fafc',
         'color': '#111111'
       },
