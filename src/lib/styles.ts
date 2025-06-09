@@ -53,23 +53,20 @@ export function getStyles(): Styles {
         'border-color': 'var(--auto-dark-mode-stylesheet-default-111111)',
         'border-style': 'solid',
         'border-width': '1px',
-        'background-color': 'rgba(0, 0, 0, 0)',
         'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
         color: '#888888'
       },
-      'table': {
-        'background-color': 'rgba(0, 0, 0, 0)'
-      },
+      /* 'table': {
+      }, */
       'th, td': {
         'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-style': 'solid',
         'border-width': '1px'
       },
       'th': {
-        'background-color': 'rgba(0, 0, 0, 0)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'tr': {
         'border-bottom-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
@@ -77,16 +74,12 @@ export function getStyles(): Styles {
         'border-bottom-width': '1px'
       },
       'thead': {
-        'background-color': 'rgba(0, 0, 0, 0)',
         'border-bottom-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-bottom-style': 'solid',
         'border-bottom-width': '2px'
       },
-      'tbody': {
-        'background-color': 'rgba(0, 0, 0, 0)'
-      },
+      /*'tbody': {},*/
       'tfoot': {
-        'background-color': 'rgba(0, 0, 0, 0)',
         'border-top-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-top-style': 'solid',
         'border-top-width': '2px'
@@ -94,9 +87,7 @@ export function getStyles(): Styles {
       'colgroup': {
         border: 'none'
       },
-      'col': {
-        'background-color': 'rgba(0, 0, 0, 0)'
-      },
+      /* 'col': {}, */
       'blockquote': {
         'border-left-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-left-style': 'solid',
@@ -105,15 +96,10 @@ export function getStyles(): Styles {
         'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'pre': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
-        'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
-        'border-style': 'solid',
-        'border-width': '1px',
-        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'code': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'hr': {
         'border': 'none',
@@ -125,8 +111,7 @@ export function getStyles(): Styles {
       'details': {
         'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-style': 'solid',
-        'border-width': '1px',
-        'background-color': 'rgba(0, 0, 0, 0)'
+        'border-width': '1px'
       },
       'summary': {
         color: 'var(--auto-dark-mode-stylesheet-default-111111)'
