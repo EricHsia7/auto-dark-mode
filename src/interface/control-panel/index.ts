@@ -51,6 +51,7 @@ export function initializeControlPanel(stylesStrings): void {
       for (const toggle of toggles) {
         toggle.setAttribute('state', newState);
       }
+      switchAllButton2.setAttribute('state', newState);
       switchAllButton2.innerText = text;
     });
   })(switchAllButton);
