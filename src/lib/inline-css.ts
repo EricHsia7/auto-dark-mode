@@ -28,10 +28,10 @@ export async function inlineCSS() {
       style.textContent = cssText;
       document.head.appendChild(style);
       link.remove(); // Remove the original link tag
-      console.log(`Inlined CSS from ${link.href}`);
+      // console.log(`Inlined CSS from ${link.href}`);
     } catch (error) {
-      alert(`Could not inline CSS from ${link.href}. ${error}`);
-      console.warn(`Could not inline CSS from ${link.href}`, error);
+      // alert(`Could not inline CSS from ${link.href}. ${error}`);
+      // console.warn(`Could not inline CSS from ${link.href}`, error);
     }
   }
   return true;
