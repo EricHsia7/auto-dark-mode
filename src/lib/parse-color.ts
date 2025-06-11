@@ -90,7 +90,7 @@ export function parseColor(value: string): ParsedColor {
 
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
-    const regex = /rgba?\(((\d+|var\(--[^)]*\)|\d+\.\d+)[\s\,]*){0,1}((\d+|var\(--[^)]*\)|\d+\.\d+)[\s\,]*){0,1}((\d+|var\(--[^)]*\)|\d+\.\d+)[\s\,]*){0,1}((\d+|var\(--[^)]*\)|\d+\.\d+)[\s\,]*){0,1}\)/gi;
+    const regex = /rgba?\(((\d+|var\([^)]*\)|\d+\.\d+)[\s\,]*){0,1}((\d+|var\([^)]*\)|\d+\.\d+)[\s\,]*){0,1}((\d+|var\([^)]*\)|\d+\.\d+)[\s\,]*){0,1}((\d+|var\([^)]*\)|\d+\.\d+)[\s\,]*){0,1}\)/gi;
     const parameters: Array<ParsedColorVariable | number> = [];
     let containVariables = false;
     let matches;
