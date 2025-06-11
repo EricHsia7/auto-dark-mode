@@ -20,18 +20,29 @@ function fetchCSS(url) {
 
 export async function inlineCSS() {
   const linkElements = Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'));
-
+  const fragment = new DocumentFragment();
+  const linksToRemove = [];
   for (const link of linkElements) {
     try {
-      const cssText = await fetchCSS(link.href);
+      const cssSourceCode = await fetchCSS(link.href);
+      let css = '';
+      if (link.hasAttribute('media')) {
+        const conditionText = link.getAttribute('media');
+        css = `@media ${conditionText}{${cssSourceCode}}`;
+      } else {
+        css = cssSourceCode;
+      }
       const style = document.createElement('style');
-      style.textContent = cssText;
-      document.head.appendChild(style);
-      link.remove(); // Remove the original link tag
+      style.textContent = css;
+      fragment.appendChild(style);
+      linksToRemove.push(link);
       // console.log(`Inlined CSS from ${link.href}`);
     } catch (error) {
-      // alert(`Could not inline CSS from ${link.href}. ${error}`);
       // console.warn(`Could not inline CSS from ${link.href}`, error);
+    }
+    document.head.append(fragment);
+    for (const link of linksToRemove) {
+      link.remove();
     }
   }
   return true;
