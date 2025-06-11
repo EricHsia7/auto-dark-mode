@@ -91,54 +91,55 @@ export function parseColor(value: string): ParsedColor {
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
     const regex = /rgba?\(((\d+|var\(--[^)]*\)|\d+\.\d+)[\s\,]*){0,1}((\d+|var\(--[^)]*\)|\d+\.\d+)[\s\,]*){0,1}((\d+|var\(--[^)]*\)|\d+\.\d+)[\s\,]*){0,1}((\d+|var\(--[^)]*\)|\d+\.\d+)[\s\,]*){0,1}\)/gi;
+    const parameters: Array<ParsedColorVariable | number> = [];
+    let containVariables = false;
     let matches;
     while ((matches = regex.exec(value)) !== null) {
       // This is necessary to avoid infinite loops with zero-width matches
       if (matches.index === regex.lastIndex) {
         regex.lastIndex++;
       }
-      const parameters = [];
-      let containVariables = false;
       matches.forEach((match, groupIndex) => {
         if (groupIndex > 0 && groupIndex % 2 === 0 && match) {
           const parameter = match.trim();
           if (parameter.startsWith('var')) {
             containVariables = true;
-            const parsedColorVariable = {
+            const parsedColorVariable: ParsedColorVariable = {
               type: 'variable',
               ref: parameter
             };
             parameters.push(parsedColorVariable);
           } else if (/^\d+$/.test(parameter)) {
-            const integer = parseInt(parameter, 10);
+            const integer: number = parseInt(parameter, 10);
             parameters.push(integer);
           } else if (/^\d+\.?\d+$/.test(parameter)) {
-            const float = parseFloat(parameter);
+            const float: number = parseFloat(parameter);
             parameters.push(float);
           }
         }
       });
-      if (containVariables) {
-        if (value.startsWith('rgba')) {
-          const result: ParsedColorRGBAWithVariable = {
-            type: 'rgba-v',
-            parameters: parameters
-          };
-          return result;
-        } else {
-          const result: ParsedColorRGBWithVariable = {
-            type: 'rgb-v',
-            parameters: parameters
-          };
-          return result;
-        }
+    }
+
+    if (containVariables) {
+      if (value.startsWith('rgba')) {
+        const result: ParsedColorRGBAWithVariable = {
+          type: 'rgba-v',
+          parameters: parameters
+        };
+        return result;
       } else {
-        const result: ParsedColorRGBA = {
-          type: 'rgba',
-          rgba: [parameters[0], parameters[1], parameters[2], parameters[3] !== undefined ? parameters[3] : 1]
+        const result: ParsedColorRGBWithVariable = {
+          type: 'rgb-v',
+          parameters: parameters
         };
         return result;
       }
+    } else {
+      const result: ParsedColorRGBA = {
+        type: 'rgba',
+        rgba: [parameters[0] as number, parameters[1] as number, parameters[2] as number, (parameters[3] !== undefined ? parameters[3] : 1) as number]
+      };
+      return result;
     }
   }
 
