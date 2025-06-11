@@ -63,7 +63,7 @@ export function parseColor(value: string): ParsedColor {
       const trimmedComponent = component.trim();
       const matches = trimmedComponent.match(positionRegex);
       if (matches) {
-        const color = parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ParsedColorRGBA | ParsedColorVariable;
+        const color = parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorRGBWithVariable | ParsedColorVariable;
         const position = matches[0].trim();
         colorStops.push({
           type: 'stop',
@@ -320,7 +320,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
     for (let i = colorStopsLength - 1; i >= 0; i--) {
       const stop = colorStops[i];
       if (stop.type === 'stop') {
-        const invertedColor = invertParsedColor(stop.color) as ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorVariable;
+        const invertedColor = invertParsedColor(stop.color) as ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorRGBWithVariable | ParsedColorVariable;
         const invertedColorStop: ParsedColorStop = {
           type: 'stop',
           color: invertedColor,
