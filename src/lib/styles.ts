@@ -304,15 +304,15 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
               b = parsedColor.rgb[2] / 255;
             }
             if (key === 'background-color' || key === 'background') {
-              backgroundColorRed += r / 255;
-              backgroundColorGreen += g / 255;
-              backgroundColorBlue += b / 255;
+              backgroundColorRed += r;
+              backgroundColorGreen += g;
+              backgroundColorBlue += b;
               backgroundColorQuantity++;
             }
             if (key === 'color') {
-              textColorRed += r / 255;
-              textColorGreen += g / 255;
-              textColorBlue += b / 255;
+              textColorRed += r;
+              textColorGreen += g;
+              textColorBlue += b;
               textColorQuantity++;
             }
             if (key.startsWith('--')) {
