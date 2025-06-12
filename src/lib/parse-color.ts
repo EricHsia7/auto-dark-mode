@@ -15,9 +15,25 @@ export interface ParsedColorRGBAWithVariable {
   parameters: Array<ParsedColorVariable | number>;
 }
 
+export interface ParsedColorHSLWithVariable {
+  type: 'hsl-v';
+  parameters: Array<ParsedColorVariable | number | ParsedColorNumberWithUnit>;
+}
+
+export interface ParsedColorHSLAWithVariable {
+  type: 'hsla-v';
+  parameters: Array<ParsedColorVariable | number | ParsedColorNumberWithUnit>;
+}
+
 export interface ParsedColorVariable {
   type: 'variable';
   ref: string; // var(--name)
+}
+
+export interface ParsedColorNumberWithUnit {
+  type: 'number-u';
+  number: number;
+  unit: string;
 }
 
 export interface ParsedColorStop {
@@ -53,7 +69,7 @@ export interface ParsedColorURL {
   ref: string; // url(https://example.com/example.png)
 }
 
-export type ParsedColor = ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorRGBWithVariable | ParsedColorVariable | ParsedColorLinearGradient | ParsedColorRdialGradient | ParsedColorConicGradient | ParsedColorURL;
+export type ParsedColor = ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorRGBWithVariable | ParsedColorHSLAWithVariable | ParsedColorHSLWithVariable | ParsedColorVariable | ParsedColorLinearGradient | ParsedColorRdialGradient | ParsedColorConicGradient | ParsedColorURL;
 
 export function parseColor(value: string): ParsedColor {
   function parseColorStops(components: Array<string>): ParsedColorStopArray {
@@ -138,6 +154,125 @@ export function parseColor(value: string): ParsedColor {
       const result: ParsedColorRGBA = {
         type: 'rgba',
         rgba: [parameters[0] as number, parameters[1] as number, parameters[2] as number, (parameters[3] !== undefined ? parameters[3] : 1) as number]
+      };
+      return result;
+    }
+  }
+
+  // handle hsl
+  if (value.startsWith('hsl')) {
+    const regex = /hsla?\(((\d+%?|var\([^)]*\))[\s\,]*){0,1}((\d+%?|var\([^)]*\))[\s\,]*){0,1}((\d+%?|var\([^)]*\))[\s\,]*){0,1}((\d+%?|var\([^)]*\))[\s\,]*){0,1}\)/gi;
+    const parameters: Array<ParsedColorVariable | number | ParsedColorNumberWithUnit> = [];
+    let containVariables = false;
+    let matches;
+    while ((matches = regex.exec(value)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (matches.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+      matches.forEach((match, groupIndex) => {
+        if (groupIndex > 0 && groupIndex % 2 === 0 && match) {
+          const parameter = match.trim();
+          if (parameter.startsWith('var')) {
+            containVariables = true;
+            const parsedColorVariable: ParsedColorVariable = {
+              type: 'variable',
+              ref: parameter
+            };
+            parameters.push(parsedColorVariable);
+          } else if (/^\d+$/.test(parameter)) {
+            const integer: number = parseInt(parameter, 10);
+            parameters.push(integer);
+          } else if (/^\d+%$/.test(parameter)) {
+            const number = parseInt(parameter);
+            const unit = '%';
+            const numberWithUnit: ParsedColorNumberWithUnit = {
+              type: 'number-u',
+              number: number,
+              unit: unit
+            };
+            parameters.push(numberWithUnit);
+          }
+        }
+      });
+    }
+
+    if (containVariables) {
+      if (value.startsWith('hsla')) {
+        const result: ParsedColorHSLAWithVariable = {
+          type: 'hsla-v',
+          parameters: parameters
+        };
+        return result;
+      } else {
+        const result: ParsedColorHSLWithVariable = {
+          type: 'hsl-v',
+          parameters: parameters
+        };
+        return result;
+      }
+    } else {
+      // Convert from percent to fraction
+      let hue = 0;
+      let saturation = 0;
+      let lightness = 0;
+
+      if (typeof parameters[0] === 'number') {
+        hue = parameters[0];
+      }
+      if (typeof parameters[1] === 'object') {
+        if (parameters[1].type === 'number-u') {
+          saturation = parameters[1].number / 100;
+        }
+      }
+      if (typeof parameters[2] === 'object') {
+        if (parameters[2].type === 'number-u') {
+          lightness = parameters[2].number / 100;
+        }
+      }
+
+      const chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
+      const x = chroma * (1 - Math.abs(((hue / 60) % 2) - 1));
+      const m = lightness - chroma / 2;
+
+      let r1 = 0,
+        g1 = 0,
+        b1 = 0;
+
+      if (hue >= 0 && hue < 60) {
+        r1 = chroma;
+        g1 = x;
+        b1 = 0;
+      } else if (hue >= 60 && hue < 120) {
+        r1 = x;
+        g1 = chroma;
+        b1 = 0;
+      } else if (hue >= 120 && hue < 180) {
+        r1 = 0;
+        g1 = chroma;
+        b1 = x;
+      } else if (hue >= 180 && hue < 240) {
+        r1 = 0;
+        g1 = x;
+        b1 = chroma;
+      } else if (hue >= 240 && hue < 300) {
+        r1 = x;
+        g1 = 0;
+        b1 = chroma;
+      } else if (hue >= 300 && hue < 360) {
+        r1 = chroma;
+        g1 = 0;
+        b1 = x;
+      }
+
+      // Convert to 0–255 and return
+      const r = Math.round((r1 + m) * 255);
+      const g = Math.round((g1 + m) * 255);
+      const b = Math.round((b1 + m) * 255);
+
+      const result: ParsedColorRGBA = {
+        type: 'rgba',
+        rgba: [r, g, b, (parameters[3] !== undefined ? parameters[3] : 1) as number]
       };
       return result;
     }
@@ -402,6 +537,16 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
       break;
     }
 
+    case 'hsla-v': {
+      return color;
+      break;
+    }
+
+    case 'hsl-v': {
+      return color;
+      break;
+    }
+
     case 'variable': {
       return color; // Referenced variables are not inverted
       break;
@@ -475,6 +620,40 @@ export function parsedColorToString(color: ParsedColor): string {
         components.push(typeof parameter === 'number' ? parameter : parameter.ref);
       }
       return `rgb(${components.join(',')})`;
+    }
+
+    case 'hsla-v': {
+      const components = [];
+      for (const parameter of color.parameters) {
+        if (typeof parameter === 'number') {
+          components.push(parameter);
+        } else if (typeof parameter === 'object') {
+          if (parameter.type === 'number-u') {
+            components.push(`${parameter.number.toString()}${parameter.unit}`);
+          }
+          if (parameter.type === 'variable') {
+            components.push(parameter.ref);
+          }
+        }
+      }
+      return `hsla(${components.join(',')})`;
+    }
+
+    case 'hsl-v': {
+      const components = [];
+      for (const parameter of color.parameters) {
+        if (typeof parameter === 'number') {
+          components.push(parameter);
+        } else if (typeof parameter === 'object') {
+          if (parameter.type === 'number-u') {
+            components.push(`${parameter.number.toString()}${parameter.unit}`);
+          }
+          if (parameter.type === 'variable') {
+            components.push(parameter.ref);
+          }
+        }
+      }
+      return `hsl(${components.join(',')})`;
     }
 
     case 'variable': {
