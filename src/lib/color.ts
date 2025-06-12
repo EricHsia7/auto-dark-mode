@@ -361,7 +361,7 @@ export function parseColor(value: string): Color {
   }
 
   // handle linear gradient
-  if (value.startsWith('linear-gradient')) {
+  if (value.startsWith('linear-gradient') || value.startsWith('-webkit-linear-gradient')) {
     // Regular expression to match the linear-gradient function
     const regex = /linear-gradient\((.*)\)/;
     const matches = value.match(regex);
@@ -397,7 +397,7 @@ export function parseColor(value: string): Color {
   }
 
   // handle radial gradient
-  if (value.startsWith('radial-gradient')) {
+  if (value.startsWith('radial-gradient') || value.startsWith('-webkit-radial-gradient')) {
     // Give the default values
     let shape = 'circle';
     let size = 'farthest-corner';
@@ -450,7 +450,7 @@ export function parseColor(value: string): Color {
     return result;
   }
 
-  if (value.startsWith('conic-gradient')) {
+  if (value.startsWith('conic-gradient') || value.startsWith('-webkit-conic-gradient')) {
     // Regular expression to match the radial-gradient function
     const regex = /conic-gradient\((.*)\)/i;
     const matches = value.match(regex);
