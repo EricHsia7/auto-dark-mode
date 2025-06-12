@@ -1,5 +1,5 @@
 // Promisified GM_xmlhttpRequest
-function fetchCSS(url) {
+function fetchCSS(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
       method: 'GET',
@@ -18,7 +18,7 @@ function fetchCSS(url) {
   });
 }
 
-export async function inlineCSS() {
+export async function inlineCSS(): true {
   const linkElements = Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'));
   const fragment = new DocumentFragment();
   const linksToRemove = [];

@@ -2,7 +2,7 @@ import { initializeButton } from './interface/button/index';
 import { initializeControlPanel } from './interface/control-panel/index';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
-import { getStyles, invertStyles, generateCssFromStyles, StylesCollection } from './lib/styles';
+import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
 
 export async function initialize(): void {
   // Inline external/foreign CSS
@@ -14,7 +14,7 @@ export async function initialize(): void {
   // Invert styles
   const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
 
-  // Styles String
+  // Generate inverted css
   const strings = generateCssFromStyles(invertedStyles, false);
 
   // Inject stylesheets

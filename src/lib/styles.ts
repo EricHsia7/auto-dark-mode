@@ -197,6 +197,7 @@ export function getStyles(): Styles {
             }
             break;
           }
+
           default: {
             // container[`@unknown-${rule.type}`] = rule.cssText;
             break;
