@@ -24,7 +24,6 @@ export interface ColorRGBA_Variable {
   parameters: ColorRGBParameterArray;
 }
 
-
 export type ColorHSLParameter = Variable | number | UnitedNumber;
 
 export type ColorHSLParameterArray = Array<ColorHSLParameter>;
@@ -121,7 +120,7 @@ export function parseColor(value: string): Color {
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
     const regex = /rgba?\(((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}\)/gi;
-    const parameters: ColorRGBParameterArray= [];
+    const parameters: ColorRGBParameterArray = [];
     let containVariables = false;
     let matches;
     while ((matches = regex.exec(value)) !== null) {
@@ -491,25 +490,25 @@ export function parseColor(value: string): Color {
   return fallbackColor;
 }
 
-export function invertColor(color: Color): Color {
-  function invertStops(colorStops: ColorStopArray) {
-    const colorStopsLength = colorStops.length;
-    const invertedStops: ColorStopArray = [];
-    for (let i = colorStopsLength - 1; i >= 0; i--) {
-      const stop = colorStops[i];
-      if (stop.type === 'stop') {
-        const invertedColor = invertColor(stop.color) as ColorRGBA | ColorRGBA_Variable | ColorRGB_Variable | Variable;
-        const invertedColorStop: ColorStop = {
-          type: 'stop',
-          color: invertedColor,
-          position: stop.position
-        };
-        invertedStops.unshift(invertedColorStop);
-      }
+function invertStops(colorStops: ColorStopArray): ColorStopArray {
+  const colorStopsLength = colorStops.length;
+  const invertedStops: ColorStopArray = [];
+  for (let i = colorStopsLength - 1; i >= 0; i--) {
+    const stop = colorStops[i];
+    if (stop.type === 'stop') {
+      const invertedColor = invertColor(stop.color) as ColorStop['color'];
+      const invertedColorStop: ColorStop = {
+        type: 'stop',
+        color: invertedColor,
+        position: stop.position
+      };
+      invertedStops.unshift(invertedColorStop);
     }
-    return invertedStops;
   }
+  return invertedStops;
+}
 
+export function invertColor(color: Color): Color {
   switch (color.type) {
     case 'rgb': {
       const [R, G, B] = color.rgb;
