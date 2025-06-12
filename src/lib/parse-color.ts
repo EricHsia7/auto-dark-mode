@@ -385,14 +385,17 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
       return result;
       break;
     }
+
     case 'rgba-v': {
       return color; // Color with referenced variables are not inverted
       break;
     }
+
     case 'rgb-v': {
       return color; // Color with referenced variables are not inverted
       break;
     }
+
     case 'variable': {
       return color; // Referenced variables are not inverted
       break;
@@ -451,6 +454,7 @@ export function parsedColorToString(color: ParsedColor): string {
       const [r, g, b, a] = color.rgba;
       return a < 1 ? `rgba(${r},${g},${b},${a})` : `rgb(${r},${g},${b})`;
     }
+
     case 'rgba-v': {
       const components = [];
       for (const parameter of color.parameters) {
@@ -458,6 +462,7 @@ export function parsedColorToString(color: ParsedColor): string {
       }
       return `rgba(${components.join(',')})`;
     }
+
     case 'rgb-v': {
       const components = [];
       for (const parameter of color.parameters) {
@@ -465,25 +470,32 @@ export function parsedColorToString(color: ParsedColor): string {
       }
       return `rgb(${components.join(',')})`;
     }
+
     case 'variable': {
       return color.ref;
     }
+
     case 'linear-gradient': {
       const linearStops = color.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
       return `linear-gradient(${color.direction},${linearStops})`;
     }
+
     case 'radial-gradient': {
       const radialStops = color.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
       return `radial-gradient(${color.shape} ${color.size} at ${color.position},${radialStops})`;
     }
+
     case 'conic-gradient': {
       const conicStops = color.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(', ');
       return `conic-gradient(${color.angle},${conicStops})`;
     }
+
     case 'url': {
       return color.ref;
     }
+
     default: {
+      return ''
       break;
     }
   }

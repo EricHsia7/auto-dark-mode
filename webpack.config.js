@@ -4,8 +4,8 @@ const fs = require('fs');
 const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
-var userscriptHeader = require('./config/header.json');
-var userscriptExclusionList = require('./config/exclusion_list.json');
+const userscriptHeader = require('./config/header.json');
+const userscriptExclusionList = require('./config/exclusion_list.json');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -13,17 +13,20 @@ module.exports = (env, argv) => {
     plugins: [
       new webpack.BannerPlugin({
         banner: function () {
-          var lines = [];
+          const lines = [];
           lines.push('==UserScript==');
-          var lengthes = ['exclude'.length];
-          for (var key in userscriptHeader) {
-            lengthes.push(String(key).length);
+          let maxLength = 'exclude'.length;
+          for (const key in userscriptHeader) {
+            const thisLength = String(key).length;
+            if (thisLength > maxLength) {
+              maxLength = thisLength;
+            }
           }
-          var padding = Math.max(...lengthes) + 2;
-          for (var key in userscriptHeader) {
+          const padding = maxLength + 2;
+          for (const key in userscriptHeader) {
             lines.push(`@${String(key).padEnd(padding, ' ')}${userscriptHeader[key]}`);
           }
-          for (var website of userscriptExclusionList.exclusion_list) {
+          for (const website of userscriptExclusionList.exclusion_list) {
             lines.push(`@${'exclude'.padEnd(padding, ' ')}${website.pattern}`);
           }
           lines.push('==/UserScript==');
@@ -90,7 +93,7 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [
         new TerserPlugin({
-          //terserOptions: {},
+          // terserOptions: {},
           extractComments: false
         }),
         new CssMinimizerPlugin()

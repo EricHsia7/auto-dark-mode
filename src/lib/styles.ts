@@ -64,8 +64,6 @@ export function getStyles(): Styles {
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
         color: '#888888'
       },
-      /* 'table': {
-      }, */
       'th, td': {
         'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-style': 'solid',
@@ -84,7 +82,6 @@ export function getStyles(): Styles {
         'border-bottom-style': 'solid',
         'border-bottom-width': '2px'
       },
-      /*'tbody': {},*/
       'tfoot': {
         'border-top-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-top-style': 'solid',
@@ -93,7 +90,6 @@ export function getStyles(): Styles {
       'colgroup': {
         border: 'none'
       },
-      /* 'col': {}, */
       'blockquote': {
         'border-left-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
         'border-left-style': 'solid',
@@ -188,28 +184,7 @@ export function getStyles(): Styles {
             processRules(mediaRule.cssRules, container[media]);
             break;
           }
-          /*
-          case CSSRule.KEYFRAMES_RULE: {
-            // Keyframes
-            const name = `@keyframes ${rule.name}`;
-            if (!container.hasOwnProperty(name)) {
-              container[name] = {};
-            }
-            for (const keyframe of rule.cssRules) {
-              const keyText = keyframe.keyText;
-              if (!container[name].hasOwnProperty(keyText)) {
-                container[name][keyText] = {};
-              }
-              for (const prop of keyframe.style) {
-                const value = keyframe.style.getPropertyValue(prop).trim();
-                if (value.length > 0) {
-                  container[name][keyText][prop] = value;
-                }
-              }
-            }
-            break;
-          }
-          */
+
           case CSSRule.IMPORT_RULE: {
             const importRule = rule as CSSImportRule;
             if (importRule.styleSheet) {
