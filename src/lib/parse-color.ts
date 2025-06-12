@@ -1,103 +1,112 @@
 import { namedColors } from './named-colors';
 
-export interface ParsedColorRGBA {
+export interface ColorRGB {
+  type: 'rgb';
+  rgb: [red: number, green: number, blue: number];
+}
+
+export interface ColorRGB_Variable {
+  type: 'rgb-v';
+  parameters: Array<Variable | number>;
+}
+
+export interface ColorRGBA {
   type: 'rgba';
   rgba: [red: number, green: number, blue: number, alpha: number];
 }
 
-export interface ParsedColorRGBWithVariable {
-  type: 'rgb-v';
-  parameters: Array<ParsedColorVariable | number>;
-}
-
-export interface ParsedColorRGBAWithVariable {
+export interface ColorRGBA_Variable {
   type: 'rgba-v';
-  parameters: Array<ParsedColorVariable | number>;
+  parameters: Array<Variable | number>;
 }
 
-export interface ParsedColorHSLWithVariable {
+export type ColorHSLParameter = Variable | number | UnitedNumber;
+
+export type ColorHSLParameterArray = Array<ColorHSLParameter>;
+
+export interface ColorHSL_Variable {
   type: 'hsl-v';
-  parameters: Array<ParsedColorVariable | number | ParsedColorNumberWithUnit>;
+  parameters: ColorHSLParameterArray;
 }
 
-export interface ParsedColorHSLAWithVariable {
+export interface ColorHSLA_Variable {
   type: 'hsla-v';
-  parameters: Array<ParsedColorVariable | number | ParsedColorNumberWithUnit>;
+  parameters: ColorHSLParameterArray;
 }
 
-export interface ParsedColorVariable {
+export interface Variable {
   type: 'variable';
   ref: string; // var(--name)
 }
 
-export interface ParsedColorNumberWithUnit {
+export interface UnitedNumber {
   type: 'number-u';
   number: number;
   unit: string;
 }
 
-export interface ParsedColorStop {
+export interface ColorStop {
   type: 'stop';
-  color: ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorRGBWithVariable | ParsedColorVariable;
+  color: ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable;
   position: string;
 }
 
-export type ParsedColorStopArray = Array<ParsedColorStop>;
+export type ColorStopArray = Array<ColorStop>;
 
-export interface ParsedColorLinearGradient {
+export interface LinearGradient {
   type: 'linear-gradient';
   direction: string;
-  colorStops: ParsedColorStopArray;
+  colorStops: ColorStopArray;
 }
 
-export interface ParsedColorRdialGradient {
+export interface RdialGradient {
   type: 'radial-gradient';
   shape: string;
   size: string;
   position: string;
-  colorStops: ParsedColorStopArray;
+  colorStops: ColorStopArray;
 }
 
-export interface ParsedColorConicGradient {
+export interface ConicGradient {
   type: 'conic-gradient';
   angle: string;
-  colorStops: ParsedColorStopArray;
+  colorStops: ColorStopArray;
 }
 
-export interface ParsedColorURL {
+export interface _URL {
   type: 'url';
   ref: string; // url(https://example.com/example.png)
 }
 
-export type ParsedColor = ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorRGBWithVariable | ParsedColorHSLAWithVariable | ParsedColorHSLWithVariable | ParsedColorVariable | ParsedColorLinearGradient | ParsedColorRdialGradient | ParsedColorConicGradient | ParsedColorURL;
+export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL;
 
-export function parseColor(value: string): ParsedColor {
-  function parseColorStops(components: Array<string>): ParsedColorStopArray {
-    const positionRegex = /(\d+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
-    const colorStops: ParsedColorStopArray = [];
-    for (const component of components) {
-      const trimmedComponent = component.trim();
-      const matches = trimmedComponent.match(positionRegex);
-      if (matches) {
-        const color = parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorRGBWithVariable | ParsedColorVariable;
-        const position = matches[0].trim();
-        colorStops.push({
-          type: 'stop',
-          color: color,
-          position: position
-        });
-      }
+function parseColorStops(components: Array<string>): ColorStopArray {
+  const positionRegex = /(\d+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
+  const colorStops: ColorStopArray = [];
+  for (const component of components) {
+    const trimmedComponent = component.trim();
+    const matches = trimmedComponent.match(positionRegex);
+    if (matches) {
+      const color = parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ColorStop['color'];
+      const position = matches[0].trim();
+      colorStops.push({
+        type: 'stop',
+        color: color,
+        position: position
+      });
     }
-    return colorStops;
   }
+  return colorStops;
+}
 
-  const fallbackColor: ParsedColorRGBA = {
+export function parseColor(value: string): Color {
+  const fallbackColor: ColorRGBA = {
     type: 'rgba',
     rgba: [255, 255, 255, 0]
   };
 
   if (value.startsWith('var(')) {
-    const result: ParsedColorVariable = {
+    const result: Variable = {
       type: 'variable',
       ref: value
     };
@@ -107,7 +116,7 @@ export function parseColor(value: string): ParsedColor {
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
     const regex = /rgba?\(((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}\)/gi;
-    const parameters: Array<ParsedColorVariable | number> = [];
+    const parameters: Array<Variable | number> = [];
     let containVariables = false;
     let matches;
     while ((matches = regex.exec(value)) !== null) {
@@ -115,12 +124,13 @@ export function parseColor(value: string): ParsedColor {
       if (matches.index === regex.lastIndex) {
         regex.lastIndex++;
       }
+
       matches.forEach((match, groupIndex) => {
         if (groupIndex > 0 && groupIndex % 2 === 0 && match) {
           const parameter = match.trim();
           if (parameter.startsWith('var')) {
             containVariables = true;
-            const parsedColorVariable: ParsedColorVariable = {
+            const parsedColorVariable: Variable = {
               type: 'variable',
               ref: parameter
             };
@@ -136,33 +146,41 @@ export function parseColor(value: string): ParsedColor {
       });
     }
 
-    if (containVariables) {
-      if (value.startsWith('rgba')) {
-        const result: ParsedColorRGBAWithVariable = {
+    if (value.startsWith('rgba')) {
+      if (containVariables) {
+        const result: ColorRGBA_Variable = {
           type: 'rgba-v',
           parameters: parameters
         };
         return result;
       } else {
-        const result: ParsedColorRGBWithVariable = {
-          type: 'rgb-v',
-          parameters: parameters
+        const result: ColorRGBA = {
+          type: 'rgba',
+          rgba: [parameters[0] as number, parameters[1] as number, parameters[2] as number, (parameters[3] !== undefined ? parameters[3] : 1) as number]
         };
         return result;
       }
     } else {
-      const result: ParsedColorRGBA = {
-        type: 'rgba',
-        rgba: [parameters[0] as number, parameters[1] as number, parameters[2] as number, (parameters[3] !== undefined ? parameters[3] : 1) as number]
-      };
-      return result;
+      if (containVariables) {
+        const result: ColorRGB_Variable = {
+          type: 'rgb-v',
+          parameters: parameters
+        };
+        return result;
+      } else {
+        const result: ColorRGB = {
+          type: 'rgb',
+          rgb: [parameters[0] as number, parameters[1] as number, parameters[2] as number]
+        };
+        return result;
+      }
     }
   }
 
   // handle hsl
   if (value.startsWith('hsl')) {
     const regex = /hsla?\(((\d+%?|var\([^)]*\))[\s\,]*){0,1}((\d+%?|var\([^)]*\))[\s\,]*){0,1}((\d+%?|var\([^)]*\))[\s\,]*){0,1}((\d+%?|var\([^)]*\))[\s\,]*){0,1}\)/gi;
-    const parameters: Array<ParsedColorVariable | number | ParsedColorNumberWithUnit> = [];
+    const parameters: ColorHSLParameterArray = [];
     let containVariables = false;
     let matches;
     while ((matches = regex.exec(value)) !== null) {
@@ -170,12 +188,13 @@ export function parseColor(value: string): ParsedColor {
       if (matches.index === regex.lastIndex) {
         regex.lastIndex++;
       }
+
       matches.forEach((match, groupIndex) => {
         if (groupIndex > 0 && groupIndex % 2 === 0 && match) {
           const parameter = match.trim();
           if (parameter.startsWith('var')) {
             containVariables = true;
-            const parsedColorVariable: ParsedColorVariable = {
+            const parsedColorVariable: Variable = {
               type: 'variable',
               ref: parameter
             };
@@ -186,7 +205,7 @@ export function parseColor(value: string): ParsedColor {
           } else if (/^\d+%$/.test(parameter)) {
             const number = parseInt(parameter);
             const unit = '%';
-            const numberWithUnit: ParsedColorNumberWithUnit = {
+            const numberWithUnit: UnitedNumber = {
               type: 'number-u',
               number: number,
               unit: unit
@@ -199,13 +218,13 @@ export function parseColor(value: string): ParsedColor {
 
     if (containVariables) {
       if (value.startsWith('hsla')) {
-        const result: ParsedColorHSLAWithVariable = {
+        const result: ColorHSLA_Variable = {
           type: 'hsla-v',
           parameters: parameters
         };
         return result;
       } else {
-        const result: ParsedColorHSLWithVariable = {
+        const result: ColorHSL_Variable = {
           type: 'hsl-v',
           parameters: parameters
         };
@@ -266,15 +285,25 @@ export function parseColor(value: string): ParsedColor {
       }
 
       // Convert to 0–255 and return
-      const r = Math.round((r1 + m) * 255);
-      const g = Math.round((g1 + m) * 255);
-      const b = Math.round((b1 + m) * 255);
+      const red = Math.round((r1 + m) * 255);
+      const green = Math.round((g1 + m) * 255);
+      const blue = Math.round((b1 + m) * 255);
+      // Handle alpha
+      const alpha = (parameters[3] !== undefined ? parameters[3] : 1) as number;
 
-      const result: ParsedColorRGBA = {
-        type: 'rgba',
-        rgba: [r, g, b, (parameters[3] !== undefined ? parameters[3] : 1) as number]
-      };
-      return result;
+      if (alpha === 1) {
+        const result: ColorRGB = {
+          type: 'rgb',
+          rgb: [red, green, blue]
+        };
+        return result;
+      } else {
+        const result: ColorRGBA = {
+          type: 'rgba',
+          rgba: [red, green, blue, alpha]
+        };
+        return result;
+      }
     }
   }
 
@@ -312,11 +341,19 @@ export function parseColor(value: string): ParsedColor {
         break;
     }
 
-    const result: ParsedColorRGBA = {
-      type: 'rgba',
-      rgba: [red, green, blue, alpha]
-    };
-    return result;
+    if (alpha === 1) {
+      const result: ColorRGB = {
+        type: 'rgb',
+        rgb: [red, green, blue]
+      };
+      return result;
+    } else {
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [red, green, blue, alpha]
+      };
+      return result;
+    }
   }
 
   // handle linear gradient
@@ -336,7 +373,7 @@ export function parseColor(value: string): ParsedColor {
     const components = gradientContent.split(/,(?![^\(]*\))/);
 
     // Determine if the first part is a direction or a color stop
-    let direction;
+    let direction = '';
     if (components[0].trim().match(/^\d+deg$|^to /)) {
       direction = components.shift().trim();
     } else {
@@ -346,7 +383,7 @@ export function parseColor(value: string): ParsedColor {
     // Process remaining parts as color stops
     const colorStops = parseColorStops(components);
 
-    const result: ParsedColorLinearGradient = {
+    const result: LinearGradient = {
       type: 'linear-gradient',
       direction: direction,
       colorStops: colorStops
@@ -380,8 +417,8 @@ export function parseColor(value: string): ParsedColor {
     const shapeSizePattern = /^\s*(circle|ellipse|closest-side|farthest-side|closest-corner|farthest-corner|contain|cover)?\s*(circle|ellipse|closest-side|farthest-side|closest-corner|farthest-corner|contain|cover)?\s*/i;
     let shapeSizeMatch = components[index].match(shapeSizePattern);
     if (shapeSizeMatch) {
-      shape = shapeSizeMatch[1] || null;
-      size = shapeSizeMatch[2] || null;
+      shape = shapeSizeMatch[1] || '';
+      size = shapeSizeMatch[2] || '';
       if (shapeSizeMatch[1] || shapeSizeMatch[2]) {
         index++;
       }
@@ -398,7 +435,7 @@ export function parseColor(value: string): ParsedColor {
     // Extract color stops
     const colorStops = parseColorStops(components.slice(index));
 
-    const result: ParsedColorRdialGradient = {
+    const result: RdialGradient = {
       type: 'radial-gradient',
       shape: shape,
       size: size,
@@ -413,22 +450,23 @@ export function parseColor(value: string): ParsedColor {
     // Regular expression to match the radial-gradient function
     const regex = /conic-gradient\((.*)\)/i;
     const matches = value.match(regex);
-    const components = matches[1].split(/,(.+)/);
-    const angle = components[0].trim();
-    const colorStops = parseColorStops(components[1]);
+    if (matches) {
+      const components = matches[1].split(/,(.+)/);
+      const angle = components[0].trim();
+      const colorStops = parseColorStops([components[1]]);
 
-    const result: ParsedColorConicGradient = {
-      type: 'conic-gradient',
-      angle: angle,
-      colorStops: colorStops
-    };
-
-    return result;
+      const result: ConicGradient = {
+        type: 'conic-gradient',
+        angle: angle,
+        colorStops: colorStops
+      };
+      return result;
+    }
   }
 
   // handle url
   if (value.startsWith('url')) {
-    const result: ParsedColorURL = {
+    const result: _URL = {
       type: 'url',
       ref: value
     };
@@ -438,25 +476,25 @@ export function parseColor(value: string): ParsedColor {
   // handle named colors
   const foundColor = namedColors[value.toLowerCase()];
   if (foundColor) {
-    const result: ParsedColorRGBA = {
+    const result: ColorRGBA = {
       type: 'rgba',
       rgba: foundColor
     };
     return result;
-  } else {
-    return fallbackColor;
   }
+
+  return fallbackColor;
 }
 
-export function invertParsedColor(color: ParsedColor): ParsedColor {
-  function invertStops(colorStops: ParsedColorStopArray) {
+export function invertParsedColor(color: Color): Color {
+  function invertStops(colorStops: ColorStopArray) {
     const colorStopsLength = colorStops.length;
-    const invertedStops: ParsedColorStopArray = [];
+    const invertedStops: ColorStopArray = [];
     for (let i = colorStopsLength - 1; i >= 0; i--) {
       const stop = colorStops[i];
       if (stop.type === 'stop') {
-        const invertedColor = invertParsedColor(stop.color) as ParsedColorRGBA | ParsedColorRGBAWithVariable | ParsedColorRGBWithVariable | ParsedColorVariable;
-        const invertedColorStop: ParsedColorStop = {
+        const invertedColor = invertParsedColor(stop.color) as ColorRGBA | ColorRGBA_Variable | ColorRGB_Variable | Variable;
+        const invertedColorStop: ColorStop = {
           type: 'stop',
           color: invertedColor,
           position: stop.position
@@ -468,8 +506,8 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
   }
 
   switch (color.type) {
-    case 'rgba': {
-      const [R, G, B, A] = color.rgba;
+    case 'rgb': {
+      const [R, G, B] = color.rgb;
 
       const r = R / 255;
       const g = G / 255;
@@ -495,7 +533,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
       }
       */
 
-      if (isParsedColorVibrant(color) > 0.4) {
+      if (isColorVibrant(color) > 0.4) {
         return color;
       }
 
@@ -518,11 +556,32 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
         [newValue, p, q]
       ][i % 6].map((x) => Math.round(x * 255));
 
-      const result: ParsedColorRGBA = {
-        type: 'rgba',
-        rgba: [newRed, newGreen, newBlue, A]
+      const result: ColorRGB = {
+        type: 'rgb',
+        rgb: [newRed, newGreen, newBlue]
       };
 
+      return result;
+      break;
+    }
+
+    case 'rgb-v': {
+      return color; // Color with referenced variables are not inverted
+      break;
+    }
+
+    case 'rgba': {
+      const [R, G, B, A] = color.rgba;
+      const RGB: ColorRGB = {
+        type: 'rgb',
+        rgb: [R, G, B]
+      };
+      const invertedRGB = invertParsedColor(RGB) as ColorRGB;
+      const [r, g, b] = invertedRGB.rgb;
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [r, g, b, A]
+      };
       return result;
       break;
     }
@@ -532,17 +591,12 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
       break;
     }
 
-    case 'rgb-v': {
-      return color; // Color with referenced variables are not inverted
-      break;
-    }
-
-    case 'hsla-v': {
+    case 'hsl-v': {
       return color;
       break;
     }
 
-    case 'hsl-v': {
+    case 'hsla-v': {
       return color;
       break;
     }
@@ -554,7 +608,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
 
     case 'linear-gradient': {
       const invertedColors = invertStops(color.colorStops);
-      const result: ParsedColorLinearGradient = {
+      const result: LinearGradient = {
         type: 'linear-gradient',
         direction: color.direction,
         colorStops: invertedColors
@@ -565,7 +619,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
 
     case 'radial-gradient': {
       const invertedColors = invertStops(color.colorStops);
-      const result: ParsedColorRdialGradient = {
+      const result: RdialGradient = {
         type: 'radial-gradient',
         position: color.position,
         shape: color.shape,
@@ -578,7 +632,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
 
     case 'conic-gradient': {
       const invertedColors = invertStops(color.colorStops);
-      const result: ParsedColorConicGradient = {
+      const result: ConicGradient = {
         type: 'conic-gradient',
         angle: color.angle,
         colorStops: invertedColors
@@ -599,19 +653,11 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
   }
 }
 
-export function parsedColorToString(color: ParsedColor): string {
+export function parsedColorToString(color: Color): string {
   switch (color.type) {
-    case 'rgba': {
-      const [r, g, b, a] = color.rgba;
-      return a < 1 ? `rgba(${r},${g},${b},${a})` : `rgb(${r},${g},${b})`;
-    }
-
-    case 'rgba-v': {
-      const components = [];
-      for (const parameter of color.parameters) {
-        components.push(typeof parameter === 'number' ? parameter : parameter.ref);
-      }
-      return `rgba(${components.join(',')})`;
+    case 'rgb': {
+      const [r, g, b] = color.rgb;
+      return `rgb(${r},${g},${b})`;
     }
 
     case 'rgb-v': {
@@ -622,21 +668,17 @@ export function parsedColorToString(color: ParsedColor): string {
       return `rgb(${components.join(',')})`;
     }
 
-    case 'hsla-v': {
+    case 'rgba': {
+      const [r, g, b, a] = color.rgba;
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    case 'rgba-v': {
       const components = [];
       for (const parameter of color.parameters) {
-        if (typeof parameter === 'number') {
-          components.push(parameter);
-        } else if (typeof parameter === 'object') {
-          if (parameter.type === 'number-u') {
-            components.push(`${parameter.number.toString()}${parameter.unit}`);
-          }
-          if (parameter.type === 'variable') {
-            components.push(parameter.ref);
-          }
-        }
+        components.push(typeof parameter === 'number' ? parameter : parameter.ref);
       }
-      return `hsla(${components.join(',')})`;
+      return `rgba(${components.join(',')})`;
     }
 
     case 'hsl-v': {
@@ -654,6 +696,23 @@ export function parsedColorToString(color: ParsedColor): string {
         }
       }
       return `hsl(${components.join(',')})`;
+    }
+
+    case 'hsla-v': {
+      const components = [];
+      for (const parameter of color.parameters) {
+        if (typeof parameter === 'number') {
+          components.push(parameter);
+        } else if (typeof parameter === 'object') {
+          if (parameter.type === 'number-u') {
+            components.push(`${parameter.number.toString()}${parameter.unit}`);
+          }
+          if (parameter.type === 'variable') {
+            components.push(parameter.ref);
+          }
+        }
+      }
+      return `hsla(${components.join(',')})`;
     }
 
     case 'variable': {
@@ -686,15 +745,15 @@ export function parsedColorToString(color: ParsedColor): string {
   }
 }
 
-export function isParsedColorDark(color: ParsedColorRGBA): number {
+export function isColorDark(color: ColorRGBA): number {
   const p = -0.002315205943 * color.rgba[0] + 0.724916473719 + -0.00518915994 * color.rgba[1] + 1.093306292424 - 0.001444153598 * color.rgba[2] + 0.627977492263;
   const q = Math.min(Math.max(p * color.rgba[3], 0), 1);
   return q;
   // higher number means higher probability
 }
 
-export function isParsedColorVibrant(color: ParsedColorRGBA): number {
-  const p = 0.00526701208730907 * Math.abs(color.rgba[0] - color.rgba[1]) + 0.2315923467761 + 0.005789762029929 * Math.abs(color.rgba[1] - color.rgba[2]) + 0.268849448143961 + 0.00445659947538687 * Math.abs(color.rgba[0] - color.rgba[2]) + 0.20534779494441;
+export function isColorVibrant(color: ColorRGB): number {
+  const p = 0.00526701208730907 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.2315923467761 + 0.005789762029929 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.268849448143961 + 0.00445659947538687 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.20534779494441;
   const q = Math.min(Math.max(p / 3, 0), 1);
   return q;
   // higher number means higher probability

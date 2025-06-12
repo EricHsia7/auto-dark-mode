@@ -2,7 +2,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { invertParsedColor, parseColor, ParsedColorRGBA, parsedColorToString } from './parse-color';
+import { invertParsedColor, parseColor, ColorRGBA, parsedColorToString } from './parse-color';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -288,32 +288,46 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
         if (parsedColor) {
           const invertedColor = invertParsedColor(parsedColor);
           newStyles[key] = parsedColorToString(invertedColor);
-          if (parsedColor.type === 'rgba') {
+
+          if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
+            let r = 0;
+            let g = 0;
+            let b = 0;
+            if (parsedColor.type === 'rgba') {
+              r = parsedColor.rgba[0] / 255;
+              g = parsedColor.rgba[1] / 255;
+              b = parsedColor.rgba[2] / 255;
+            }
+            if (parsedColor.type === 'rgb') {
+              r = parsedColor.rgb[0] / 255;
+              g = parsedColor.rgb[1] / 255;
+              b = parsedColor.rgb[2] / 255;
+            }
             if (key === 'background-color' || key === 'background') {
-              backgroundColorRed += parsedColor.rgba[0] / 255;
-              backgroundColorGreen += parsedColor.rgba[1] / 255;
-              backgroundColorBlue += parsedColor.rgba[2] / 255;
-              backgroundColorQuantity += 1;
+              backgroundColorRed += r / 255;
+              backgroundColorGreen += g / 255;
+              backgroundColorBlue += b / 255;
+              backgroundColorQuantity++;
             }
             if (key === 'color') {
-              textColorRed += parsedColor.rgba[0] / 255;
-              textColorGreen += parsedColor.rgba[1] / 255;
-              textColorBlue += parsedColor.rgba[2] / 255;
-              textColorQuantity += 1;
+              textColorRed += r / 255;
+              textColorGreen += g / 255;
+              textColorBlue += b / 255;
+              textColorQuantity++;
             }
             if (key.startsWith('--')) {
               if (referenceMap.hasOwnProperty(key)) {
                 if (referenceMap[key][0] > referenceMap[key][1]) {
-                  backgroundColorRed += parsedColor.rgba[0] / 255;
-                  backgroundColorGreen += parsedColor.rgba[1] / 255;
-                  backgroundColorBlue += parsedColor.rgba[2] / 255;
-                  backgroundColorQuantity += 1;
+                  backgroundColorRed += r;
+                  backgroundColorGreen += g;
+                  backgroundColorBlue += b;
+                  backgroundColorQuantity++;
                 }
                 if (referenceMap[key][0] < referenceMap[key][1]) {
-                  textColorRed += parsedColor.rgba[0] / 255;
-                  textColorGreen += parsedColor.rgba[1] / 255;
-                  textColorBlue += parsedColor.rgba[2] / 255;
-                  textColorQuantity += 1;
+                  textColorRed += r;
+                  textColorGreen += g;
+                  textColorBlue += b;
+                  textColorQuantity++;
                 }
               }
             }
@@ -327,15 +341,18 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     }
   }
 
-  const mainBackgroundColor: ParsedColorRGBA = {
+  const mainBackgroundColor: ColorRGBA = {
     type: 'rgba',
     rgba: backgroundColorQuantity > 0 ? [(backgroundColorRed / backgroundColorQuantity) * 255, (backgroundColorGreen / backgroundColorQuantity) * 255, (backgroundColorBlue / backgroundColorQuantity) * 255, 1] : [0, 0, 0, 0]
   };
-  const mainTextColor: ParsedColorRGBA = {
+
+  const mainTextColor: ColorRGBA = {
     type: 'rgba',
     rgba: textColorQuantity > 0 ? [(textColorRed / textColorQuantity) * 255, (textColorGreen / textColorQuantity) * 255, (textColorBlue / textColorQuantity) * 255, 1] : [0, 0, 0, 0]
   };
+
   const originalTheme = evaluateTheme(mainBackgroundColor, mainTextColor);
+
   if (originalTheme === 'light') {
     return newStyles;
   } else {

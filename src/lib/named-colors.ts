@@ -1,6 +1,6 @@
-import { ParsedColorRGBA } from './parse-color'
+import { ColorRGBA } from './parse-color'
 
-export const namedColors: { [name: string]: ParsedColorRGBA['rgba'] } = {
+export const namedColors: { [name: string]: ColorRGBA['rgba'] } = {
   aliceblue: [240, 248, 255, 1],
   antiquewhite: [250, 235, 215, 1],
   aqua: [0, 255, 255, 1],
