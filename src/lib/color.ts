@@ -130,11 +130,11 @@ export function parseColor(value: string): Color {
           const parameter = match.trim();
           if (parameter.startsWith('var')) {
             containVariables = true;
-            const parsedColorVariable: Variable = {
+            const variable: Variable = {
               type: 'variable',
               ref: parameter
             };
-            parameters.push(parsedColorVariable);
+            parameters.push(variable);
           } else if (/^\d+$/.test(parameter)) {
             const integer: number = parseInt(parameter, 10);
             parameters.push(integer);
@@ -194,11 +194,11 @@ export function parseColor(value: string): Color {
           const parameter = match.trim();
           if (parameter.startsWith('var')) {
             containVariables = true;
-            const parsedColorVariable: Variable = {
+            const variable: Variable = {
               type: 'variable',
               ref: parameter
             };
-            parameters.push(parsedColorVariable);
+            parameters.push(variable);
           } else if (/^\d+$/.test(parameter)) {
             const integer: number = parseInt(parameter, 10);
             parameters.push(integer);
@@ -476,9 +476,9 @@ export function parseColor(value: string): Color {
   // handle named colors
   const foundColor = namedColors[value.toLowerCase()];
   if (foundColor) {
-    const result: ColorRGBA = {
-      type: 'rgba',
-      rgba: foundColor
+    const result: ColorRGB = {
+      type: 'rgb',
+      rgb: foundColor
     };
     return result;
   }
@@ -486,14 +486,14 @@ export function parseColor(value: string): Color {
   return fallbackColor;
 }
 
-export function invertParsedColor(color: Color): Color {
+export function invertColor(color: Color): Color {
   function invertStops(colorStops: ColorStopArray) {
     const colorStopsLength = colorStops.length;
     const invertedStops: ColorStopArray = [];
     for (let i = colorStopsLength - 1; i >= 0; i--) {
       const stop = colorStops[i];
       if (stop.type === 'stop') {
-        const invertedColor = invertParsedColor(stop.color) as ColorRGBA | ColorRGBA_Variable | ColorRGB_Variable | Variable;
+        const invertedColor = invertColor(stop.color) as ColorRGBA | ColorRGBA_Variable | ColorRGB_Variable | Variable;
         const invertedColorStop: ColorStop = {
           type: 'stop',
           color: invertedColor,
@@ -576,7 +576,7 @@ export function invertParsedColor(color: Color): Color {
         type: 'rgb',
         rgb: [R, G, B]
       };
-      const invertedRGB = invertParsedColor(RGB) as ColorRGB;
+      const invertedRGB = invertColor(RGB) as ColorRGB;
       const [r, g, b] = invertedRGB.rgb;
       const result: ColorRGBA = {
         type: 'rgba',
@@ -653,7 +653,7 @@ export function invertParsedColor(color: Color): Color {
   }
 }
 
-export function parsedColorToString(color: Color): string {
+export function colorToString(color: Color): string {
   switch (color.type) {
     case 'rgb': {
       const [r, g, b] = color.rgb;
@@ -720,17 +720,17 @@ export function parsedColorToString(color: Color): string {
     }
 
     case 'linear-gradient': {
-      const linearStops = color.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
+      const linearStops = color.colorStops.map((stop) => `${colorToString(stop.color)} ${stop.position}`).join(',');
       return `linear-gradient(${color.direction},${linearStops})`;
     }
 
     case 'radial-gradient': {
-      const radialStops = color.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(',');
+      const radialStops = color.colorStops.map((stop) => `${colorToString(stop.color)} ${stop.position}`).join(',');
       return `radial-gradient(${color.shape} ${color.size} at ${color.position},${radialStops})`;
     }
 
     case 'conic-gradient': {
-      const conicStops = color.colorStops.map((stop) => `${parsedColorToString(stop.color)} ${stop.position}`).join(', ');
+      const conicStops = color.colorStops.map((stop) => `${colorToString(stop.color)} ${stop.position}`).join(', ');
       return `conic-gradient(${color.angle},${conicStops})`;
     }
 

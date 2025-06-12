@@ -1,4 +1,4 @@
-import { isColorDark, ColorRGBA } from './parse-color';
+import { isColorDark, ColorRGBA } from './color';
 
 export type theme = 'light' | 'dark';
 

@@ -2,7 +2,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { invertParsedColor, parseColor, ColorRGBA, parsedColorToString } from './parse-color';
+import { invertColor, parseColor, ColorRGBA, colorToString } from './color';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -286,8 +286,8 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
       if (isInvertible(key, value)) {
         const parsedColor = parseColor(value);
         if (parsedColor) {
-          const invertedColor = invertParsedColor(parsedColor);
-          newStyles[key] = parsedColorToString(invertedColor);
+          const invertedColor = invertColor(parsedColor);
+          newStyles[key] = colorToString(invertedColor);
 
           if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
             let r = 0;
