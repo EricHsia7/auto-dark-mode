@@ -119,7 +119,7 @@ export function parseColor(value: string): Color {
 
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
-    const regex = /rgba?\(((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}\)/gi;
+    const regex = /rgba?\(((\d+|var\([^)]*\)|[\d\.]+)[\s\,\/]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,\/]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,\/]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,\/]*){0,1}\)/gi;
     const parameters: ColorRGBParameterArray = [];
     let containVariables = false;
     let matches;
@@ -150,25 +150,25 @@ export function parseColor(value: string): Color {
       });
     }
 
-    if (value.startsWith('rgba')) {
-      if (containVariables) {
+    if (containVariables) {
+      if (value.startsWith('rgba')) {
         const result: ColorRGBA_Variable = {
           type: 'rgba-v',
           parameters: parameters
         };
         return result;
       } else {
-        const result: ColorRGBA = {
-          type: 'rgba',
-          rgba: [parameters[0] as number, parameters[1] as number, parameters[2] as number, (parameters[3] !== undefined ? parameters[3] : 1) as number]
+        const result: ColorRGB_Variable = {
+          type: 'rgb-v',
+          parameters: parameters
         };
         return result;
       }
     } else {
-      if (containVariables) {
-        const result: ColorRGB_Variable = {
-          type: 'rgb-v',
-          parameters: parameters
+      if (typeof parameters[3] === 'number' && parameters[3] !== 1) {
+        const result: ColorRGBA = {
+          type: 'rgba',
+          rgba: [parameters[0] as number, parameters[1] as number, parameters[2] as number, parameters[3] as number]
         };
         return result;
       } else {
