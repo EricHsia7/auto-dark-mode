@@ -360,7 +360,7 @@ export function invertParsedColor(color: ParsedColor): ParsedColor {
       }
       */
 
-      if (isParsedColorVibrant(color) > 0.6) {
+      if (isParsedColorVibrant(color) > 0.4) {
         return color;
       }
 
@@ -515,7 +515,7 @@ export function isParsedColorDark(color: ParsedColorRGBA): number {
 }
 
 export function isParsedColorVibrant(color: ParsedColorRGBA): number {
-  const p = -0.0000151255643224656 * color.rgba[0] * color.rgba[1] + 1.02180617719616 + -0.0000169759512859492 * color.rgba[1] * color.rgba[2] + 1.05039394738239 + -0.000019102189087999 * color.rgba[0] * color.rgba[2] + 1.06222165419694;
+  const p = 0.00526701208730907 * Math.abs(color.rgba[0] - color.rgba[1]) + 0.2315923467761 + 0.005789762029929 * Math.abs(color.rgba[1] - color.rgba[2]) + 0.268849448143961 + 0.00445659947538687 * Math.abs(color.rgba[0] - color.rgba[2]) + 0.20534779494441;
   const q = Math.min(Math.max(p / 3, 0), 1);
   return q;
   // higher number means higher probability
