@@ -142,7 +142,7 @@ export function parseColor(value: string): Color {
           } else if (/^\d+$/.test(parameter)) {
             const integer: number = parseInt(parameter, 10);
             parameters.push(integer);
-          } else if (/^\d+\.?\d+$/.test(parameter)) {
+          } else if (/^[\d\.]+$/.test(parameter)) {
             const float: number = parseFloat(parameter);
             parameters.push(float);
           }
@@ -531,15 +531,15 @@ export function invertColor(color: Color): Color {
         else originalHue = ((r - g) / delta + 4) / 6;
       }
 
+      /*
       if (originalSaturation > 0.35 && originalValue > 0.55) {
         return color;
       }
+      */
 
-      /*
       if (isColorVibrant(color) > 0.4) {
         return color;
       }
-      */
 
       const newHue = originalHue;
       const newSaturation = originalSaturation;
