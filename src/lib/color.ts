@@ -5,9 +5,13 @@ export interface ColorRGB {
   rgb: [red: number, green: number, blue: number];
 }
 
+export type ColorRGBParameter = Variable | number;
+
+export type ColorRGBParameterArray = Array<ColorRGBParameter>;
+
 export interface ColorRGB_Variable {
   type: 'rgb-v';
-  parameters: Array<Variable | number>;
+  parameters: ColorRGBParameterArray;
 }
 
 export interface ColorRGBA {
@@ -17,8 +21,9 @@ export interface ColorRGBA {
 
 export interface ColorRGBA_Variable {
   type: 'rgba-v';
-  parameters: Array<Variable | number>;
+  parameters: ColorRGBParameterArray;
 }
+
 
 export type ColorHSLParameter = Variable | number | UnitedNumber;
 
@@ -116,7 +121,7 @@ export function parseColor(value: string): Color {
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
     const regex = /rgba?\(((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,]*){0,1}\)/gi;
-    const parameters: Array<Variable | number> = [];
+    const parameters: ColorRGBParameterArray= [];
     let containVariables = false;
     let matches;
     while ((matches = regex.exec(value)) !== null) {
