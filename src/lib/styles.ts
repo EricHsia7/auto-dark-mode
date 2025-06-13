@@ -37,13 +37,13 @@ export function getStyles(): Styles {
   const stylesCollection: StylesCollection = {
     '@stylesheet-default': {
       ':root': {
-        '--auto-dark-mode-stylesheet-default-f9fafc': '#f9fafc',
+        '--auto-dark-mode-stylesheet-default-ffffff': '#ffffff',
         '--auto-dark-mode-stylesheet-default-111111': '#111111',
         '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb',
         '--auto-dark-mode-stylesheet-default-fffd75': '#fffd75'
       },
       'html, body, section, header, main, footer, article': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
         'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'h1, h2, h3, h4, h5, h6, span, time, a, a:hover': {
@@ -51,11 +51,11 @@ export function getStyles(): Styles {
         'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'pre, code, p': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
         'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
         'border-color': 'var(--auto-dark-mode-stylesheet-default-111111)',
         'border-style': 'solid',
         'border-width': '1px',
@@ -95,7 +95,7 @@ export function getStyles(): Styles {
         'border-left-style': 'solid',
         'border-left-width': '4px',
         'padding-left': '20px',
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-f9fafc)',
+        'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
         'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
       },
       'hr': {
