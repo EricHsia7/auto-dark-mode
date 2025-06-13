@@ -258,35 +258,17 @@ export function parseColor(value: string): Color {
       const x = chroma * (1 - Math.abs(((hue / 60) % 2) - 1));
       const m = lightness - chroma / 2;
 
-      let r1 = 0,
-        g1 = 0,
-        b1 = 0;
+      const i = Math.floor(hue / 60) % 6;
+      const patterns = [
+        [chroma, x, 0],
+        [x, chroma, 0],
+        [0, chroma, x],
+        [0, x, chroma],
+        [x, 0, chroma],
+        [chroma, 0, x]
+      ];
 
-      if (hue >= 0 && hue < 60) {
-        r1 = chroma;
-        g1 = x;
-        b1 = 0;
-      } else if (hue >= 60 && hue < 120) {
-        r1 = x;
-        g1 = chroma;
-        b1 = 0;
-      } else if (hue >= 120 && hue < 180) {
-        r1 = 0;
-        g1 = chroma;
-        b1 = x;
-      } else if (hue >= 180 && hue < 240) {
-        r1 = 0;
-        g1 = x;
-        b1 = chroma;
-      } else if (hue >= 240 && hue < 300) {
-        r1 = x;
-        g1 = 0;
-        b1 = chroma;
-      } else if (hue >= 300 && hue < 360) {
-        r1 = chroma;
-        g1 = 0;
-        b1 = x;
-      }
+      const [r1, g1, b1] = patterns[i];
 
       // Convert to 0–255 and return
       const red = Math.round((r1 + m) * 255);
@@ -551,18 +533,22 @@ export function invertColor(color: Color): Color {
       const q = newValue * (1 - f * newSaturation);
       const t = newValue * (1 - (1 - f) * newSaturation);
 
-      const [newRed, newGreen, newBlue] = [
+      const [r1, g1, b1] = [
         [newValue, t, p],
         [q, newValue, p],
         [p, newValue, t],
         [p, q, newValue],
         [t, p, newValue],
         [newValue, p, q]
-      ][i % 6].map((x) => Math.round(x * 255));
+      ][i % 6];
+
+      const r2 = Math.round(r1 * 255);
+      const g2 = Math.round(g1 * 255);
+      const b2 = Math.round(b1 * 255);
 
       const result: ColorRGB = {
         type: 'rgb',
-        rgb: [newRed, newGreen, newBlue]
+        rgb: [r2, g2, b2]
       };
 
       return result;
