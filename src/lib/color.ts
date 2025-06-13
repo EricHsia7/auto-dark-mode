@@ -119,7 +119,7 @@ export function parseColor(value: string): Color {
 
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
-    const regex = /rgba?\(((\d+|var\([^)]*\)|[\d\.]+)[\s\,\/]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,\/]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,\/]*){0,1}((\d+|var\([^)]*\)|[\d\.]+)[\s\,\/]*){0,1}\)/gi;
+    const regex = /rgba?\((([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}\)/gi;
     const parameters: ColorRGBParameterArray = [];
     let containVariables = false;
     let matches;
