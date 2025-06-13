@@ -459,6 +459,15 @@ export function parseColor(value: string): Color {
     return result;
   }
 
+  // handle transparent
+  if (value.toLocaleLowerCase() === 'transparent') {
+    const result: ColorRGBA = {
+      type: 'rgba',
+      rgba: [255, 255, 255, 0]
+    };
+    return result;
+  }
+
   // handle named colors
   const foundColor = namedColors[value.toLowerCase()];
   if (foundColor) {

@@ -142,7 +142,6 @@ export const namedColors: { [name: string]: ColorRGB['rgb'] } = {
   teal: [0, 128, 128],
   thistle: [216, 191, 216],
   tomato: [255, 99, 71],
-  transparent: [255, 255, 255, 0],
   turquoise: [64, 224, 208],
   violet: [238, 130, 238],
   wheat: [245, 222, 179],
