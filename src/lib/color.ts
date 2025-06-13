@@ -254,21 +254,21 @@ export function parseColor(value: string): Color {
         }
       }
 
+      const i = hue / 60;
       const chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
-      const x = chroma * (1 - Math.abs(((hue / 60) % 2) - 1));
+      const x = chroma * (1 - Math.abs((i % 2) - 1));
       const m = lightness - chroma / 2;
 
-      const i = Math.floor(hue / 60) % 6;
-      const patterns = [
+      const pattern = [
         [chroma, x, 0],
         [x, chroma, 0],
         [0, chroma, x],
         [0, x, chroma],
         [x, 0, chroma],
         [chroma, 0, x]
-      ];
+      ][Math.floor(i) % 6];
 
-      const [r1, g1, b1] = patterns[i];
+      const [r1, g1, b1] = pattern;
 
       // Convert to 0–255 and return
       const red = Math.round((r1 + m) * 255);
@@ -542,13 +542,13 @@ export function invertColor(color: Color): Color {
         [newValue, p, q]
       ][i % 6];
 
-      const r2 = Math.round(r1 * 255);
-      const g2 = Math.round(g1 * 255);
-      const b2 = Math.round(b1 * 255);
+      const red = Math.round(r1 * 255);
+      const green = Math.round(g1 * 255);
+      const blue = Math.round(b1 * 255);
 
       const result: ColorRGB = {
         type: 'rgb',
-        rgb: [r2, g2, b2]
+        rgb: [red, green, blue]
       };
 
       return result;
