@@ -753,7 +753,7 @@ export function isColorDark(color: ColorRGBA): number {
 
 export function isColorVibrant(color: ColorRGB): number {
   // const p = 0.00526701208730907 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.2315923467761 + 0.005789762029929 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.268849448143961 + 0.00445659947538687 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.20534779494441;
-  const p = 0.006194316295 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.1553575457 + 0.006598013579 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1967193582 + 0.005130924508 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.1356480316;
+  const p = 0.006339594673 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.1357803475 + 0.006733518277 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1787805054 + 0.005240646414 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.1162090602;
   const q = Math.min(Math.max(p / 3, 0), 1);
   return q;
   // higher number means higher probability
