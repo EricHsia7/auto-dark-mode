@@ -18,7 +18,7 @@ function fetchCSS(url: string): Promise<string> {
   });
 }
 
-function resolveRelativeURLs(cssText, cssHref) {
+function resolveRelativeURLs(cssText: string, cssHref: string): string {
   const base = new URL(cssHref);
   return cssText.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g, (match, quote, urlPath) => {
     if (/^(data:|https?:|\/)/.test(urlPath)) {
@@ -34,7 +34,7 @@ function resolveRelativeURLs(cssText, cssHref) {
   });
 }
 
-export async function inlineCSS(): true {
+export async function inlineCSS(): Promise<true> {
   const linkElements = Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'));
   const fragment = new DocumentFragment();
   const linksToRemove = [];

@@ -68,7 +68,7 @@ export function getStyles(): Styles {
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
-        color: '#888888'
+        color: '#bdbdbd'
       },
       'th, td': {
         'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
