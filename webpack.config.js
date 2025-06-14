@@ -71,7 +71,19 @@ module.exports = (env, argv) => {
         {
           test: /\.css$/i,
           use: [
-            'style-loader',
+            {
+              loader: 'style-loader',
+              options: {
+                insert: function insertAtTop(element) {
+                  const parent = document.head || document.getElementsByTagName('head')[0];
+                  if (parent.firstChild) {
+                    parent.insertBefore(element, parent.firstChild); // Prepend the style tag
+                  } else {
+                    parent.appendChild(element);
+                  }
+                }
+              }
+            },
             'css-loader',
             {
               loader: 'postcss-loader',
