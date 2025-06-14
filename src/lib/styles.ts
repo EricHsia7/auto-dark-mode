@@ -377,22 +377,30 @@ export function generateCssFromStyles(object: StylesCollection | StyleSheet, nes
     for (const selector in object[sheet]) {
       const properties = object[sheet][selector];
 
-      if (typeof properties === 'object' && properties !== null && !Array.isArray(properties)) {
-        const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
+      const isObject = typeof properties === 'object' && properties !== null && !Array.isArray(properties);
+      if (!isObject || Object.keys(properties).length === 0) {
+        continue; // Skip non-object or empty selectors
+      }
 
-        if (isNestedBlock) {
-          const nestedContent = generateCssFromStyles({ nested: properties }, true)
-            .map((obj) => obj.css)
-            .join('');
+      const isNestedBlock = selector.startsWith('@') || Object.values(properties).some((v) => typeof v === 'object');
+
+      if (isNestedBlock) {
+        const nestedContent = generateCssFromStyles({ nested: properties }, true)
+          .map((obj) => obj.css)
+          .join('');
+
+        if (nestedContent.trim()) {
           result += `${selector}{${nestedContent}}`;
-        } else {
-          let rule = `${selector}{`;
-          for (const prop in properties) {
-            const val = properties[prop];
-            rule += `${prop}:${val}${sheet === '@stylesheet-lambda' ? '!important' : ''};`;
-          }
-          rule += '}';
-          basicRules += rule;
+        }
+      } else {
+        let rule = '';
+        for (const prop in properties) {
+          const val = properties[prop];
+          rule += `${prop}:${val}${sheet === '@stylesheet-lambda' ? '!important' : ''};`;
+        }
+
+        if (rule.trim()) {
+          basicRules += `${selector}{${rule}}`;
         }
       }
     }
