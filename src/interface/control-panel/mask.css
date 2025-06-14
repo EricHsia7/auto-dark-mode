@@ -18,10 +18,9 @@
 
 .auto_dark_mode_control_panel_mask.auto_dark_mode_control_panel_mask_fade_in {
   animation-name: auto-dark-mode-control-panel-mask-fade-in;
-  animation-duration: 0.25s;
+  animation-duration: 0.3s;
   animation-fill-mode: forwards;
   animation-direction: normal;
-  animation-timing-function: ease;
 }
 
 .auto_dark_mode_control_panel_mask.auto_dark_mode_control_panel_mask_faded_in {
@@ -30,8 +29,7 @@
 
 .auto_dark_mode_control_panel_mask.auto_dark_mode_control_panel_mask_fade_out {
   animation-name: auto-dark-mode-control-panel-mask-fade-in;
-  animation-duration: 0.25s;
+  animation-duration: 0.3s;
   animation-fill-mode: forwards;
   animation-direction: reverse;
-  animation-timing-function: ease;
 }
