@@ -4,7 +4,7 @@ import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
 
-export async function initialize(): void {
+export async function initialize() {
   // Inline external/foreign CSS
   await inlineCSS();
 
