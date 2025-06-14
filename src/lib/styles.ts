@@ -1,8 +1,8 @@
+import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { invertColor, parseColor, ColorRGBA, colorToString } from './color';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -405,10 +405,12 @@ export function generateCssFromStyles(object: StylesCollection | StyleSheet, nes
       }
     }
 
-    results.push({
-      name: sheet,
-      css: `${header}${result}`
-    });
+    if (result.length > 0) {
+      results.push({
+        name: sheet,
+        css: `${header}${result}`
+      });
+    }
   }
 
   return results;
