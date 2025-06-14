@@ -60,6 +60,9 @@
   align-items: center;
   justify-content: center;
   visibility: hidden;
+  background-image: var(--auto-dark-mode-visibility-off-333333);
+  background-size: 25px 25px;
+  background-position: center center;
 }
 
 /* state: off */
@@ -67,6 +70,7 @@
   visibility: visible;
 }
 
+/*
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg {
   width: 25px;
   height: 25px;
@@ -75,6 +79,7 @@
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg path {
   fill: var(--auto-dark-mode-333333);
 }
+*/
 
 /* stylesheets > stylesheet > toggle > on */
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on {
@@ -87,6 +92,9 @@
   align-items: center;
   justify-content: center;
   visibility: hidden;
+  background-image: var(--auto-dark-mode-visibility-on-333333);
+  background-size: 25px 25px;
+  background-position: center center;
 }
 
 /* state: on */
@@ -94,6 +102,7 @@
   visibility: visible;
 }
 
+/*
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg {
   width: 25px;
   height: 25px;
@@ -102,3 +111,4 @@
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg path {
   fill: var(--auto-dark-mode-333333);
 }
+*/
