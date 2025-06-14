@@ -82,7 +82,11 @@ export interface _URL {
   ref: string; // url(https://example.com/example.png)
 }
 
-export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL;
+export interface CurrentColor {
+  type: 'currentColor';
+}
+
+export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL | CurrentColor;
 
 function parseColorStops(components: Array<string>): ColorStopArray {
   const positionRegex = /(\d+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
@@ -468,6 +472,14 @@ export function parseColor(value: string): Color {
     return result;
   }
 
+  // handle currentColor
+  if (value === 'currentColor') {
+    const result: CurrentColor = {
+      type: 'currentColor'
+    };
+    return result;
+  }
+
   // handle named colors
   const foundColor = namedColors[value.toLowerCase()];
   if (foundColor) {
@@ -645,6 +657,11 @@ export function invertColor(color: Color): Color {
       break;
     }
 
+    case 'currentColor': {
+      return color;
+      break;
+    }
+
     default: {
       return color; // Fallback for any other types
       break;
@@ -735,6 +752,10 @@ export function colorToString(color: Color): string {
 
     case 'url': {
       return color.ref;
+    }
+
+    case 'currentColor': {
+      return 'currentColor';
     }
 
     default: {
