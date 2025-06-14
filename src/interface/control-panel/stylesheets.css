@@ -71,17 +71,6 @@
   visibility: visible;
 }
 
-/*
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg {
-  width: 25px;
-  height: 25px;
-}
-
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off svg path {
-  fill: var(--auto-dark-mode-333333);
-}
-*/
-
 /* stylesheets > stylesheet > toggle > on */
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on {
   position: absolute;
@@ -103,14 +92,3 @@
 .auto_dark_mode_control_panel[displayed="true"] .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle[state="on"] .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on {
   visibility: visible;
 }
-
-/*
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg {
-  width: 25px;
-  height: 25px;
-}
-
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_control_panel_stylesheets .auto_dark_mode_control_panel_stylesheets_stylesheet .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle .auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on svg path {
-  fill: var(--auto-dark-mode-333333);
-}
-*/

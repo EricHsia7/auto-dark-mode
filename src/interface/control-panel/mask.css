@@ -21,7 +21,7 @@
   animation-duration: 0.25s;
   animation-fill-mode: forwards;
   animation-direction: normal;
-  animation-timing-function: ease-out;
+  animation-timing-function: ease;
 }
 
 .auto_dark_mode_control_panel_mask.auto_dark_mode_control_panel_mask_faded_in {
@@ -33,5 +33,5 @@
   animation-duration: 0.25s;
   animation-fill-mode: forwards;
   animation-direction: reverse;
-  animation-timing-function: ease-in;
+  animation-timing-function: ease;
 }
