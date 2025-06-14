@@ -71,23 +71,7 @@ module.exports = (env, argv) => {
         {
           test: /\.css$/i,
           use: [
-            {
-              loader: 'style-loader',
-              options: {
-                insert: function insertAtTop(element) {
-                  const parent = document.head;
-                  const lastInsertedElement = window._lastStyleElementInsertedByStyleLoader;
-                  if (!lastInsertedElement) {
-                    parent.insertBefore(element, parent.firstChild);
-                  } else if (lastInsertedElement.nextSibling) {
-                    parent.insertBefore(element, lastInsertedElement.nextSibling);
-                  } else {
-                    parent.appendChild(element);
-                  }
-                  window._lastStyleElementInsertedByStyleLoader = element;
-                }
-              }
-            },
+            { loader: 'style-loader', options: { attributes: { id: 'auto-dark-mode-interface' }, injectType: 'singletonStyleTag' } },
             'css-loader',
             {
               loader: 'postcss-loader',
