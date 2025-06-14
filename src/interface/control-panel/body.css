@@ -1,9 +1,9 @@
 .auto_dark_mode_control_panel .auto_dark_mode_control_panel_body {
   position: absolute;
-  top: 50px;
+  top: 40px;
   left: 0px;
   width: 100%;
-  height: calc(100% - 50px);
+  height: calc(100% - 40px);
   background-color: var(--auto-dark-mode-f9f9fb);
   overflow-x: hidden;
   overflow-y: scroll;
