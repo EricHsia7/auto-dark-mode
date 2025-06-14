@@ -75,12 +75,16 @@ module.exports = (env, argv) => {
               loader: 'style-loader',
               options: {
                 insert: function insertAtTop(element) {
-                  const parent = document.head || document.getElementsByTagName('head')[0];
-                  if (parent.firstChild) {
-                    parent.insertBefore(element, parent.firstChild); // Prepend the style tag
+                  const parent = document.head;
+                  const lastInsertedElement = window._lastStyleElementInsertedByStyleLoader;
+                  if (!lastInsertedElement) {
+                    parent.insertBefore(element, parent.firstChild);
+                  } else if (lastInsertedElement.nextSibling) {
+                    parent.insertBefore(element, lastInsertedElement.nextSibling);
                   } else {
                     parent.appendChild(element);
                   }
+                  window._lastStyleElementInsertedByStyleLoader = element;
                 }
               }
             },
