@@ -38,28 +38,34 @@ export function getStyles(): Styles {
     '@stylesheet-default': {
       ':root': {
         '--auto-dark-mode-stylesheet-default-ffffff': '#ffffff',
-        '--auto-dark-mode-stylesheet-default-111111': '#111111',
+        '--auto-dark-mode-stylesheet-default-000000': '#000000',
         '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb',
         '--auto-dark-mode-stylesheet-default-fffd75': '#fffd75'
       },
+      'svg path, svg rect, svg circle, svg ellipse, svg polygon': {
+        fill: 'var(--auto-dark-mode-stylesheet-default-000000)'
+      },
+      'svg line, svg polyline': {
+        stroke: 'var(--auto-dark-mode-stylesheet-default-000000)'
+      },
       'html, body, section, header, main, footer, article': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
+        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'h1, h2, h3, h4, h5, h6, span, time, a, a:hover': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
+        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'pre, code, p': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
+        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
-        'border-color': 'var(--auto-dark-mode-stylesheet-default-111111)',
+        'border-color': 'var(--auto-dark-mode-stylesheet-default-000000)',
         'border-style': 'solid',
         'border-width': '1px',
-        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
+        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
         color: '#888888'
@@ -70,7 +76,7 @@ export function getStyles(): Styles {
         'border-width': '1px'
       },
       'th': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'tr': {
         'border-bottom-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
@@ -96,14 +102,14 @@ export function getStyles(): Styles {
         'border-left-width': '4px',
         'padding-left': '20px',
         'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
+        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'hr': {
         'border': 'none',
         'background-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)'
       },
       'figcaption, caption': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'details': {
         'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
@@ -111,26 +117,26 @@ export function getStyles(): Styles {
         'border-width': '1px'
       },
       'summary': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'small': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'strong': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'em': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'ul, ol': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'li': {
-        color: 'var(--auto-dark-mode-stylesheet-default-111111)'
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'mark': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-fffd75)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-111111)'
+        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       }
     },
     '@stylesheet-image-dimming': {
