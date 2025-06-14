@@ -18,19 +18,37 @@ function fetchCSS(url: string): Promise<string> {
   });
 }
 
+function resolveRelativeURLs(cssText, cssHref) {
+  const base = new URL(cssHref);
+  return cssText.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g, (match, quote, urlPath) => {
+    if (/^(data:|https?:|\/)/.test(urlPath)) {
+      // Absolute URL or data URI — do not touch
+      return `url(${quote}${urlPath}${quote})`;
+    }
+    try {
+      const resolved = new URL(urlPath, base).href;
+      return `url(${quote}${resolved}${quote})`;
+    } catch (e) {
+      return match;
+    }
+  });
+}
+
 export async function inlineCSS(): true {
   const linkElements = Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'));
   const fragment = new DocumentFragment();
   const linksToRemove = [];
   for (const link of linkElements) {
     try {
-      const cssSourceCode = await fetchCSS(link.href);
+      const href = link.href;
+      const cssSourceCode = await fetchCSS(href);
+      const resolvedCssSourceCode = resolveRelativeURLs(cssSourceCode, href);
       let css = '';
       if (link.hasAttribute('media')) {
         const conditionText = link.getAttribute('media');
-        css = `@media ${conditionText}{${cssSourceCode}}`;
+        css = `@media ${conditionText}{${resolvedCssSourceCode}}`;
       } else {
-        css = cssSourceCode;
+        css = resolvedCssSourceCode;
       }
       const style = document.createElement('style');
       style.textContent = css;
