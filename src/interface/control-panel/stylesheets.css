@@ -63,6 +63,7 @@
   background-image: var(--auto-dark-mode-visibility-off-333333);
   background-size: 25px 25px;
   background-position: center center;
+  background-repeat: no-repeat;
 }
 
 /* state: off */
@@ -95,6 +96,7 @@
   background-image: var(--auto-dark-mode-visibility-on-333333);
   background-size: 25px 25px;
   background-position: center center;
+  background-repeat: no-repeat;
 }
 
 /* state: on */
