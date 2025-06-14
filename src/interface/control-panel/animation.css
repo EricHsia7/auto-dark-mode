@@ -1,12 +1,10 @@
 @media (max-width: 768px) {
   @keyframes auto-dark-mode-control-panel-slide-in {
     0% {
-      opacity: 0;
       transform: translateY(100%);
     }
 
     100% {
-      opacity: 1;
       transform: translateY(0%);
     }
   }
@@ -15,12 +13,10 @@
 @media (min-width: 769px) {
   @keyframes auto-dark-mode-control-panel-slide-in {
     0% {
-      opacity: 0;
       transform: translateX(-100%);
     }
 
     100% {
-      opacity: 1;
       transform: translateX(0%);
     }
   }

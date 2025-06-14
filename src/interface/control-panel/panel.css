@@ -5,7 +5,6 @@
   user-select: none;
   -webkit-user-select: none;
   visibility: hidden;
-  opacity: 0.5;
   z-index: 99999;
 }
 
@@ -42,7 +41,6 @@
 
 .auto_dark_mode_control_panel.auto_dark_mode_control_panel_slided_in {
   transform: translateY(0%);
-  opacity: 1;
 }
 
 .auto_dark_mode_control_panel.auto_dark_mode_control_panel_slide_out {
