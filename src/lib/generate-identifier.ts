@@ -5,8 +5,8 @@ export function generateIdentifier(): string {
     [65, 26] // A-Z: 65 - 90
   ];
 
-  let randomNumber1 = (Math.random() * 0x10000000) | 0;
-  let randomNumber2 = (Math.random() * 0x10000000) | 0;
+  let randomNumber1 = Math.floor(Math.random() * 0x10000000);
+  let randomNumber2 = Math.floor(Math.random() * 0x10000000);
 
   const result = new Uint8Array(16);
   for (let i = 0; i < 16; i++) {
