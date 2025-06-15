@@ -1,44 +1,44 @@
 {
   "exclusion_list": [
     {
+      "description": "To avoid reCAPTCHA.",
       "name": "Google",
-      "pattern": "*://*.google.com/*",
-      "description": "To avoid reCAPTCHA."
+      "pattern": "*://*.google.com/*"
     },
     {
+      "description": "To avoid reCAPTCHA.",
       "name": "YouTube",
-      "pattern": "*://*.youtube.com/*",
-      "description": "To avoid reCAPTCHA."
+      "pattern": "*://*.youtube.com/*"
     },
     {
+      "description": "",
       "name": "Github",
-      "pattern": "*://github.*/*",
-      "description": ""
+      "pattern": "*://github.*/*"
     },
     {
+      "description": "",
       "name": "Github Dev",
-      "pattern": "*://*.github.dev/*",
-      "description": ""
+      "pattern": "*://*.github.dev/*"
     },
     {
+      "description": "",
       "name": "Github Sites",
-      "pattern": "*://*.github.com/*",
-      "description": ""
+      "pattern": "*://*.github.com/*"
     },
     {
+      "description": "",
       "name": "Twitter",
-      "pattern": "*://twitter.*/*",
-      "description": ""
+      "pattern": "*://twitter.*/*"
     },
     {
+      "description": "",
       "name": "X",
-      "pattern": "*://x.*/*",
-      "description": ""
+      "pattern": "*://x.*/*"
     },
     {
+      "description": "",
       "name": "ChatGPT",
-      "pattern": "*://chatgpt.com/*",
-      "description": ""
+      "pattern": "*://chatgpt.com/*"
     }
   ]
 }
