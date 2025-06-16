@@ -82,11 +82,12 @@ export interface _URL {
   ref: string; // url(https://example.com/example.png)
 }
 
-export interface CurrentColor {
-  type: 'currentColor';
+export interface FunctionalKeyword {
+  type: 'keyword';
+  value: 'inherit' | 'initial' | 'unset' | 'revert' | 'currentcolor'; // "transparent" is converted to rgba
 }
 
-export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL | CurrentColor;
+export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword;
 
 function parseColorStops(components: Array<string>): ColorStopArray {
   const positionRegex = /(\d+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
@@ -472,10 +473,12 @@ export function parseColor(value: string): Color {
     return result;
   }
 
-  // handle currentColor
-  if (value.toLowerCase() === 'currentcolor') {
-    const result: CurrentColor = {
-      type: 'currentColor'
+  // handle functional keywords
+  const functionalKeywords = ['currentcolor', 'inherit', 'initial', 'revert', 'unset'];
+  if (functionalKeywords.indexOf(value.toLowerCase()) > -1) {
+    const result: FunctionalKeyword = {
+      type: 'keyword',
+      value: value as FunctionalKeyword['value']
     };
     return result;
   }
@@ -672,7 +675,7 @@ export function invertColor(color: Color): Color {
       break;
     }
 
-    case 'currentColor': {
+    case 'keyword': {
       return color;
       break;
     }
@@ -769,8 +772,8 @@ export function colorToString(color: Color): string {
       return color.ref;
     }
 
-    case 'currentColor': {
-      return 'currentcolor';
+    case 'keyword': {
+      return color.value;
     }
 
     default: {
