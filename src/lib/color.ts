@@ -577,7 +577,7 @@ export function invertColor(color: Color): Color {
     }
 
     case 'rgb-v': {
-      return color; // Color with referenced variables are not inverted
+      return color;
       break;
     }
 
@@ -598,7 +598,22 @@ export function invertColor(color: Color): Color {
     }
 
     case 'rgba-v': {
-      return color; // Color with referenced variables are not inverted
+      const [R, G, B, A] = color.parameters;
+      if (typeof R === 'number' && typeof G === 'number' && typeof B === 'number') {
+        const RGB: ColorRGB = {
+          type: 'rgb',
+          rgb: [R, G, B]
+        };
+        const invertedRGB = invertColor(RGB) as ColorRGB;
+        const [r, g, b] = invertedRGB.rgb;
+        const result: ColorRGBA_Variable = {
+          type: 'rgba-v',
+          parameters: [r, g, b, A]
+        };
+        return result;
+      } else {
+        return color;
+      }
       break;
     }
 
