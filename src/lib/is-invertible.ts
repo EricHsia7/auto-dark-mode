@@ -3,19 +3,29 @@ import { namedColors } from './named-colors';
 function looksLikeColorValue(value: string): boolean {
   value = value.trim().toLowerCase();
 
-  // Check for hex codes
-  if (/^#([a-f0-9]{3,4}|[a-f0-9]{6}|[a-f0-9]{8})$/.test(value)) {
+  // check for hex codes
+  if (/^#([a-f0-9]{3,4}|[a-f0-9]{6}|[a-f0-9]{8})$/i.test(value)) {
     return true;
   }
 
-  // Other formats
-  if (/^(rgb|rgba|hsl|hsla|linear-gradient|radial-gradient|conic-gradient)\(/.test(value)) {
-    if (!/var\(--.*\)/.test(value) && !/calc\(.*\)/.test(value) && !/clamp\(.*\)/.test(value)) {
+  // other formats
+  if (/^(rgb|rgba|hsl|hsla|linear-gradient|-webkit-linear-gradient|radial-gradient|-webkit-radial-gradient|conic-gradient|-webkit-conic-gradient)\(/i.test(value)) {
+    if (!/var\(--.*\)/i.test(value) && !/calc\(.*\)/i.test(value) && !/clamp\(.*\)/i.test(value)) {
       return true;
     }
   }
 
-  // Named colors
+  // transparent
+  if (value.toLowerCase() === 'transparent') {
+    return true;
+  }
+
+  // currentColor
+  if (value.toLowerCase() === 'currentcolor') {
+    return true;
+  }
+
+  // named colors
   if (namedColors.hasOwnProperty(value.toLowerCase())) {
     return true;
   }

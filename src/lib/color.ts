@@ -467,7 +467,7 @@ export function parseColor(value: string): Color {
   if (value.toLocaleLowerCase() === 'transparent') {
     const result: ColorRGBA = {
       type: 'rgba',
-      rgba: [255, 255, 255, 0]
+      rgba: [0, 0, 0, 0]
     };
     return result;
   }
