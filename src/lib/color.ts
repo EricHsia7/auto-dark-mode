@@ -473,7 +473,7 @@ export function parseColor(value: string): Color {
   }
 
   // handle currentColor
-  if (value === 'currentColor') {
+  if (value.toLowerCase() === 'currentcolor') {
     const result: CurrentColor = {
       type: 'currentColor'
     };
@@ -755,7 +755,7 @@ export function colorToString(color: Color): string {
     }
 
     case 'currentColor': {
-      return 'currentColor';
+      return 'currentcolor';
     }
 
     default: {
