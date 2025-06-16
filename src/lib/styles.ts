@@ -212,7 +212,6 @@ export function getStyles(): Styles {
       }
     }
 
-    let index = 0;
     for (const sheet of document.styleSheets) {
       try {
         if (!sheet.cssRules) continue;
@@ -220,9 +219,8 @@ export function getStyles(): Styles {
         processRules(sheet.cssRules, sheetObj);
         const identifier = sheet.ownerNode?.id || generateIdentifier();
         const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
-        const sheetName = `@stylesheet-${name}-${index}-${identifier}`;
+        const sheetName = `@stylesheet-${name}-${identifier}`;
         stylesCollection[sheetName] = sheetObj;
-        index++;
       } catch (e) {
         // Skipped due to access restrictions
       }
