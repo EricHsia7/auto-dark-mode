@@ -155,7 +155,7 @@ export function parseColor(value: string): Color {
     }
 
     if (containVariables) {
-      if (value.startsWith('rgba')) {
+      if (value.startsWith('rgba') || parameters[3] !== undefined) {
         const result: ColorRGBA_Variable = {
           type: 'rgba-v',
           parameters: parameters
