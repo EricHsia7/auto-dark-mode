@@ -84,7 +84,9 @@ export interface _URL {
 
 export interface FunctionalKeyword {
   type: 'keyword';
-  value: 'inherit' | 'initial' | 'unset' | 'revert' | 'currentcolor'; // "transparent" is converted to rgba
+  value: 'inherit' | 'initial' | 'unset' | 'revert' | 'currentcolor' | 'none';
+  // "transparent" is converted to rgba
+  // "none" my not mean "transparent," so keep it as-is
 }
 
 export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword;
