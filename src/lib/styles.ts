@@ -3,6 +3,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
+import { splitColors } from './split-colors';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -288,57 +289,62 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
-        const parsedColor = parseColor(value);
-        if (parsedColor) {
-          const invertedColor = invertColor(parsedColor);
-          newStyles[key] = colorToString(invertedColor);
+        let invertedColors = [];
+        const colors = splitColors(value);
+        for (const color of colors) {
+          const parsedColor = parseColor(color);
+          if (parsedColor) {
+            const invertedColor = invertColor(parsedColor);
+            invertedColors.push(colorToString(invertedColor));
 
-          if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
-            let r = 0;
-            let g = 0;
-            let b = 0;
-            if (parsedColor.type === 'rgba') {
-              r = parsedColor.rgba[0] / 255;
-              g = parsedColor.rgba[1] / 255;
-              b = parsedColor.rgba[2] / 255;
-            }
-            if (parsedColor.type === 'rgb') {
-              r = parsedColor.rgb[0] / 255;
-              g = parsedColor.rgb[1] / 255;
-              b = parsedColor.rgb[2] / 255;
-            }
-            if (key === 'background-color' || key === 'background') {
-              backgroundColorRed += r;
-              backgroundColorGreen += g;
-              backgroundColorBlue += b;
-              backgroundColorQuantity++;
-            }
-            if (key === 'color') {
-              textColorRed += r;
-              textColorGreen += g;
-              textColorBlue += b;
-              textColorQuantity++;
-            }
-            if (key.startsWith('--')) {
-              if (referenceMap.hasOwnProperty(key)) {
-                if (referenceMap[key][0] > referenceMap[key][1]) {
-                  backgroundColorRed += r;
-                  backgroundColorGreen += g;
-                  backgroundColorBlue += b;
-                  backgroundColorQuantity++;
-                }
-                if (referenceMap[key][0] < referenceMap[key][1]) {
-                  textColorRed += r;
-                  textColorGreen += g;
-                  textColorBlue += b;
-                  textColorQuantity++;
+            if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
+              let r = 0;
+              let g = 0;
+              let b = 0;
+              if (parsedColor.type === 'rgba') {
+                r = parsedColor.rgba[0] / 255;
+                g = parsedColor.rgba[1] / 255;
+                b = parsedColor.rgba[2] / 255;
+              }
+              if (parsedColor.type === 'rgb') {
+                r = parsedColor.rgb[0] / 255;
+                g = parsedColor.rgb[1] / 255;
+                b = parsedColor.rgb[2] / 255;
+              }
+              if (key === 'background-color' || key === 'background') {
+                backgroundColorRed += r;
+                backgroundColorGreen += g;
+                backgroundColorBlue += b;
+                backgroundColorQuantity++;
+              }
+              if (key === 'color') {
+                textColorRed += r;
+                textColorGreen += g;
+                textColorBlue += b;
+                textColorQuantity++;
+              }
+              if (key.startsWith('--')) {
+                if (referenceMap.hasOwnProperty(key)) {
+                  if (referenceMap[key][0] > referenceMap[key][1]) {
+                    backgroundColorRed += r;
+                    backgroundColorGreen += g;
+                    backgroundColorBlue += b;
+                    backgroundColorQuantity++;
+                  }
+                  if (referenceMap[key][0] < referenceMap[key][1]) {
+                    textColorRed += r;
+                    textColorGreen += g;
+                    textColorBlue += b;
+                    textColorQuantity++;
+                  }
                 }
               }
             }
+          } else {
+            invertedColors.push(value); // If parsing fails, keep original
           }
-        } else {
-          newStyles[key] = value; // If parsing fails, keep original
         }
+        newStyles[key] = invertedColors.join(',');
       } else if (isPreserved(key)) {
         newStyles[key] = value;
       }
