@@ -135,7 +135,7 @@ export function getStyles(): Styles {
         color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'mark': {
-        'background-color': 'rgba(255, 252, 82, 0.5)',
+        'background-color': 'rgba(248, 255, 0, 0.5)',
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       }
     },
