@@ -134,7 +134,7 @@ export function parseColor(value: string): Color {
 
   // handle rgb/rgba
   if (value.startsWith('rgb')) {
-    const regex = /rgba?\((([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}\)/gi;
+    const regex = /rgba?\((([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}\)/i;
     const parameters: ColorRGBParameterArray = [];
     let containVariables = false;
     let matches;
@@ -198,7 +198,7 @@ export function parseColor(value: string): Color {
 
   // handle hsl
   if (value.startsWith('hsl')) {
-    const regex = /hsla?\(((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}\)/gi;
+    const regex = /hsla?\(((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}\)/i;
     const parameters: ColorHSLParameterArray = [];
     let containVariables = false;
     let matches;
@@ -218,6 +218,9 @@ export function parseColor(value: string): Color {
               ref: parameter
             };
             parameters.push(variable);
+          } else if (/^[\d\.]+$/.test(parameter)) {
+            const float: number = parseFloat(parameter);
+            parameters.push(float);
           } else if (/^\d+$/.test(parameter)) {
             const integer: number = parseInt(parameter, 10);
             parameters.push(integer);
