@@ -105,14 +105,15 @@ function parseColorStops(components: Array<string>): ColorStopArray {
         color: color,
         position: position
       });
-    } else {
+    }
+    /* else {
       const color = parseColor(trimmedComponent) as ColorStop['color'];
       colorStops.push({
         type: 'stop',
         color: color,
         position: ''
       });
-    }
+    }*/
   }
   return colorStops;
 }
