@@ -197,7 +197,7 @@ export function parseColor(value: string): Color {
 
   // handle hsl
   if (value.startsWith('hsl')) {
-    const regex = /hsla?\(((\d+%?|var\([^)]*\))[\s\,]*){0,1}((\d+%?|var\([^)]*\))[\s\,]*){0,1}((\d+%?|var\([^)]*\))[\s\,]*){0,1}((\d+%?|var\([^)]*\))[\s\,]*){0,1}\)/gi;
+    const regex = /hsla?\(((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}\)/gi;
     const parameters: ColorHSLParameterArray = [];
     let containVariables = false;
     let matches;
@@ -374,7 +374,7 @@ export function parseColor(value: string): Color {
 
     // Determine if the first part is a direction or a color stop
     let direction = '';
-    if (components[0].trim().match(/^\d+deg$|^to /)) {
+    if (components[0].trim().match(/^[\+\-\d]+deg$|^to /)) {
       direction = components.shift().trim();
     } else {
       direction = 'to bottom'; // default direction if not specified
