@@ -198,7 +198,7 @@ export function parseColor(value: string): Color {
 
   // handle hsl
   if (value.startsWith('hsl')) {
-    const regex = /hsla?\(((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}((\d+%?|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}\)/gi;
+    const regex = /hsla?\((([\.\d]+%|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}(([\.\d]+%|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}(([\.\d]+%|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}(([\.\d]+%|[\.\d]+|var\([^)]*\))[\s\,]*){0,1}\)/gi;
     const parameters: ColorHSLParameterArray = [];
     let containVariables = false;
     let matches;
@@ -304,13 +304,13 @@ export function parseColor(value: string): Color {
       // Handle alpha
       const alpha = (parameters[3] !== undefined ? parameters[3] : 1) as number;
 
-      if (alpha === 1) {
+      if (typeof alpha === 'number' && alpha === 1) {
         const result: ColorRGB = {
           type: 'rgb',
           rgb: [red, green, blue]
         };
         return result;
-      } else {
+      } else if (typeof alpha === 'number' && alpha !== 1) {
         const result: ColorRGBA = {
           type: 'rgba',
           rgba: [red, green, blue, alpha]
