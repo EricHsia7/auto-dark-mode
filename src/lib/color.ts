@@ -92,7 +92,7 @@ export interface FunctionalKeyword {
 export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword;
 
 function parseColorStops(components: Array<string>): ColorStopArray {
-  const positionRegex = /(\d+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
+  const positionRegex = /([\.\d]+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
   const colorStops: ColorStopArray = [];
   for (const component of components) {
     const trimmedComponent = component.trim();
