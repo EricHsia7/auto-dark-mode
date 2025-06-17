@@ -40,8 +40,7 @@ export function getStyles(): Styles {
       ':root': {
         '--auto-dark-mode-stylesheet-default-ffffff': '#ffffff',
         '--auto-dark-mode-stylesheet-default-000000': '#000000',
-        '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb',
-        '--auto-dark-mode-stylesheet-default-fffd75': '#fffd75'
+        '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb'
       },
       'svg path, svg rect, svg circle, svg ellipse, svg polygon': {
         fill: 'var(--auto-dark-mode-stylesheet-default-000000)'
@@ -136,7 +135,7 @@ export function getStyles(): Styles {
         color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'mark': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-fffd75)',
+        'background-color': 'rgba(255, 252, 82, 0.5)',
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       }
     },
