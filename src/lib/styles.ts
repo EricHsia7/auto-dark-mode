@@ -3,7 +3,6 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { sanitizeURL } from './sanitize-url';
 import { splitColors } from './split-colors';
 
 export type CSSProperties = {
@@ -218,7 +217,7 @@ export function getStyles(): Styles {
         if (!sheet.cssRules) continue;
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
-        const identifier = sheet.ownerNode?.id || sheet.ownerNode?.href ? sanitizeURL(sheet.ownerNode.href) : generateIdentifier();
+        const identifier = sheet.ownerNode?.id || generateIdentifier();
         const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
         const sheetName = `@stylesheet-${name}-${identifier}`;
         stylesCollection[sheetName] = sheetObj;
