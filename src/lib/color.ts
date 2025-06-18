@@ -566,9 +566,9 @@ export function invertColor(color: Color): Color {
       const newValue = 0.05 + (1 - 0.05) * (1 - originalValue);
       const scale = newValue / originalValue;
 
-      const red = Math.min(Math.round(r * scale * 255), 255);
-      const green = Math.min(Math.round(g * scale * 255), 255);
-      const blue = Math.min(Math.round(b * scale * 255), 255);
+      const red = Math.round(r * scale * 255);
+      const green = Math.round(g * scale * 255);
+      const blue = Math.round(b * scale * 255);
 
       const result: ColorRGB = {
         type: 'rgb',
