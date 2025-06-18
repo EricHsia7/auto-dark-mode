@@ -556,8 +556,15 @@ export function invertColor(color: Color): Color {
       const b = B / 255;
 
       const originalValue = Math.max(r, g, b);
+      if (originalValue === 0) {
+        const result0: ColorRGB = {
+          type: 'rgb',
+          rgb: [13, 13, 13] // since 0.05 * 255 ≈ 13
+        };
+        return result0;
+      }
       const newValue = 0.05 + (1 - 0.05) * (1 - originalValue);
-      const scale = Math.min(Math.max(newValue / originalValue, 0), 1);
+      const scale = Math.min(newValue / originalValue, 1);
 
       const red = Math.round(r * scale * 255);
       const green = Math.round(g * scale * 255);
