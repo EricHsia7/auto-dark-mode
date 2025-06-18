@@ -372,10 +372,11 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
 export function generateCssFromStyles(object: StylesCollection | StyleSheet, nested: boolean = false): StyleSheetCSSArray {
   const results: StyleSheetCSSArray = [];
 
+  let hasBasicRules = false;
   for (const sheet in object) {
     const header = nested ? '' : `/* ${sheet} */`;
-    let result = '';
-    let basicRules = '';
+    let result = [];
+    let basicRules = [];
 
     for (const selector in object[sheet]) {
       const properties = object[sheet][selector];
@@ -393,35 +394,36 @@ export function generateCssFromStyles(object: StylesCollection | StyleSheet, nes
           .join('');
 
         if (nestedContent.trim()) {
-          result += `${selector}{${nestedContent}}`;
+          result.push(`${selector}{${nestedContent}}`);
         }
       } else {
-        let rule = '';
+        let rule = [];
+        let hasRule = false;
         for (const prop in properties) {
           const val = properties[prop];
-          rule += `${prop}:${val}${sheet === '@stylesheet-lambda' ? '!important' : ''};`;
+          rule.push(`${prop}:${val}${sheet === '@stylesheet-lambda' ? '!important' : ''};`);
+          hasRule = true;
         }
 
-        if (rule.trim()) {
-          basicRules += `${selector}{${rule}}`;
+        if (hasRule) {
+          basicRules.push(`${selector}{${rule.join('')}}`);
+          hasBasicRules = true;
         }
       }
     }
 
-    if (basicRules.trim()) {
+    if (hasBasicRules) {
       if (nested) {
-        result = `${basicRules}${result}`;
+        result.unshift(basicRules.join(''));
       } else {
-        result = `@media (prefers-color-scheme:dark){${basicRules}}${result}`;
+        result.unshift(`@media (prefers-color-scheme:dark){${basicRules.join('')}}`);
       }
     }
 
-    if (result !== '') {
-      results.push({
-        name: sheet,
-        css: `${header}${result}`
-      });
-    }
+    results.push({
+      name: sheet,
+      css: `${header}${result.join('')}`
+    });
   }
 
   return results;
