@@ -160,7 +160,7 @@ export function getStyles(): Styles {
             const extendedRuleStyle = Array.from(styleRule.style).concat(['background' /*, 'border' */]);
             for (const prop of extendedRuleStyle) {
               const value = styleRule.style.getPropertyValue(prop).trim();
-              if (value.length > 0) {
+              if (value !== '') {
                 container[selectorText][prop] = value;
                 // Check if value refers to a CSS variable
                 const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
@@ -250,7 +250,7 @@ export function getStyles(): Styles {
 
       for (const prop of element.style) {
         const value = element.style.getPropertyValue(prop).trim();
-        if (value.length > 0) {
+        if (value !== '') {
           lambdaStyles[selector][prop] = value;
         }
       }
@@ -416,7 +416,7 @@ export function generateCssFromStyles(object: StylesCollection | StyleSheet, nes
       }
     }
 
-    if (result.length > 0) {
+    if (result !== '') {
       results.push({
         name: sheet,
         css: `${header}${result}`
