@@ -573,8 +573,9 @@ export function invertColor(color: Color): Color {
       const newSaturation = originalSaturation;
       const newValue = 0.05 + (1 - 0.05) * (1 - originalValue);
 
-      const i = Math.floor(newHue * 6);
-      const f = newHue * 6 - i;
+      const h6 = newHue * 6;
+      const i = Math.floor(h6);
+      const f = h6 - i;
       const p = newValue * (1 - newSaturation);
       const q = newValue * (1 - f * newSaturation);
       const t = newValue * (1 - (1 - f) * newSaturation);
