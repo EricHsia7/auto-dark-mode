@@ -3,7 +3,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { splitColors } from './split-colors';
+import { splitByTopLevelComma } from './split-by-top-level-comma';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -289,7 +289,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
         let invertedColors = [];
-        const colors = splitColors(value);
+        const colors = splitByTopLevelComma(value);
         for (const color of colors) {
           const parsedColor = parseColor(color);
           if (parsedColor) {
