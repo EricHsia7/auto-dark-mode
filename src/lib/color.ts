@@ -545,12 +545,31 @@ function invertStops(colorStops: ColorStopArray): ColorStopArray {
 export function invertColor(color: Color): Color {
   switch (color.type) {
     case 'rgb': {
+      if (isColorVibrant(color) > 0.31) {
+        return color;
+      }
+
       const [R, G, B] = color.rgb;
 
       const r = R / 255;
       const g = G / 255;
       const b = B / 255;
 
+      const originalValue = Math.max(r, g, b);
+      const newValue = 0.05 + (1 - 0.05) * (1 - originalValue);
+      const scale = Math.min(Math.max(newValue / originalValue, 0), 1);
+
+      const red = Math.round(r * scale * 255);
+      const green = Math.round(g * scale * 255);
+      const blue = Math.round(b * scale * 255);
+
+      const result: ColorRGB = {
+        type: 'rgb',
+        rgb: [red, green, blue]
+      };
+
+      return result;
+      /*
       const max = Math.max(r, g, b);
       const min = Math.min(r, g, b);
       const delta = max - min;
@@ -563,10 +582,6 @@ export function invertColor(color: Color): Color {
         if (max === r) originalHue = ((g - b) / delta + (g < b ? 6 : 0)) / 6;
         else if (max === g) originalHue = ((b - r) / delta + 2) / 6;
         else originalHue = ((r - g) / delta + 4) / 6;
-      }
-
-      if (isColorVibrant(color) > 0.31) {
-        return color;
       }
 
       const newHue = originalHue;
@@ -588,17 +603,11 @@ export function invertColor(color: Color): Color {
         [t, p, newValue],
         [newValue, p, q]
       ][i % 6];
-
+      
       const red = Math.round(r1 * 255);
       const green = Math.round(g1 * 255);
       const blue = Math.round(b1 * 255);
-
-      const result: ColorRGB = {
-        type: 'rgb',
-        rgb: [red, green, blue]
-      };
-
-      return result;
+      */
       break;
     }
 
