@@ -559,7 +559,7 @@ export function invertColor(color: Color): Color {
       if (originalValue === 0) {
         const result0: ColorRGB = {
           type: 'rgb',
-          rgb: [13, 13, 13] // since 0.05 * 255 ≈ 13
+          rgb: [255, 255, 255]
         };
         return result0;
       }
