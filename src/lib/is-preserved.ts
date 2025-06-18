@@ -1,6 +1,10 @@
+const preservedProperties = {
+  'filter': true,
+  '-webkit-filter': true
+};
+
 export function isPreserved(property: string): boolean {
-  const preservedProperties = ['filter', '-webkit-filter'];
-  if (preservedProperties.indexOf(property) > -1) {
+  if (preservedProperties.hasOwnProperty(property)) {
     return true;
   } else {
     return false;

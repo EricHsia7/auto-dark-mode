@@ -33,76 +33,76 @@ function looksLikeColorValue(value: string): boolean {
   return false;
 }
 
-export function isInvertible(property: string, value: string): boolean {
-  const colorRelatedCSSProperties = [
-    // General color properties
-    'color',
-    'background-color',
-    'border-color',
-    'border-top-color',
-    'border-right-color',
-    'border-bottom-color',
-    'border-left-color',
-    'outline-color',
-    /*
+const colorRelatedCSSProperties = {
+  // General color properties
+  'color': true,
+  'background-color': true,
+  'border-color': true,
+  'border-top-color': true,
+  'border-right-color': true,
+  'border-bottom-color': true,
+  'border-left-color': true,
+  'outline-color': true,
+  /*
     'text-shadow',
     'box-shadow',
     */
-    // TODO: implement the parser
-    'caret-color',
-    'column-rule-color',
-    'text-decoration-color',
-    'text-emphasis-color',
+  // TODO: implement the parser
+  'caret-color': true,
+  'column-rule-color': true,
+  'text-decoration-color': true,
+  'text-emphasis-color': true,
 
-    // Logical border colors
-    'border-block-color',
-    'border-block-end-color',
-    'border-block-start-color',
-    'border-inline-color',
-    'border-inline-end-color',
-    'border-inline-start-color',
+  // Logical border colors
+  'border-block-color': true,
+  'border-block-end-color': true,
+  'border-block-start-color': true,
+  'border-inline-color': true,
+  'border-inline-end-color': true,
+  'border-inline-start-color': true,
 
-    // Filter and blend properties
-    /*
+  // Filter and blend properties
+  /*
     'backdrop-filter',
     'filter',
     */
-    'background-image',
-    'background-blend-mode',
-    'mix-blend-mode',
+  'background-image': true,
+  'background-blend-mode': true,
+  'mix-blend-mode': true,
 
-    // SVG related colors
-    'fill',
-    'flood-color',
-    'lighting-color',
-    'stop-color',
-    'stroke',
-    /*
+  // SVG related colors
+  'fill': true,
+  'flood-color': true,
+  'lighting-color': true,
+  'stop-color': true,
+  'stroke': true,
+  /*
     'color-interpolation-filters',
     */
 
-    // System/UI colors
-    'accent-color',
-    'color-scheme',
-    'scrollbar-color',
-    'font-palette',
-    'print-color-adjust',
+  // System/UI colors
+  'accent-color': true,
+  'color-scheme': true,
+  'scrollbar-color': true,
+  'font-palette': true,
+  'print-color-adjust': true,
 
-    // Vendor prefixed properties
-    '-webkit-tap-highlight-color',
-    '-webkit-border-before-color',
-    '-webkit-text-fill-color',
-    '-webkit-text-stroke-color',
+  // Vendor prefixed properties
+  '-webkit-tap-highlight-color': true,
+  '-webkit-border-before-color': true,
+  '-webkit-text-fill-color': true,
+  '-webkit-text-stroke-color': true,
 
-    // Shorthand properties
-    'background',
-    'outline',
-    /*'text-decoration',*/
-    'box-decoration-break',
-    'column-rule'
-  ];
+  // Shorthand properties
+  'background': true,
+  'outline': true,
+  /*'text-decoration',*/
+  'box-decoration-break': true,
+  'column-rule': true
+};
 
-  if (colorRelatedCSSProperties.indexOf(property) > -1) {
+export function isInvertible(property: string, value: string): boolean {
+  if (colorRelatedCSSProperties.hasOwnProperty(property)) {
     return true;
   } else {
     if (property.startsWith('--')) {

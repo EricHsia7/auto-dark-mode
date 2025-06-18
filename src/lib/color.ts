@@ -91,6 +91,14 @@ export interface FunctionalKeyword {
 
 export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword;
 
+const functionalKeywords = {
+  currentcolor: true,
+  inherit: true,
+  initial: true,
+  revert: true,
+  unset: true
+};
+
 function parseColorStops(components: Array<string>): ColorStopArray {
   const positionRegex = /([\.\d]+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
   const colorStops: ColorStopArray = [];
@@ -486,7 +494,7 @@ export function parseColor(value: string): Color {
   }
 
   // handle transparent
-  if (value.toLocaleLowerCase() === 'transparent') {
+  if (value.toLowerCase() === 'transparent') {
     const result: ColorRGBA = {
       type: 'rgba',
       rgba: [0, 0, 0, 0]
@@ -495,8 +503,7 @@ export function parseColor(value: string): Color {
   }
 
   // handle functional keywords
-  const functionalKeywords = ['currentcolor', 'inherit', 'initial', 'revert', 'unset'];
-  if (functionalKeywords.indexOf(value.toLowerCase()) > -1) {
+  if (functionalKeywords.hasOwnProperty(value.toLowerCase())) {
     const result: FunctionalKeyword = {
       type: 'keyword',
       value: value as FunctionalKeyword['value']
