@@ -564,63 +564,30 @@ export function invertColor(color: Color): Color {
         return result0;
       }
       const newValue = 0.05 + (1 - 0.05) * (1 - originalValue);
-      const scale = newValue / originalValue;
+      const scaler = newValue / originalValue;
 
-      const red = Math.round(r * scale * 255);
-      const green = Math.round(g * scale * 255);
-      const blue = Math.round(b * scale * 255);
-
-      const result: ColorRGB = {
-        type: 'rgb',
-        rgb: [red, green, blue]
-      };
-
-      return result;
-      /*
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-      const delta = max - min;
-
-      let originalHue = 0;
-      const originalSaturation = max === 0 ? 0 : delta / max;
-      const originalValue = max;
-
-      if (delta !== 0) {
-        if (max === r) originalHue = ((g - b) / delta + (g < b ? 6 : 0)) / 6;
-        else if (max === g) originalHue = ((b - r) / delta + 2) / 6;
-        else originalHue = ((r - g) / delta + 4) / 6;
-      }
-
-      const newHue = originalHue;
-      const newSaturation = originalSaturation;
-      const newValue = 0.05 + (1 - 0.05) * (1 - originalValue);
-
-      const h6 = newHue * 6;
-      const i = Math.floor(h6);
-      const f = h6 - i;
-      const p = newValue * (1 - newSaturation);
-      const q = newValue * (1 - f * newSaturation);
-      const t = newValue * (1 - (1 - f) * newSaturation);
-
-      const [r1, g1, b1] = [
-        [newValue, t, p],
-        [q, newValue, p],
-        [p, newValue, t],
-        [p, q, newValue],
-        [t, p, newValue],
-        [newValue, p, q]
-      ][i % 6];
-
-      const red = Math.round(r1 * 255);
-      const green = Math.round(g1 * 255);
-      const blue = Math.round(b1 * 255);
+      const red = Math.round(r * scaler * 255);
+      const green = Math.round(g * scaler * 255);
+      const blue = Math.round(b * scaler * 255);
 
       const result: ColorRGB = {
         type: 'rgb',
         rgb: [red, green, blue]
       };
+      // color = (r,g,b) where 0 <= r, g, b <= 1
+      // scaler = t where 0 < t <= 1
+      // newColor = color' = t * color = (tr,tg,tb)
+
+      // value:      v = max(r,g,b)
+      //             v' = max(tr,tg,tb) = tv
+      // chroma:     c = v - min(r,g,b) = max(r,g,b) - min(r,g,b)
+      //             c' = v' - min(tr,tg,tb) = max(tr,tg,tb) - min(tr,tg,tb) = t (max(r,g,b) - min(r,g,b)) = tc
+      // saturation: s = 0 [if v = 0], c / v [otherwise]
+      //             s' = c' / v' = 0 [if tv = 0], tc / tv [otherwise]
+      // hue:        h = 60 * (g - b) / c [if v = r], 60 * (2 + (b - r) / c) [if v = g], 60 * (4 + (r - g) / c) [if v = b]
+      //             h' = 60 * (tg - tb) / tc [if tv = tr], 60 * (2 + (tb - tr) / tc) [if tv = tg], 60 * (4 + (tr - tg) / tc) [if tv = tb]
+      // h' = h and s' = s and v' = tv
       return result;
-      */
       break;
     }
 
