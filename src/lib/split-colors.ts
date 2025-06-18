@@ -2,12 +2,11 @@ export function splitColors(value: string): Array<string> {
   value = value.trim();
   let leftBracket = 0;
   let rightBracket = 0;
-  let current = '';
+  let start = 0;
   const result: Array<string> = [];
   const len = value.length;
   for (let i = 0; i < len; i++) {
     const char = value[i];
-    current += char;
     if (char === '(') {
       leftBracket += 1;
     }
@@ -16,8 +15,8 @@ export function splitColors(value: string): Array<string> {
     }
     if (leftBracket === rightBracket) {
       if (char === ',' || i === len - 1) {
-        result.push(current);
-        current = '';
+        result.push(value.slice(start, i + 1));
+        start = i + 1;
       }
     }
   }
