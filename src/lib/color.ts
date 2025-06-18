@@ -558,12 +558,6 @@ export function invertColor(color: Color): Color {
         else originalHue = ((r - g) / delta + 4) / 6;
       }
 
-      /*
-      if (originalSaturation > 0.35 && originalValue > 0.55) {
-        return color;
-      }
-      */
-
       if (isColorVibrant(color) > 0.31) {
         return color;
       }
