@@ -3,6 +3,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
+import { isSVGColorPresentationAttribute } from './is-svg-color-presentation-attribute';
 import { splitByTopLevelComma } from './split-by-top-level-comma';
 
 export type CSSProperties = {
@@ -32,6 +33,14 @@ export interface StyleSheetCSSItem {
 }
 
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
+
+const svgElements = {
+  path: true,
+  rect: true,
+  circle: true,
+  ellipse: true,
+  polygon: true
+};
 
 export function getStyles(): Styles {
   const cssVariableReferenceMap: CSSVariableReferenceMap = {};
@@ -243,9 +252,22 @@ export function getStyles(): Styles {
   for (const element of elementsWithInlineStyle) {
     if (element.style.length > 0) {
       const selector = generateElementSelector(element);
+      const tag = element.tagName.toLowerCase();
 
       if (!lambdaStyles.hasOwnProperty(selector)) {
         lambdaStyles[selector] = {};
+      }
+
+      if (svgElements.hasOwnProperty(tag)) {
+        const attributes = element.getAttributeNames();
+        for (const attribute of attributes) {
+          if (isSVGColorPresentationAttribute(attribute)) {
+            const value = element.getAttribute(attribute);
+            if (value !== '') {
+              lambdaStyles[selector][attribute] = value;
+            }
+          }
+        }
       }
 
       for (const prop of element.style) {
