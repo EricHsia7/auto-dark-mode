@@ -58,19 +58,6 @@ module.exports = (env, argv) => {
     module: {
       rules: [
         {
-          test: /\.(glsl|vs|fs|vert|frag)$/,
-          exclude: /node_modules/,
-          use: [
-            {
-              loader: ['webpack-glsl-loader'],
-              options: {
-                preserveUniforms: true,
-                preserveDefines: true
-              }
-            }
-          ]
-        },
-        {
           test: /\.js|ts|jsx|tsx?$/, // Use babel-loader for TypeScript files
           exclude: /node_modules/,
           use: {
