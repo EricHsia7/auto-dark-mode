@@ -264,7 +264,7 @@ export function getStyles(): Styles {
         for (const attribute of attributes) {
           if (isSVGColorPresentationAttribute(attribute)) {
             const value = element.getAttribute(attribute);
-            lambdaStyles[selector][attribute] = value === '' ? 'none' : value;
+            lambdaStyles[selector][attribute] = value === '' ? 'var(--auto-dark-mode-stylesheet-default-000000)' : value;
           }
         }
       }
