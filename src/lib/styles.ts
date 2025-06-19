@@ -263,9 +263,7 @@ export function getStyles(): Styles {
         for (const attribute of attributes) {
           if (isSVGColorPresentationAttribute(attribute)) {
             const value = element.getAttribute(attribute);
-            if (value !== '') {
-              lambdaStyles[selector][attribute] = value;
-            }
+            lambdaStyles[selector][attribute] = value === '' ? 'none' : value;
           }
         }
       }
