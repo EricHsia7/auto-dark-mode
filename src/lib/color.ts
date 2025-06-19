@@ -96,7 +96,8 @@ const functionalKeywords = {
   inherit: true,
   initial: true,
   revert: true,
-  unset: true
+  unset: true,
+  none: true
 };
 
 function parseColorStops(components: Array<string>): ColorStopArray {
