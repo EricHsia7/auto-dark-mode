@@ -1,5 +1,4 @@
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
-import { defaultSVGColorPresentationAttributes } from './default-svg-color-presentation-attributes';
 import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
@@ -153,8 +152,10 @@ export function getStyles(): Styles {
     while (parent && depth < 16) {
       if (isSVGElement(parent.tagName)) {
         const parentSelector = generateElementSelector(parent);
-        if (SVGPresentationAttributes.hasOwnProperty(parentSelector) && SVGPresentationAttributes[parentSelector][property]) {
-          return SVGPresentationAttributes[parentSelector][property];
+        if (SVGPresentationAttributes.hasOwnProperty(parentSelector)) {
+          if (SVGPresentationAttributes[parentSelector].hasOwnProperty(property)) {
+            return SVGPresentationAttributes[parentSelector][property];
+          }
         }
         parent = parent.parentElement;
       } else {
@@ -187,12 +188,13 @@ export function getStyles(): Styles {
           continue;
         }
       }
-
+      /*
       if (!SVGPresentationAttributes[selector].hasOwnProperty(attribute)) {
         if (defaultSVGColorPresentationAttributes[attribute].hasOwnProperty(tag)) {
           SVGPresentationAttributes[selector][attribute] = defaultSVGColorPresentationAttributes[attribute][tag];
         }
       }
+      */
     }
   }
 
