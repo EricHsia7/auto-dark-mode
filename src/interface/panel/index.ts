@@ -164,8 +164,8 @@ export function closePanel(): void {
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
+      target.setAttribute('displayed', 'false');
       target.classList.remove('auto_dark_mode_panel_overlay_fade_out');
-      overlayElement.setAttribute('displayed', 'false');
     },
     { once: true }
   );
@@ -174,8 +174,8 @@ export function closePanel(): void {
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
+      target.setAttribute('displayed', 'false');
       target.classList.remove('auto_dark_mode_panel_slide_out');
-      panelElement.setAttribute('displayed', 'false');
     },
     { once: true }
   );
