@@ -1,6 +1,5 @@
 .auto_dark_mode_panel {
   background-color: var(--auto-dark-mode-ffffff);
-  overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
   visibility: hidden;
@@ -26,6 +25,8 @@
     width: clamp(300px, 30%, 400px);
     height: 100%;
     transform: translateX(-100%);
+    overflow-x: hidden;
+    overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
