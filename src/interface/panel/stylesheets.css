@@ -67,7 +67,7 @@
   width: 16px;
   height: 16px;
   border-radius: 8px;
-  background-color: var(--auto-dark-mode-ffffff);  background-color: var(--auto-dark-mode-cccccc);
+  background-color: var(--auto-dark-mode-ffffff);
   transform: translateX(0px);
   transition: transform 0.3s;
 }
