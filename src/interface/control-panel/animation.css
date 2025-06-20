@@ -22,7 +22,7 @@
   }
 }
 
-@keyframes auto-dark-mode-control-panel-mask-fade-in {
+@keyframes auto-dark-mode-control-panel-overlay-fade-in {
   0% {
     opacity: 0;
   }

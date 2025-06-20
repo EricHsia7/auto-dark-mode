@@ -1,5 +1,5 @@
 let controlPanelInitialized: boolean = false;
-let maskElement;
+let overlayElement;
 let panelElement;
 
 export function initializeControlPanel(stylesStrings): void {
@@ -9,26 +9,26 @@ export function initializeControlPanel(stylesStrings): void {
     controlPanelInitialized = true;
   }
 
-  const mask = document.createElement('div');
-  mask.classList.add('auto_dark_mode_control_panel_mask');
-  mask.addEventListener('click', function () {
+  const newOverlayElement = document.createElement('div');
+  newOverlayElement.classList.add('auto_dark_mode_control_panel_overlay');
+  newOverlayElement.addEventListener('click', function () {
     closeControlPanel();
   });
 
-  const panel = document.createElement('div');
-  panel.classList.add('auto_dark_mode_control_panel');
+  const newPanelElement = document.createElement('div');
+  newPanelElement.classList.add('auto_dark_mode_control_panel');
 
-  const panelHead = document.createElement('div');
-  panelHead.classList.add('auto_dark_mode_control_panel_head');
-  panelHead.innerText = 'Auto Dark Mode';
+  const newPanelHeadElement = document.createElement('div');
+  newPanelHeadElement.classList.add('auto_dark_mode_control_panel_head');
+  newPanelHeadElement.innerText = 'Auto Dark Mode';
 
-  const panelBody = document.createElement('div');
-  panelBody.classList.add('auto_dark_mode_control_panel_body');
+  const newPanelBodyElement = document.createElement('div');
+  newPanelBodyElement.classList.add('auto_dark_mode_control_panel_body');
 
-  const switchAllButton = document.createElement('div');
-  switchAllButton.classList.add('auto_dark_mode_switch_all_button');
-  switchAllButton.innerText = 'Turn Off All';
-  switchAllButton.setAttribute('state', 'on');
+  const newSwitchAllButtonElement = document.createElement('div');
+  newSwitchAllButtonElement.classList.add('auto_dark_mode_switch_all_button');
+  newSwitchAllButtonElement.innerText = 'Turn Off All';
+  newSwitchAllButtonElement.setAttribute('state', 'on');
 
   ((switchAllButton2) => {
     switchAllButton2.addEventListener('click', function () {
@@ -56,23 +56,23 @@ export function initializeControlPanel(stylesStrings): void {
       switchAllButton2.setAttribute('state', newState);
       switchAllButton2.innerText = text;
     });
-  })(switchAllButton);
+  })(newSwitchAllButtonElement);
 
-  const stylesheets = document.createElement('div');
-  stylesheets.classList.add('auto_dark_mode_control_panel_stylesheets');
+  const newStylesheetsElement = document.createElement('div');
+  newStylesheetsElement.classList.add('auto_dark_mode_control_panel_stylesheets');
 
   for (const stylesString of stylesStrings) {
-    const stylesheet = document.createElement('div');
-    stylesheet.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet');
+    const newStylesheetElement = document.createElement('div');
+    newStylesheetElement.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet');
 
-    const stylesheetName = document.createElement('div');
-    stylesheetName.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_name');
-    stylesheetName.innerText = stylesString.name;
+    const newStylesheetNameElement = document.createElement('div');
+    newStylesheetNameElement.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_name');
+    newStylesheetNameElement.innerText = stylesString.name;
 
-    const stylesheetToggle = document.createElement('div');
-    stylesheetToggle.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_toggle');
-    stylesheetToggle.setAttribute('state', 'on');
-    stylesheetToggle.setAttribute('name', stylesString.name);
+    const newStylesheetToggleElement = document.createElement('div');
+    newStylesheetToggleElement.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_toggle');
+    newStylesheetToggleElement.setAttribute('state', 'on');
+    newStylesheetToggleElement.setAttribute('name', stylesString.name);
 
     ((stylesheetToggle2) => {
       stylesheetToggle2.addEventListener('click', function () {
@@ -87,7 +87,7 @@ export function initializeControlPanel(stylesStrings): void {
           styleTag.disabled = false;
         }
       });
-    })(stylesheetToggle);
+    })(newStylesheetToggleElement);
 
     const stylesheetToggleOff = document.createElement('div');
     stylesheetToggleOff.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_off');
@@ -97,22 +97,22 @@ export function initializeControlPanel(stylesStrings): void {
     stylesheetToggleOn.classList.add('auto_dark_mode_control_panel_stylesheets_stylesheet_toggle_on');
     // stylesheetToggleOn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M480.09-336.92q67.99 0 115.49-47.59t47.5-115.58q0-67.99-47.59-115.49t-115.58-47.5q-67.99 0-115.49 47.59t-47.5 115.58q0 67.99 47.59 115.49t115.58 47.5ZM480-392q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 172q-126.31 0-231.04-67.39-104.73-67.38-167.19-177.3-5-8.62-7.31-17.37-2.3-8.75-2.3-17.96t2.3-17.94q2.31-8.73 7.31-17.35 62.46-109.92 167.19-177.3Q353.69-780 480-780q126.31 0 231.04 67.39 104.73 67.38 167.19 177.3 5 8.62 7.31 17.37 2.3 8.75 2.3 17.96t-2.3 17.94q-2.31 8.73-7.31 17.35-62.46 109.92-167.19 177.3Q606.31-220 480-220Zm0-280Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>`;
 
-    stylesheet.appendChild(stylesheetName);
-    stylesheetToggle.appendChild(stylesheetToggleOff);
-    stylesheetToggle.appendChild(stylesheetToggleOn);
-    stylesheet.appendChild(stylesheetToggle);
-    stylesheets.appendChild(stylesheet);
+    newStylesheetElement.appendChild(newStylesheetNameElement);
+    newStylesheetToggleElement.appendChild(stylesheetToggleOff);
+    newStylesheetToggleElement.appendChild(stylesheetToggleOn);
+    newStylesheetElement.appendChild(newStylesheetToggleElement);
+    newStylesheetsElement.appendChild(newStylesheetElement);
   }
 
-  panelBody.appendChild(switchAllButton);
-  panelBody.appendChild(stylesheets);
-  panel.appendChild(panelHead);
-  panel.appendChild(panelBody);
+  newPanelBodyElement.appendChild(newSwitchAllButtonElement);
+  newPanelBodyElement.appendChild(newStylesheetsElement);
+  newPanelElement.appendChild(newPanelHeadElement);
+  newPanelElement.appendChild(newPanelBodyElement);
 
-  document.documentElement.appendChild(mask);
-  document.documentElement.appendChild(panel);
+  document.documentElement.appendChild(newOverlayElement);
+  document.documentElement.appendChild(newPanelElement);
 
-  maskElement = document.querySelector('.auto_dark_mode_control_panel_mask');
+  overlayElement = document.querySelector('.auto_dark_mode_control_panel_overlay');
   panelElement = document.querySelector('.auto_dark_mode_control_panel');
 }
 
@@ -121,15 +121,15 @@ export function openControlPanel(): void {
     return;
   }
 
-  maskElement.setAttribute('displayed', 'true');
+  overlayElement.setAttribute('displayed', 'true');
   panelElement.setAttribute('displayed', 'true');
 
-  maskElement.addEventListener(
+  overlayElement.addEventListener(
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
-      target.classList.add('auto_dark_mode_control_panel_mask_faded_in');
-      target.classList.remove('auto_dark_mode_control_panel_mask_fade_in');
+      target.classList.add('auto_dark_mode_control_panel_overlay_faded_in');
+      target.classList.remove('auto_dark_mode_control_panel_overlay_fade_in');
     },
     { once: true }
   );
@@ -144,7 +144,7 @@ export function openControlPanel(): void {
     { once: true }
   );
 
-  maskElement.classList.add('auto_dark_mode_control_panel_mask_fade_in');
+  overlayElement.classList.add('auto_dark_mode_control_panel_overlay_fade_in');
   panelElement.classList.add('auto_dark_mode_control_panel_slide_in');
 }
 
@@ -153,12 +153,12 @@ export function closeControlPanel(): void {
     return;
   }
 
-  maskElement.addEventListener(
+  overlayElement.addEventListener(
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
-      target.classList.remove('auto_dark_mode_control_panel_mask_fade_out');
-      maskElement.setAttribute('displayed', 'false');
+      target.classList.remove('auto_dark_mode_control_panel_overlay_fade_out');
+      overlayElement.setAttribute('displayed', 'false');
     },
     { once: true }
   );
@@ -173,6 +173,6 @@ export function closeControlPanel(): void {
     { once: true }
   );
 
-  maskElement.classList.add('auto_dark_mode_control_panel_mask_fade_out');
+  overlayElement.classList.add('auto_dark_mode_control_panel_overlay_fade_out');
   panelElement.classList.add('auto_dark_mode_control_panel_slide_out');
 }

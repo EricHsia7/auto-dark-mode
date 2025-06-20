@@ -1,6 +1,6 @@
 .auto_dark_mode_control_panel {
   position: fixed;
-  background-color: var(--auto-dark-mode-f9f9fb);
+  background-color: var(--auto-dark-mode-ffffff);
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;

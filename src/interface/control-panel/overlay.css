@@ -1,0 +1,35 @@
+.auto_dark_mode_control_panel_overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 99998;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.auto_dark_mode_control_panel_overlay[displayed="true"] {
+  visibility: visible;
+}
+
+.auto_dark_mode_control_panel_overlay.auto_dark_mode_control_panel_overlay_fade_in {
+  animation-name: auto-dark-mode-control-panel-overlay-fade-in;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-direction: normal;
+}
+
+.auto_dark_mode_control_panel_overlay.auto_dark_mode_control_panel_overlay_faded_in {
+  opacity: 1;
+}
+
+.auto_dark_mode_control_panel_overlay.auto_dark_mode_control_panel_overlay_fade_out {
+  animation-name: auto-dark-mode-control-panel-overlay-fade-in;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-direction: reverse;
+}

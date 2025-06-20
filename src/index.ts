@@ -5,7 +5,7 @@ import './interface/theme.css';
 import './interface/button/index.css';
 
 import './interface/control-panel/animation.css';
-import './interface/control-panel/mask.css';
+import './interface/control-panel/overlay.css';
 import './interface/control-panel/panel.css';
 import './interface/control-panel/head.css';
 import './interface/control-panel/body.css';
