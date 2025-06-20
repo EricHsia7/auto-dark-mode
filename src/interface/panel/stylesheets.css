@@ -56,7 +56,7 @@
 }
 
 /* state: on */
-.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet[state="off"] {
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet[state="on"] {
   background-color: var(--auto-dark-mode-accent-color);
 }
 
@@ -73,6 +73,6 @@
 }
 
 /* state: on */
-.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet[state="off"] .auto_dark_mode_panel_stylesheets_stylesheet_toggle_thumb {
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet[state="on"] .auto_dark_mode_panel_stylesheets_stylesheet_toggle_thumb {
   transform: translateX(16px);
 }
