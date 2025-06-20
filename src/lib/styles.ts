@@ -53,12 +53,14 @@ export function getStyles(): Styles {
         '--auto-dark-mode-stylesheet-default-000000': '#000000',
         '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb'
       },
+      /*
       'svg path, svg rect, svg circle, svg ellipse, svg polygon': {
         fill: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'svg line, svg polyline': {
         stroke: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
+      */
       'html, body, section, header, main, footer, article': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
