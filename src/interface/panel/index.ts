@@ -11,12 +11,12 @@ export function initializeControlPanel(stylesStrings): void {
 
   const newOverlayElement = document.createElement('div');
   newOverlayElement.classList.add('auto_dark_mode_panel_overlay');
-  newOverlayElement.addEventListener('click', function () {
-    closePanel();
-  });
 
   const newSpaceElement = document.createElement('div');
   newSpaceElement.classList.add('auto_dark_mode_space');
+  newSpaceElement.addEventListener('click', function () {
+    closePanel();
+  });
 
   const newPanelElement = document.createElement('div');
   newPanelElement.classList.add('auto_dark_mode_panel');

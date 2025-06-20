@@ -5,7 +5,6 @@
   user-select: none;
   -webkit-user-select: none;
   visibility: hidden;
-  z-index: 99999;
 }
 
 @media (max-width: 768px) {

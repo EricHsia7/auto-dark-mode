@@ -7,7 +7,7 @@
   background-color: rgba(0, 0, 0, 0.35);
   opacity: 0;
   visibility: hidden;
-  z-index: 99998;
+  z-index: 99999;
   user-select: none;
   -webkit-user-select: none;
   -webkit-overflow-scrolling: touch;
