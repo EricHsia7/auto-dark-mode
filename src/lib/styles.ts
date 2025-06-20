@@ -4,7 +4,6 @@ import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
 import { isSVGColorPresentationAttribute } from './is-svg-color-presentation-attribute';
-import { isSVGElement } from './is-svg-element';
 import { splitByTopLevelComma } from './split-by-top-level-comma';
 
 export type CSSProperties = {
@@ -156,15 +155,21 @@ export function getStyles(): Styles {
         let defaultFill = 'none';
         let defaultStroke = 'none';
         let defaultColor = '#000000';
+
         if (tag === 'line' || tag === 'polyline') {
           defaultFill = 'none';
           defaultStroke = '#000000';
           defaultColor = '#000000';
-        } else {
+        } else if (tag !== 'g') {
           defaultFill = '#000000';
           defaultStroke = 'none';
           defaultColor = '#000000';
+        } else {
+          defaultFill = '#000000';
+          defaultStroke = '#000000';
+          defaultColor = '#000000';
         }
+
         SVGPresentationAttributes[selector] = {
           fill: defaultFill,
           stroke: defaultStroke,
