@@ -1,4 +1,6 @@
 let controlPanelInitialized: boolean = false;
+let maskElement;
+let panelElement;
 
 export function initializeControlPanel(stylesStrings): void {
   if (controlPanelInitialized) {
@@ -109,15 +111,20 @@ export function initializeControlPanel(stylesStrings): void {
 
   document.documentElement.appendChild(mask);
   document.documentElement.appendChild(panel);
+
+  maskElement = document.querySelector('.auto_dark_mode_control_panel_mask');
+  panelElement = document.querySelector('.auto_dark_mode_control_panel');
 }
 
 export function openControlPanel(): void {
-  const mask: HTMLElement = openControlPanel.mask || (openControlPanel.mask = document.querySelector('.auto_dark_mode_control_panel_mask'));
-  const panel: HTMLElement = openControlPanel.panel || (openControlPanel.panel = document.querySelector('.auto_dark_mode_control_panel'));
-  mask.setAttribute('displayed', 'true');
-  panel.setAttribute('displayed', 'true');
+  if (!controlPanelInitialized) {
+    return;
+  }
 
-  mask.addEventListener(
+  maskElement.setAttribute('displayed', 'true');
+  panelElement.setAttribute('displayed', 'true');
+
+  maskElement.addEventListener(
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
@@ -126,7 +133,8 @@ export function openControlPanel(): void {
     },
     { once: true }
   );
-  panel.addEventListener(
+
+  panelElement.addEventListener(
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
@@ -136,33 +144,35 @@ export function openControlPanel(): void {
     { once: true }
   );
 
-  mask.classList.add('auto_dark_mode_control_panel_mask_fade_in');
-  panel.classList.add('auto_dark_mode_control_panel_slide_in');
+  maskElement.classList.add('auto_dark_mode_control_panel_mask_fade_in');
+  panelElement.classList.add('auto_dark_mode_control_panel_slide_in');
 }
 
 export function closeControlPanel(): void {
-  const mask: HTMLElement = closeControlPanel.mask || (closeControlPanel.mask = document.querySelector('.auto_dark_mode_control_panel_mask'));
-  const panel: HTMLElement = closeControlPanel.panel || (closeControlPanel.panel = document.querySelector('.auto_dark_mode_control_panel'));
+  if (!controlPanelInitialized) {
+    return;
+  }
 
-  mask.addEventListener(
+  maskElement.addEventListener(
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
       target.classList.remove('auto_dark_mode_control_panel_mask_fade_out');
-      mask.setAttribute('displayed', 'false');
-    },
-    { once: true }
-  );
-  panel.addEventListener(
-    'animationend',
-    function (event: Event) {
-      const target = event.target as HTMLElement;
-      target.classList.remove('auto_dark_mode_control_panel_slide_out');
-      panel.setAttribute('displayed', 'false');
+      maskElement.setAttribute('displayed', 'false');
     },
     { once: true }
   );
 
-  mask.classList.add('auto_dark_mode_control_panel_mask_fade_out');
-  panel.classList.add('auto_dark_mode_control_panel_slide_out');
+  panelElement.addEventListener(
+    'animationend',
+    function (event: Event) {
+      const target = event.target as HTMLElement;
+      target.classList.remove('auto_dark_mode_control_panel_slide_out');
+      panelElement.setAttribute('displayed', 'false');
+    },
+    { once: true }
+  );
+
+  maskElement.classList.add('auto_dark_mode_control_panel_mask_fade_out');
+  panelElement.classList.add('auto_dark_mode_control_panel_slide_out');
 }
