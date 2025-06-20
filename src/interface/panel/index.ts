@@ -15,6 +15,9 @@ export function initializeControlPanel(stylesStrings): void {
     closePanel();
   });
 
+  const newSpaceElement = document.createElement('div');
+  newSpaceElement.classList.add('auto_dark_mode_space');
+
   const newPanelElement = document.createElement('div');
   newPanelElement.classList.add('auto_dark_mode_panel');
 
@@ -109,8 +112,9 @@ export function initializeControlPanel(stylesStrings): void {
   newPanelElement.appendChild(newPanelHeadElement);
   newPanelElement.appendChild(newPanelBodyElement);
 
+  newOverlayElement.appendChild(newSpaceElement);
+  newOverlayElement.appendChild(newPanelBodyElement);
   document.documentElement.appendChild(newOverlayElement);
-  document.documentElement.appendChild(newPanelElement);
 
   overlayElement = document.querySelector('.auto_dark_mode_panel_overlay');
   panelElement = document.querySelector('.auto_dark_mode_panel');

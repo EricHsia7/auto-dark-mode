@@ -10,7 +10,24 @@
   z-index: 99998;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
+
+@media (max-width: 768px) {
+  .auto_dark_mode_panel_overlay {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+}
+
+@media (min-width: 769px) {
+  .auto_dark_mode_panel_overlay {
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+}
+
 
 .auto_dark_mode_panel_overlay[displayed="true"] {
   visibility: visible;
