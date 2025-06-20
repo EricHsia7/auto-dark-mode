@@ -3,7 +3,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { isSVGColorPresentationAttribute } from './is-svg-color-presentation-attribute';
+import { defaultSVGColorPresentationAttributes } from './default-svg-color-presentation-attributes';
 import { splitByTopLevelComma } from './split-by-top-level-comma';
 
 export type CSSProperties = {
@@ -145,45 +145,44 @@ export function getStyles(): Styles {
   // Extract svg presentation attributes
   const SVGPresentationAttributes: StyleSheet = {};
   const svgElements = document.querySelectorAll('svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g') as NodeListOf<HTMLElement>;
+
+  function getInheritedStyle(element: Element, property: string): string | undefined {
+    let parent = element.parentElement;
+    while (parent) {
+      const parentSelector = generateElementSelector(parent);
+      if (SVGPresentationAttributes.hasOwnProperty(parentSelector) && SVGPresentationAttributes[parentSelector][property]) {
+        return SVGPresentationAttributes[parentSelector][property];
+      }
+      parent = parent.parentElement;
+    }
+    return undefined;
+  }
+
   for (const element of svgElements) {
-    const attributes = element.getAttributeNames();
-    if (attributes.length > 0) {
-      const selector = generateElementSelector(element);
+    const selector = generateElementSelector(element);
+    const tag = element.tagName.toLowerCase();
+    if (!SVGPresentationAttributes.hasOwnProperty(selector)) {
+      SVGPresentationAttributes[selector] = {};
+    }
 
-      if (!SVGPresentationAttributes.hasOwnProperty(selector)) {
-        const tag = element.tagName.toLowerCase();
-        let defaultFill = 'none';
-        let defaultStroke = 'none';
-        let defaultColor = '#000000';
+    for (const attribute of ['fill', 'stroke', 'color']) {
+      const value = element.getAttribute(attribute);
 
-        if (tag === 'line' || tag === 'polyline') {
-          defaultFill = 'none';
-          defaultStroke = '#000000';
-          defaultColor = '#000000';
-        } else if (tag !== 'g') {
-          defaultFill = '#000000';
-          defaultStroke = 'none';
-          defaultColor = '#000000';
-        }
-
-        if (tag !== 'g') {
-          SVGPresentationAttributes[selector] = {
-            fill: defaultFill,
-            stroke: defaultStroke,
-            color: defaultColor
-          };
-        } else {
-          SVGPresentationAttributes[selector] = {};
+      if (value != null && value.trim() !== '') {
+        // Attribute explicitly set on this element
+        SVGPresentationAttributes[selector][attribute] = value!;
+        continue;
+      } else {
+        // Try to inherit from ancestor in SVGPresentationAttributes
+        const inherited = getInheritedStyle(element, attribute);
+        if (inherited !== undefined) {
+          SVGPresentationAttributes[selector][attribute] = inherited;
+          continue;
         }
       }
 
-      for (const attribute of attributes) {
-        if (isSVGColorPresentationAttribute(attribute)) {
-          const value = element.getAttribute(attribute);
-          if (value !== '') {
-            SVGPresentationAttributes[selector][attribute] = value;
-          }
-        }
+      if (!SVGPresentationAttributes[selector].hasOwnProperty(attribute)) {
+        SVGPresentationAttributes[selector][attribute] = defaultSVGColorPresentationAttributes[attribute][tag];
       }
     }
   }
