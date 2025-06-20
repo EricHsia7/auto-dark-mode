@@ -36,6 +36,7 @@ export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
 const svgElements = {
   svg: true,
+  g: true,
   path: true,
   rect: true,
   circle: true,
