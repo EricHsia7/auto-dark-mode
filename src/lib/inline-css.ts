@@ -46,7 +46,11 @@ export async function inlineCSS(): Promise<true> {
       let css = '';
       if (link.hasAttribute('media')) {
         const conditionText = link.getAttribute('media');
-        css = `@media ${conditionText}{${resolvedCssSourceCode}}`;
+        if (conditionText === 'all') {
+          css = resolvedCssSourceCode;
+        } else {
+          css = `@media ${conditionText}{${resolvedCssSourceCode}}`;
+        }
       } else {
         css = resolvedCssSourceCode;
       }
@@ -54,9 +58,8 @@ export async function inlineCSS(): Promise<true> {
       style.textContent = css;
       fragment.appendChild(style);
       linksToRemove.push(link);
-      // console.log(`Inlined CSS from ${link.href}`);
     } catch (error) {
-      // console.warn(`Could not inline CSS from ${link.href}`, error);
+      // skip inlining due to error
     }
     document.head.append(fragment);
     for (const link of linksToRemove) {
