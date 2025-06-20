@@ -40,58 +40,39 @@
 /* stylesheets > stylesheet > toggle */
 .auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle {
   position: absolute;
-  top: 0px;
+  top: 12px;
   right: 0px;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 24px;
+  background-color: var(--auto-dark-mode-cccccc);
+  border-radius: 12px;
   appearance: none;
   -webkit-appearance: none;
   outline: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   user-select: none;
   -webkit-user-select: none;
-}
-
-/* stylesheets > stylesheet > toggle > off */
-.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle .auto_dark_mode_panel_stylesheets_stylesheet_toggle_off {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  visibility: hidden;
-  background-image: var(--auto-dark-mode-visibility-off-333333);
-  background-size: 25px 25px;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-
-/* state: off */
-.auto_dark_mode_panel[displayed="true"] .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle[state="off"] .auto_dark_mode_panel_stylesheets_stylesheet_toggle_off {
-  visibility: visible;
-}
-
-/* stylesheets > stylesheet > toggle > on */
-.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle .auto_dark_mode_panel_stylesheets_stylesheet_toggle_on {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  visibility: hidden;
-  background-image: var(--auto-dark-mode-visibility-on-333333);
-  background-size: 25px 25px;
-  background-position: center center;
-  background-repeat: no-repeat;
+  transition: background-color 0.3s;
 }
 
 /* state: on */
-.auto_dark_mode_panel[displayed="true"] .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle[state="on"] .auto_dark_mode_panel_stylesheets_stylesheet_toggle_on {
-  visibility: visible;
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet[state="off"] {
+  background-color: var(--auto-dark-mode-accent-color);
+}
+
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle_thumb {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background-color: var(--auto-dark-mode-ffffff);  background-color: var(--auto-dark-mode-cccccc);
+  transform: translateX(0px);
+  transition: transform 0.3s;
+}
+
+/* state: on */
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet[state="off"] .auto_dark_mode_panel_stylesheets_stylesheet_toggle_thumb {
+  transform: translateX(16px);
 }
