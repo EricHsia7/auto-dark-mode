@@ -25,6 +25,8 @@
   .auto_dark_mode_panel_overlay {
     overflow-x: scroll;
     overflow-y: hidden;
+    word-break: keep-all;
+    white-space: nowrap;
   }
 }
 

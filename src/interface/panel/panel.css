@@ -5,6 +5,7 @@
   user-select: none;
   -webkit-user-select: none;
   visibility: hidden;
+  display: inline-flex;
 }
 
 @media (max-width: 768px) {
