@@ -1,5 +1,4 @@
 .auto_dark_mode_space {
-  pointer-events: none;
   background-color: rgba(0, 0, 0, 0);
   user-select: none;
   -webkit-user-select: none;
