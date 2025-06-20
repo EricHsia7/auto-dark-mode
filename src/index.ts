@@ -6,6 +6,7 @@ import './interface/button/index.css';
 
 import './interface/panel/animation.css';
 import './interface/panel/overlay.css';
+import './interface/panel/space.css';
 import './interface/panel/panel.css';
 import './interface/panel/head.css';
 import './interface/panel/body.css';
