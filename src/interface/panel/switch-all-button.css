@@ -1,4 +1,4 @@
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body .auto_dark_mode_switch_all_button {
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_switch_all_button {
   position: relative;
   left: 10px;
   width: calc(100% - 20px);

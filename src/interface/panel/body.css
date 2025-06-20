@@ -1,4 +1,4 @@
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body {
+.auto_dark_mode_panel .auto_dark_mode_panel_body {
   position: absolute;
   top: 40px;
   left: 0px;
@@ -13,6 +13,6 @@
   -webkit-user-select: none;
 }
 
-.auto_dark_mode_control_panel .auto_dark_mode_control_panel_body::-webkit-scrollbar {
+.auto_dark_mode_panel .auto_dark_mode_panel_body::-webkit-scrollbar {
   display: none;
 }

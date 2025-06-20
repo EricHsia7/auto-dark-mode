@@ -1,4 +1,4 @@
-import { openControlPanel } from '../control-panel/index';
+import { openPanel } from '../panel/index';
 
 let buttonInitialized: boolean = false;
 
@@ -12,7 +12,7 @@ export function initializeButton(): void {
   button.classList.add('auto_dark_mode_button');
   button.innerText = 'ADM';
   button.addEventListener('click', function () {
-    openControlPanel();
+    openPanel();
   });
 
   document.documentElement.appendChild(button);

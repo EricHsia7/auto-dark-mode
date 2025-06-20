@@ -4,13 +4,13 @@ import './interface/theme.css';
 
 import './interface/button/index.css';
 
-import './interface/control-panel/animation.css';
-import './interface/control-panel/overlay.css';
-import './interface/control-panel/panel.css';
-import './interface/control-panel/head.css';
-import './interface/control-panel/body.css';
-import './interface/control-panel/switch-all-button.css';
-import './interface/control-panel/stylesheets.css';
+import './interface/panel/animation.css';
+import './interface/panel/overlay.css';
+import './interface/panel/panel.css';
+import './interface/panel/head.css';
+import './interface/panel/body.css';
+import './interface/panel/switch-all-button.css';
+import './interface/panel/stylesheets.css';
 
 var autoDarkMode = {
   initialize
