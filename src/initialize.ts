@@ -1,5 +1,5 @@
 import { initializeButton } from './interface/button/index';
-import { initializeControlPanel } from './interface/control-panel/index';
+import { initializeControlPanel } from './interface/panel/index';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';

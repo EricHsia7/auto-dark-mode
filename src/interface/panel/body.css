@@ -1,0 +1,9 @@
+.auto_dark_mode_panel .auto_dark_mode_panel_body {
+  width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.auto_dark_mode_panel .auto_dark_mode_panel_body::-webkit-scrollbar {
+  display: none;
+}

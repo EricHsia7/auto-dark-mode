@@ -1,0 +1,79 @@
+/* stylesheets */
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets {
+  position: relative;
+  left: 24px;
+  width: calc(100% - 24px - 24px);
+  margin-top: 12px;
+}
+
+/* stylesheets > stylesheet */
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  border-bottom-color: var(--auto-dark-mode-e2e8f0);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet:last-child {
+  border-bottom: none;
+}
+
+/* stylesheets > stylesheet > name */
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_name {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: calc(100% - 48px);
+  height: 48px;
+  color: var(--auto-dark-mode-333333);
+  font-size: 16px;
+  line-height: 48px;
+  font-family: sans-serif;
+  font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+/* stylesheets > stylesheet > toggle */
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle {
+  position: absolute;
+  top: 12px;
+  right: 0px;
+  width: 40px;
+  height: 24px;
+  background-color: var(--auto-dark-mode-cccccc);
+  border-radius: 12px;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 0.3s;
+}
+
+/* state: on */
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle[state="on"] {
+  background-color: var(--auto-dark-mode-accent-color);
+}
+
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle .auto_dark_mode_panel_stylesheets_stylesheet_toggle_thumb {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background-color: var(--auto-dark-mode-ffffff);
+  transform: translateX(0px);
+  transition: transform 0.3s;
+}
+
+/* state: on */
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle[state="on"] .auto_dark_mode_panel_stylesheets_stylesheet_toggle_thumb {
+  transform: translateX(16px);
+}

@@ -45,5 +45,5 @@ The output will be in the `dist/` directory.
 - `src/index.ts`: Entry point, initializes the script.
 - `src/initialize.ts`: Handles style extraction, inversion, and UI setup.
 - `src/lib/styles.ts`: Style processing and inversion logic.
-- `src/interface/control-panel/`: Control panel UI and styles.
+- `src/interface/panel/`: Panel UI and styles.
 - `src/interface/button/`: Floating button UI.
