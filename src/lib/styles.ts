@@ -1,9 +1,9 @@
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
+import { defaultSVGColorPresentationAttributes } from './default-svg-color-presentation-attributes';
 import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { defaultSVGColorPresentationAttributes } from './default-svg-color-presentation-attributes';
 import { splitByTopLevelComma } from './split-by-top-level-comma';
 
 export type CSSProperties = {
