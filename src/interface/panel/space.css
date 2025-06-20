@@ -2,7 +2,7 @@
   background-color: rgba(0, 0, 0, 0);
   user-select: none;
   -webkit-user-select: none;
-  display: inline-flex;
+  display: inline-block;
 }
 
 @media (max-width: 768px) {
@@ -16,5 +16,6 @@
   .auto_dark_mode_space {
     width: calc(100% - clamp(250px, 30%, 350px));
     height: 100%;
+    vertical-align: top;
   }
 }
