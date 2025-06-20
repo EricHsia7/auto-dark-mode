@@ -172,6 +172,8 @@ export function getStyles(): Styles {
             stroke: defaultStroke,
             color: defaultColor
           };
+        } else {
+          SVGPresentationAttributes[selector] = {};
         }
       }
 
