@@ -164,17 +164,15 @@ export function getStyles(): Styles {
           defaultFill = '#000000';
           defaultStroke = 'none';
           defaultColor = '#000000';
-        } else {
-          defaultFill = '#000000';
-          defaultStroke = '#000000';
-          defaultColor = '#000000';
         }
 
-        SVGPresentationAttributes[selector] = {
-          fill: defaultFill,
-          stroke: defaultStroke,
-          color: defaultColor
-        };
+        if (tag !== 'g') {
+          SVGPresentationAttributes[selector] = {
+            fill: defaultFill,
+            stroke: defaultStroke,
+            color: defaultColor
+          };
+        }
       }
 
       for (const attribute of attributes) {
