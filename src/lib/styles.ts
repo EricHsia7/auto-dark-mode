@@ -3,6 +3,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
+import { isSVGElement } from './is-svg-element';
 import { splitByTopLevelComma } from './split-by-top-level-comma';
 
 export type CSSProperties = {
@@ -41,12 +42,6 @@ export function getStyles(): Styles {
         '--auto-dark-mode-stylesheet-default-ffffff': '#ffffff',
         '--auto-dark-mode-stylesheet-default-000000': '#000000',
         '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb'
-      },
-      'svg path, svg rect, svg circle, svg ellipse, svg polygon': {
-        fill: 'var(--auto-dark-mode-stylesheet-default-000000)'
-      },
-      'svg line, svg polyline': {
-        stroke: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'html, body, section, header, main, footer, article': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
@@ -147,6 +142,58 @@ export function getStyles(): Styles {
     }
   };
 
+  // Extract svg presentation attributes
+  const SVGPresentationAttributes: StyleSheet = {};
+  const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g') as NodeListOf<HTMLElement>;
+
+  function getInheritedStyle(element: Element, property: string): string | undefined {
+    let parent = element.parentElement;
+    let depth = 0;
+    while (parent && depth < 16) {
+      if (isSVGElement(parent.tagName)) {
+        const parentSelector = generateElementSelector(parent);
+        if (SVGPresentationAttributes.hasOwnProperty(parentSelector)) {
+          if (SVGPresentationAttributes[parentSelector].hasOwnProperty(property)) {
+            return SVGPresentationAttributes[parentSelector][property];
+          }
+        }
+        parent = parent.parentElement;
+      } else {
+        break;
+      }
+      depth++;
+    }
+    return undefined;
+  }
+
+  for (const element of svgElements) {
+    const selector = generateElementSelector(element);
+    const tag = element.tagName.toLowerCase();
+    if (!SVGPresentationAttributes.hasOwnProperty(selector)) {
+      SVGPresentationAttributes[selector] = {};
+    }
+
+    for (const attribute of ['fill', 'stroke', 'color']) {
+      const value = element.getAttribute(attribute);
+
+      if (value != null && value.trim() !== '') {
+        // Attribute explicitly set on this element
+        SVGPresentationAttributes[selector][attribute] = value!;
+        continue;
+      } else {
+        // Try to inherit from ancestor in SVGPresentationAttributes
+        const inherited = getInheritedStyle(element, attribute);
+        if (inherited !== undefined) {
+          SVGPresentationAttributes[selector][attribute] = inherited;
+          continue;
+        }
+      }
+    }
+  }
+
+  stylesCollection['@stylesheet-svg-presentation-attributes'] = SVGPresentationAttributes;
+
+  // Extract external/internal styles
   if ('styleSheets' in document) {
     function processRules(rules: CSSRuleList, container: { [key: string]: any }) {
       for (const rule of rules) {
