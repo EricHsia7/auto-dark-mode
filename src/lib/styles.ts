@@ -4,6 +4,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
+import { isSVGElement } from './is-svg-element';
 import { splitByTopLevelComma } from './split-by-top-level-comma';
 
 export type CSSProperties = {
@@ -144,16 +145,22 @@ export function getStyles(): Styles {
 
   // Extract svg presentation attributes
   const SVGPresentationAttributes: StyleSheet = {};
-  const svgElements = document.querySelectorAll('svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g') as NodeListOf<HTMLElement>;
+  const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g') as NodeListOf<HTMLElement>;
 
   function getInheritedStyle(element: Element, property: string): string | undefined {
     let parent = element.parentElement;
-    while (parent) {
-      const parentSelector = generateElementSelector(parent);
-      if (SVGPresentationAttributes.hasOwnProperty(parentSelector) && SVGPresentationAttributes[parentSelector][property]) {
-        return SVGPresentationAttributes[parentSelector][property];
+    let depth = 0;
+    while (parent && depth < 16) {
+      if (isSVGElement(parent.tagName)) {
+        const parentSelector = generateElementSelector(parent);
+        if (SVGPresentationAttributes.hasOwnProperty(parentSelector) && SVGPresentationAttributes[parentSelector][property]) {
+          return SVGPresentationAttributes[parentSelector][property];
+        }
+        parent = parent.parentElement;
+      } else {
+        break;
       }
-      parent = parent.parentElement;
+      depth++;
     }
     return undefined;
   }
@@ -182,7 +189,9 @@ export function getStyles(): Styles {
       }
 
       if (!SVGPresentationAttributes[selector].hasOwnProperty(attribute)) {
-        SVGPresentationAttributes[selector][attribute] = defaultSVGColorPresentationAttributes[attribute][tag];
+        if (defaultSVGColorPresentationAttributes[attribute].hasOwnProperty(tag)) {
+          SVGPresentationAttributes[selector][attribute] = defaultSVGColorPresentationAttributes[attribute][tag];
+        }
       }
     }
   }
