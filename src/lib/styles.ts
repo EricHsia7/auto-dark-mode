@@ -188,13 +188,6 @@ export function getStyles(): Styles {
           continue;
         }
       }
-      /*
-      if (!SVGPresentationAttributes[selector].hasOwnProperty(attribute)) {
-        if (defaultSVGColorPresentationAttributes[attribute].hasOwnProperty(tag)) {
-          SVGPresentationAttributes[selector][attribute] = defaultSVGColorPresentationAttributes[attribute][tag];
-        }
-      }
-      */
     }
   }
 
