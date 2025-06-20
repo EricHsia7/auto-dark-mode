@@ -4,6 +4,7 @@ import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
 import { isSVGColorPresentationAttribute } from './is-svg-color-presentation-attribute';
+import { isSVGElement } from './is-svg-element';
 import { splitByTopLevelComma } from './split-by-top-level-comma';
 
 export type CSSProperties = {
@@ -34,16 +35,6 @@ export interface StyleSheetCSSItem {
 
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
-const svgElements = {
-  svg: true,
-  g: true,
-  path: true,
-  rect: true,
-  circle: true,
-  ellipse: true,
-  polygon: true
-};
-
 export function getStyles(): Styles {
   const cssVariableReferenceMap: CSSVariableReferenceMap = {};
   const stylesCollection: StylesCollection = {
@@ -53,14 +44,6 @@ export function getStyles(): Styles {
         '--auto-dark-mode-stylesheet-default-000000': '#000000',
         '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb'
       },
-      /*
-      'svg path, svg rect, svg circle, svg ellipse, svg polygon': {
-        fill: 'var(--auto-dark-mode-stylesheet-default-000000)'
-      },
-      'svg line, svg polyline': {
-        stroke: 'var(--auto-dark-mode-stylesheet-default-000000)'
-      },
-      */
       'html, body, section, header, main, footer, article': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
@@ -160,6 +143,49 @@ export function getStyles(): Styles {
     }
   };
 
+  // Extract svg presentation attributes
+  const SVGPresentationAttributes: StyleSheet = {};
+  const svgElements = document.querySelectorAll('svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g') as NodeListOf<HTMLElement>;
+  for (const element of svgElements) {
+    const attributes = element.getAttributeNames();
+    if (attributes.length > 0) {
+      const selector = generateElementSelector(element);
+
+      if (!SVGPresentationAttributes.hasOwnProperty(selector)) {
+        const tag = element.tagName.toLowerCase();
+        let defaultFill = 'none';
+        let defaultStroke = 'none';
+        let defaultColor = '#000000';
+        if (tag === 'line' || tag === 'polyline') {
+          defaultFill = 'none';
+          defaultStroke = '#000000';
+          defaultColor = '#000000';
+        } else {
+          defaultFill = '#000000';
+          defaultStroke = 'none';
+          defaultColor = '#000000';
+        }
+        SVGPresentationAttributes[selector] = {
+          fill: defaultFill,
+          stroke: defaultStroke,
+          color: defaultColor
+        };
+      }
+
+      for (const attribute of attributes) {
+        if (isSVGColorPresentationAttribute(attribute)) {
+          const value = element.getAttribute(attribute);
+          if (value !== '') {
+            SVGPresentationAttributes[selector][attribute] = value;
+          }
+        }
+      }
+    }
+  }
+
+  stylesCollection['@stylesheet-svg-presentation-attributes'] = SVGPresentationAttributes;
+
+  // Extract external/internal styles
   if ('styleSheets' in document) {
     function processRules(rules: CSSRuleList, container: { [key: string]: any }) {
       for (const rule of rules) {
@@ -256,20 +282,9 @@ export function getStyles(): Styles {
   for (const element of elementsWithInlineStyle) {
     if (element.style.length > 0) {
       const selector = generateElementSelector(element);
-      const tag = element.tagName.toLowerCase();
 
       if (!lambdaStyles.hasOwnProperty(selector)) {
         lambdaStyles[selector] = {};
-      }
-
-      if (svgElements.hasOwnProperty(tag)) {
-        const attributes = element.getAttributeNames();
-        for (const attribute of attributes) {
-          if (isSVGColorPresentationAttribute(attribute)) {
-            const value = element.getAttribute(attribute);
-            lambdaStyles[selector][attribute] = value === '' ? 'var(--auto-dark-mode-stylesheet-default-000000)' : value;
-          }
-        }
       }
 
       for (const prop of element.style) {
