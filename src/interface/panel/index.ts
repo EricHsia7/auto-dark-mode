@@ -104,13 +104,18 @@ export function initializeControlPanel(stylesStrings): void {
     newStylesheetsElement.appendChild(newStylesheetElement);
   }
 
-  newPanelBodyElement.appendChild(newToggleAllButtonElement);
   newPanelBodyElement.appendChild(newStylesheetsElement);
+
+  newPanelHeadElement.appendChild(newToggleAllButtonElement);
   newPanelHeadElement.appendChild(newPanelHeadTitleElement);
   newPanelElement.appendChild(newPanelHeadElement);
+
   newPanelElement.appendChild(newPanelBodyElement);
+
   newOverlayElement.appendChild(newSpaceElement);
+
   newOverlayElement.appendChild(newPanelElement);
+
   document.documentElement.appendChild(newOverlayElement);
 
   overlayElement = document.querySelector('.auto_dark_mode_panel_overlay');

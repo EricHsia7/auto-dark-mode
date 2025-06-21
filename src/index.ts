@@ -10,7 +10,6 @@ import './interface/panel/space.css';
 import './interface/panel/panel.css';
 import './interface/panel/head.css';
 import './interface/panel/body.css';
-import './interface/panel/toggle-all-button.css';
 import './interface/panel/stylesheets.css';
 
 var autoDarkMode = {
