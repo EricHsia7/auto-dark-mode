@@ -1,7 +1,7 @@
 .auto_dark_mode_panel .auto_dark_mode_panel_head {
   position: relative;
   width: 100%;
-  height: 80px;
+  height: 68px;
   box-sizing: border-box;
   overflow: hidden;
   user-select: none;
@@ -13,7 +13,7 @@
   top: 24px;
   left: 24px;
   width: calc(100% - 24px - 24px);
-  height: calc(80px - 24px - 24px);
+  height: calc(80px - 24px - 12px);
   color: var(--auto-dark-mode-333333);
   font-size: 18px;
   font-family: sans-serif;
