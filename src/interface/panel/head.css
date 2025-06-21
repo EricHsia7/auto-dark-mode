@@ -30,7 +30,7 @@
   top: 24px;
   width: 120px;
   height: 32px;
-  border-radius: 12px;
+  border-radius: 16px;
   background-color: var(--auto-dark-mode-accent-color);
   color: var(--auto-dark-mode-ffffff);
   font-family: sans-serif;
