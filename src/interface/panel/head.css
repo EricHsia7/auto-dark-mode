@@ -13,7 +13,7 @@
   top: 24px;
   left: 24px;
   width: calc(100% - 24px - 24px);
-  height: calc(80px - 24px - 12px);
+  height: calc(80px - 24px - 24px);
   color: var(--auto-dark-mode-333333);
   font-size: 18px;
   font-family: sans-serif;
