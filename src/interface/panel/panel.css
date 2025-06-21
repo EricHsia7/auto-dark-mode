@@ -10,7 +10,7 @@
   .auto_dark_mode_panel {
     position: relative;
     width: 100%;
-    min-height: calc(75% + var(--auto-dark-mode-safe-area-bottom));
+    min-height: calc(65% + var(--auto-dark-mode-safe-area-bottom));
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     transform: translateY(100%);
