@@ -22,6 +22,7 @@
   align-items: center;
   user-select: none;
   -webkit-user-select: none;
+  pointer-events: none;
 }
 
 .auto_dark_mode_panel .auto_dark_mode_panel_head .auto_dark_mode_toggle_all_button {

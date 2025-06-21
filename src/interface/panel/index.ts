@@ -106,8 +106,8 @@ export function initializeControlPanel(stylesStrings): void {
 
   newPanelBodyElement.appendChild(newStylesheetsElement);
 
-  newPanelHeadElement.appendChild(newToggleAllButtonElement);
   newPanelHeadElement.appendChild(newPanelHeadTitleElement);
+  newPanelHeadElement.appendChild(newToggleAllButtonElement);
   newPanelElement.appendChild(newPanelHeadElement);
 
   newPanelElement.appendChild(newPanelBodyElement);
