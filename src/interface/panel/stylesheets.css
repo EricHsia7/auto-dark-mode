@@ -17,6 +17,7 @@
 
 .auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet:last-child {
   border-bottom: none;
+  margin-bottom: var(--auto-dark-mode-safe-area-bottom);
 }
 
 /* stylesheets > stylesheet > name */
