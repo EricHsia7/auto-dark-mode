@@ -1,6 +1,10 @@
 let controlPanelInitialized: boolean = false;
 let overlayElement;
 let panelElement;
+let stylesheetsElement;
+let stylesheetToggleElements;
+let styleTagElements;
+let stylesheetsQuantity;
 
 export function initializeControlPanel(stylesStrings): void {
   if (controlPanelInitialized) {
@@ -38,10 +42,6 @@ export function initializeControlPanel(stylesStrings): void {
   ((toggleElement) => {
     toggleElement.addEventListener('click', function () {
       const state = toggleElement.getAttribute('state');
-      const styleTags = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]') as NodeListOf<HTMLStyleElement>;
-      const stylesheetsElement = document.querySelector('.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets') as HTMLElement;
-      const toggles = stylesheetsElement.querySelectorAll('.auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle') as NodeListOf<HTMLElement>;
-      const quantity = toggles.length;
       let disabled = true;
       let newState = 'off';
       if (state === 'on') {
@@ -52,13 +52,13 @@ export function initializeControlPanel(stylesStrings): void {
         newState = 'on';
       }
       if (disabled) {
-        for (const styleTag of styleTags) {
-          styleTag.disabled = true;
+        for (const styleTagElement of styleTagElements) {
+          styleTagElement.disabled = true;
         }
       } else {
-        for (let i = quantity - 1; i >= 0; i--) {
-          const state = toggles[i].getAttribute('state');
-          styleTags[i].disabled = state === 'off' ? true : false;
+        for (let i = stylesheetsQuantity - 1; i >= 0; i--) {
+          const state = stylesheetToggleElements[i].getAttribute('state');
+          styleTagElements[i].disabled = state === 'off' ? true : false;
         }
       }
       toggleElement.setAttribute('state', newState);
@@ -88,15 +88,18 @@ export function initializeControlPanel(stylesStrings): void {
 
     ((stylesheetToggle2) => {
       stylesheetToggle2.addEventListener('click', function () {
-        const currentState = stylesheetToggle2.getAttribute('state');
-        const nameValue = stylesheetToggle2.getAttribute('name');
-        const styleTag = document.querySelector(`style[auto-dark-mode-stylesheet-name="${nameValue}"]`) as HTMLStyleElement;
-        if (currentState === 'on') {
-          stylesheetToggle2.setAttribute('state', 'off');
-          styleTag.disabled = true;
-        } else {
-          stylesheetToggle2.setAttribute('state', 'on');
-          styleTag.disabled = false;
+        const stylesheetsState = stylesheetsElement.getAttribute('state');
+        if (stylesheetsState === 'on') {
+          const currentState = stylesheetToggle2.getAttribute('state');
+          const nameValue = stylesheetToggle2.getAttribute('name');
+          const styleTag = document.querySelector(`style[auto-dark-mode-stylesheet-name="${nameValue}"]`) as HTMLStyleElement;
+          if (currentState === 'on') {
+            stylesheetToggle2.setAttribute('state', 'off');
+            styleTag.disabled = true;
+          } else {
+            stylesheetToggle2.setAttribute('state', 'on');
+            styleTag.disabled = false;
+          }
         }
       });
     })(newStylesheetToggleElement);
@@ -127,8 +130,12 @@ export function initializeControlPanel(stylesStrings): void {
 
   document.documentElement.appendChild(newOverlayElement);
 
-  overlayElement = document.querySelector('.auto_dark_mode_panel_overlay');
-  panelElement = document.querySelector('.auto_dark_mode_panel');
+  overlayElement = document.querySelector('.auto_dark_mode_panel_overlay') as HTMLElement;
+  panelElement = overlayElement.querySelector('.auto_dark_mode_panel') as HTMLElement;
+  stylesheetsElement = panelElement.querySelector('.auto_dark_mode_panel_stylesheets') as HTMLElement;
+  stylesheetToggleElements = stylesheetsElement.querySelectorAll('.auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle') as NodeListOf<HTMLElement>;
+  styleTagElements = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]') as NodeListOf<HTMLStyleElement>;
+  stylesheetsQuantity = stylesStrings.length;
 }
 
 export function openPanel(): void {
