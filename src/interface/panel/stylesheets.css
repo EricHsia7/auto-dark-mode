@@ -5,6 +5,11 @@
   width: calc(100% - 24px - 24px);
 }
 
+/* state: off */
+.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets[state="off"] {
+  opacity: 0.6;
+}
+
 /* stylesheets > stylesheet */
 .auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet {
   position: relative;

@@ -31,41 +31,47 @@ export function initializeControlPanel(stylesStrings): void {
   const newPanelBodyElement = document.createElement('div');
   newPanelBodyElement.classList.add('auto_dark_mode_panel_body');
 
-  const newToggleAllButtonElement = document.createElement('div');
-  newToggleAllButtonElement.classList.add('auto_dark_mode_toggle_all_button');
-  newToggleAllButtonElement.innerText = 'Turn Off All';
-  newToggleAllButtonElement.setAttribute('state', 'on');
+  const newToggleElement = document.createElement('div');
+  newToggleElement.classList.add('auto_dark_mode_toggle');
+  newToggleElement.setAttribute('state', 'on');
 
-  ((switchAllButton2) => {
-    switchAllButton2.addEventListener('click', function () {
-      const state = switchAllButton2.getAttribute('state');
+  ((toggleElement) => {
+    toggleElement.addEventListener('click', function () {
+      const state = toggleElement.getAttribute('state');
       const styleTags = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]') as NodeListOf<HTMLStyleElement>;
-      const toggles = document.querySelectorAll('.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle') as NodeListOf<HTMLElement>;
+      const stylesheetsElement = document.querySelector('.auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets') as HTMLElement;
+      const toggles = stylesheetsElement.querySelectorAll('.auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle') as NodeListOf<HTMLElement>;
+      const quantity = toggles.length;
       let disabled = true;
       let newState = 'off';
-      let text = 'Turn On All';
       if (state === 'on') {
         disabled = true;
         newState = 'off';
-        text = 'Turn On All';
       } else {
         disabled = false;
         newState = 'on';
-        text = 'Turn Off All';
       }
-      for (const styleTag of styleTags) {
-        styleTag.disabled = disabled;
+      if (disabled) {
+        for (const styleTag of styleTags) {
+          styleTag.disabled = true;
+        }
+      } else {
+        for (let i = quantity - 1; i >= 0; i--) {
+          const state = toggles[i].getAttribute('state');
+          styleTags[i].disabled = state === 'on' ? true : false;
+        }
       }
-      for (const toggle of toggles) {
-        toggle.setAttribute('state', newState);
-      }
-      switchAllButton2.setAttribute('state', newState);
-      switchAllButton2.innerText = text;
+      toggleElement.setAttribute('state', newState);
+      stylesheetsElement.setAttribute('state', newState);
     });
-  })(newToggleAllButtonElement);
+  })(newToggleElement);
+
+  const newToggleThumbElement = document.createElement('div');
+  newToggleThumbElement.classList.add('auto_dark_mode_toggle_thumb');
 
   const newStylesheetsElement = document.createElement('div');
   newStylesheetsElement.classList.add('auto_dark_mode_panel_stylesheets');
+  newStylesheetsElement.setAttribute('state', 'on');
 
   for (const stylesString of stylesStrings) {
     const newStylesheetElement = document.createElement('div');
@@ -107,7 +113,10 @@ export function initializeControlPanel(stylesStrings): void {
   newPanelBodyElement.appendChild(newStylesheetsElement);
 
   newPanelHeadElement.appendChild(newPanelHeadTitleElement);
-  newPanelHeadElement.appendChild(newToggleAllButtonElement);
+
+  newToggleElement.appendChild(newToggleThumbElement);
+  newPanelHeadElement.appendChild(newToggleElement);
+
   newPanelElement.appendChild(newPanelHeadElement);
 
   newPanelElement.appendChild(newPanelBodyElement);
