@@ -66,6 +66,7 @@
   background-color: var(--auto-dark-mode-accent-color);
 }
 
+/* stylesheets > stylesheet > toggle > thumb */
 .auto_dark_mode_panel .auto_dark_mode_panel_body .auto_dark_mode_panel_stylesheets .auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle .auto_dark_mode_panel_stylesheets_stylesheet_toggle_thumb {
   position: absolute;
   top: 4px;

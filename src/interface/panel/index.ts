@@ -58,7 +58,7 @@ export function initializeControlPanel(stylesStrings): void {
       } else {
         for (let i = quantity - 1; i >= 0; i--) {
           const state = toggles[i].getAttribute('state');
-          styleTags[i].disabled = state === 'on' ? true : false;
+          styleTags[i].disabled = state === 'off' ? true : false;
         }
       }
       toggleElement.setAttribute('state', newState);
