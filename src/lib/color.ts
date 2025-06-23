@@ -564,7 +564,7 @@ export function invertColor(color: Color): Color {
         };
         return result0;
       }
-      const newValue = 0.05 + (1 - 0.05) * (1 - originalValue);
+      const newValue = 0.09 + (1 - 0.09) * (1 - originalValue);
       const scaler = newValue / originalValue;
 
       const red = Math.round(R * scaler);

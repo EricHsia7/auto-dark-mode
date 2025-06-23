@@ -9,9 +9,9 @@
 @media (prefers-color-scheme:dark) {
   :root {
     --auto-dark-mode-accent-color: #3b82f6;
-    --auto-dark-mode-ffffff: #0d0d0d;
-    --auto-dark-mode-e2e8f0: #191a1b;
-    --auto-dark-mode-cccccc: #3d3d3d;
+    --auto-dark-mode-ffffff: #0f1217;
+    --auto-dark-mode-e2e8f0: #232425;
+    --auto-dark-mode-cccccc: #464646;
     --auto-dark-mode-333333: #ffffff;
   }
 }
