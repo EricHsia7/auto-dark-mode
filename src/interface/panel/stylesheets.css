@@ -3,6 +3,7 @@
   position: relative;
   left: 24px;
   width: calc(100% - 24px - 24px);
+  transition: opacity 0.3s;
 }
 
 /* state: off */

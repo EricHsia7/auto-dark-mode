@@ -1,5 +1,5 @@
 import { initializeButton } from './interface/button/index';
-import { initializeControlPanel } from './interface/panel/index';
+import { initializePanel } from './interface/panel/index';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
@@ -32,6 +32,6 @@ export async function initialize() {
     initializeButton();
 
     // Prepare control panel
-    initializeControlPanel(strings);
+    initializePanel(strings);
   }
 }

@@ -1,4 +1,4 @@
-let controlPanelInitialized: boolean = false;
+let panelInitialized: boolean = false;
 let overlayElement;
 let panelElement;
 let stylesheetsElement;
@@ -6,11 +6,11 @@ let stylesheetToggleElements;
 let styleTagElements;
 let stylesheetsQuantity;
 
-export function initializeControlPanel(stylesStrings): void {
-  if (controlPanelInitialized) {
+export function initializePanel(stylesStrings): void {
+  if (panelInitialized) {
     return;
   } else {
-    controlPanelInitialized = true;
+    panelInitialized = true;
   }
 
   const newOverlayElement = document.createElement('div');
@@ -139,7 +139,7 @@ export function initializeControlPanel(stylesStrings): void {
 }
 
 export function openPanel(): void {
-  if (!controlPanelInitialized) {
+  if (!panelInitialized) {
     return;
   }
 
@@ -171,7 +171,7 @@ export function openPanel(): void {
 }
 
 export function closePanel(): void {
-  if (!controlPanelInitialized) {
+  if (!panelInitialized) {
     return;
   }
 
