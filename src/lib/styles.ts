@@ -135,21 +135,9 @@ export function getStyles(): Styles {
       }
     },
     '@stylesheet-image-dimming': {
-      '@property --auto-dark-mode-image-dimming-brightness': {
-        'syntax': '<percentage>',
-        'inherits': 'false',
-        'initial-value': '70%'
-      },
-      'img': {
-        '--auto-dark-mode-image-dimming-brightness': '70%',
-        'filter': 'brightness(var(--auto-dark-mode-image-dimming-brightness))',
-        '-webkit-filter': 'brightness(var(--auto-dark-mode-image-dimming-brightness))',
-        'transition': '--auto-dark-mode-image-dimming-brightness 0.3s'
-      },
-      'img:hover': {
-        '--auto-dark-mode-image-dimming-brightness': '100%',
-        'filter': 'brightness(var(--auto-dark-mode-image-dimming-brightness))',
-        '-webkit-filter': 'brightness(var(--auto-dark-mode-image-dimming-brightness))'
+      img: {
+        'filter': 'brightness(70%)',
+        '-webkit-filter': 'brightness(70%)'
       }
     }
   };
