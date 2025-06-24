@@ -34,71 +34,43 @@ function looksLikeColorValue(value: string): boolean {
 }
 
 const colorRelatedCSSProperties = {
-  // General color properties
-  'color': true,
+  '-webkit-border-before-color': true,
+  '-webkit-tap-highlight-color': true,
+  '-webkit-text-fill-color': true,
+  '-webkit-text-stroke-color': true,
+  'accent-color': true,
   'background-color': true,
-  'border-color': true,
-  'border-top-color': true,
-  'border-right-color': true,
-  'border-bottom-color': true,
-  'border-left-color': true,
-  'outline-color': true,
-  /*
-    'text-shadow',
-    'box-shadow',
-    */
-  // TODO: implement the parser
-  'caret-color': true,
-  'column-rule-color': true,
-  'text-decoration-color': true,
-  'text-emphasis-color': true,
-
-  // Logical border colors
+  'background-image': true,
+  'background': true,
   'border-block-color': true,
   'border-block-end-color': true,
   'border-block-start-color': true,
+  'border-color': true,
   'border-inline-color': true,
   'border-inline-end-color': true,
   'border-inline-start-color': true,
-
-  // Filter and blend properties
-  /*
-    'backdrop-filter',
-    'filter',
-    */
-  'background-image': true,
-  'background-blend-mode': true,
-  'mix-blend-mode': true,
-
-  // SVG related colors
+  'border-left-color': true,
+  'border-right-color': true,
+  'border-top-color': true,
+  'border-bottom-color': true,
+  'box-decoration-break': true,
+  'caret-color': true,
+  'color-scheme': true,
+  'color': true,
+  'column-rule-color': true,
+  'column-rule': true,
   'fill': true,
   'flood-color': true,
+  'font-palette': true,
   'lighting-color': true,
+  'outline-color': true,
+  'outline': true,
+  'print-color-adjust': true,
+  'scrollbar-color': true,
   'stop-color': true,
   'stroke': true,
-  /*
-    'color-interpolation-filters',
-    */
-
-  // System/UI colors
-  'accent-color': true,
-  'color-scheme': true,
-  'scrollbar-color': true,
-  'font-palette': true,
-  'print-color-adjust': true,
-
-  // Vendor prefixed properties
-  '-webkit-tap-highlight-color': true,
-  '-webkit-border-before-color': true,
-  '-webkit-text-fill-color': true,
-  '-webkit-text-stroke-color': true,
-
-  // Shorthand properties
-  'background': true,
-  'outline': true,
-  /*'text-decoration',*/
-  'box-decoration-break': true,
-  'column-rule': true
+  'text-decoration-color': true,
+  'text-emphasis-color': true
 };
 
 export function isInvertible(property: string, value: string): boolean {
