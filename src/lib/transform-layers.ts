@@ -86,7 +86,7 @@ export function transformLayerCSS(cssText: string): string {
   }
 
   // this operation will break the ordering of start and end indexes
-  // the precedence most be sorted after removing the original blocks
+  // the layer blocks must be sorted by precedence after removing the original blocks
   layerBlocks.sort(function (a, b) {
     return a.precedence - b.precedence;
   });
