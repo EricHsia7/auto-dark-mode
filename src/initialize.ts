@@ -20,12 +20,8 @@ export async function initialize() {
   // Extract styles
   const styles = getStyles();
 
-  console.log(styles);
-
   // Invert styles
   const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
-
-  console.log(invertedStyles);
 
   // Generate inverted css
   const strings = generateCssFromStyles(invertedStyles, false);

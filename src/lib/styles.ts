@@ -453,8 +453,6 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
 
   const originalTheme = evaluateTheme(mainBackgroundColor, mainTextColor);
 
-  console.log(JSON.stringify(object, null, 4), originalTheme);
-
   if (originalTheme === 'light') {
     return newStyles;
   } else {
