@@ -385,30 +385,33 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             invertedColors.push(colorToString(invertedColor));
 
             if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
+              let weight = 0;
               let r = 0;
               let g = 0;
               let b = 0;
               if (parsedColor.type === 'rgba') {
-                r = parsedColor.rgba[0] / 255;
-                g = parsedColor.rgba[1] / 255;
-                b = parsedColor.rgba[2] / 255;
+                weight = parsedColor.rgba[3];
+                r = (parsedColor.rgba[0] / 255) * weight;
+                g = (parsedColor.rgba[1] / 255) * weight;
+                b = (parsedColor.rgba[2] / 255) * weight;
               }
               if (parsedColor.type === 'rgb') {
-                r = parsedColor.rgb[0] / 255;
-                g = parsedColor.rgb[1] / 255;
-                b = parsedColor.rgb[2] / 255;
+                weight = 1;
+                r = (parsedColor.rgb[0] / 255) * weight;
+                g = (parsedColor.rgb[1] / 255) * weight;
+                b = (parsedColor.rgb[2] / 255) * weight;
               }
               if (key === 'background-color' || key === 'background') {
                 backgroundColorRed += r;
                 backgroundColorGreen += g;
                 backgroundColorBlue += b;
-                backgroundColorQuantity++;
+                backgroundColorQuantity += weight;
               }
               if (key === 'color') {
                 textColorRed += r;
                 textColorGreen += g;
                 textColorBlue += b;
-                textColorQuantity++;
+                textColorQuantity += weight;
               }
               if (key.startsWith('--')) {
                 if (referenceMap.hasOwnProperty(key)) {
@@ -416,13 +419,13 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
                     backgroundColorRed += r;
                     backgroundColorGreen += g;
                     backgroundColorBlue += b;
-                    backgroundColorQuantity++;
+                    backgroundColorQuantity += weight;
                   }
                   if (referenceMap[key][0] < referenceMap[key][1]) {
                     textColorRed += r;
                     textColorGreen += g;
                     textColorBlue += b;
-                    textColorQuantity++;
+                    textColorQuantity += weight;
                   }
                 }
               }
