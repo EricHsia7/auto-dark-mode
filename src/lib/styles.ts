@@ -41,7 +41,8 @@ export function getStyles(): Styles {
       ':root': {
         '--auto-dark-mode-stylesheet-default-ffffff': '#ffffff',
         '--auto-dark-mode-stylesheet-default-000000': '#000000',
-        '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb'
+        '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb',
+        '--auto-dark-mode-stylesheet-default-bdbdbd': '#bdbdbd'
       },
       'html, body, section, header, main, footer, article': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
@@ -52,18 +53,18 @@ export function getStyles(): Styles {
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'pre, code, p': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
+        'background-color': 'rgba(0, 0, 0, 0)',
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
+        'background-color': 'rgba(0, 0, 0, 0)',
         'border-color': 'var(--auto-dark-mode-stylesheet-default-000000)',
         'border-style': 'solid',
         'border-width': '1px',
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
-        color: '#bdbdbd'
+        color: 'var(--auto-dark-mode-stylesheet-default-bdbdbd)'
       },
       'th, td': {
         'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
@@ -93,10 +94,6 @@ export function getStyles(): Styles {
       },
       'blockquote': {
         'border-left-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
-        'border-left-style': 'solid',
-        'border-left-width': '4px',
-        'padding-left': '20px',
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'hr': {
