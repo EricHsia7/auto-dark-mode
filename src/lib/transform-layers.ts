@@ -1,6 +1,6 @@
-export function transformLayerCSS(cssText: string, replacementAtRule: string = '@supports (color:#fff){'): string {
+export function transformLayerCSS(cssText: string): string {
   if (!/@layer/gim.test(cssText)) {
-    return cssText; // keep as-is if no layers to transform
+    return cssText; // keep it as-is if no layers to transform
   }
 
   const cssTextLen = cssText.length;
@@ -61,12 +61,14 @@ export function transformLayerCSS(cssText: string, replacementAtRule: string = '
               precedence = -Infinity;
             }
             // The precedence of styles in a layer block are lower than top-level styles
+            const trimmed = cssText.slice(start, j + 1).trim();
+            const transformed = trimmed.slice(head.length, trimmed.length - 1);
             layerBlocks.push({
               head: head,
               identifier: identifier,
               start: start,
               end: j + 1,
-              transformed: cssText.slice(start, j + 1).replace(head, replacementAtRule),
+              transformed: transformed,
               precedence: precedence
             });
           }
