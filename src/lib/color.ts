@@ -546,7 +546,7 @@ function invertStops(colorStops: ColorStopArray): ColorStopArray {
 export function invertColor(color: Color): Color {
   switch (color.type) {
     case 'rgb': {
-      if (isColorVibrant(color) > 0.35) {
+      if (isColorVibrant(color) > 0.31) {
         return color;
       }
 
