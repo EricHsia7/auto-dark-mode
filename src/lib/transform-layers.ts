@@ -1,71 +1,102 @@
-export function transformLayerCSS(cssText: string, replacementAtRule: string = '@supports (color: #fff)'): string {
-  const layerBlocks = {};
-  const layerOrder = [];
+export function transformLayerCSS(cssText: string, replacementAtRule: string = '@supports (color:#fff){'): string {
+  if (!/@layer/gim.test(cssText)) {
+    return cssText; // keep as-is if no layers to transform
+  }
 
-  // Step 1: Extract global @layer ordering
-  cssText = cssText.replace(/@layer\s+([^{};]+?)\s*;/g, (_, layerList) => {
-    layerList
-      .split(',')
-      .map((l) => l.trim())
-      .forEach((name) => {
-        if (!layerOrder.includes(name)) {
-          layerOrder.push(name);
-        }
-      });
-    return ''; // Remove ordering declaration
-  });
+  const cssTextLen = cssText.length;
 
-  // Step 2: Extract @layer blocks with bracket matching
-  let resultCSS = '';
-  let i = 0;
+  // Extract declared ordering
+  let layersSequence = [];
+  const orderingRegex = /@layer\s+([^{};]+?)\s*;/i;
+  const orderingMatches = cssText.match(orderingRegex);
+  if (orderingMatches) {
+    layersSequence = orderingMatches[1].split(/[\s,]+/);
+  }
 
-  while (i < cssText.length) {
-    const layerMatch = cssText.slice(i).match(/@layer\s+([\w-\.\_]+)\s*{/);
-    if (layerMatch) {
-      const fullMatchIndex = i + layerMatch.index;
-      const name = layerMatch[1];
-      const startIndex = fullMatchIndex + layerMatch[0].length;
+  // Extract layer blocks
+  const ranges = [];
+  let layersList = [];
+  let rangesCount = 0;
+  const layerBlockRegex = /@layer[\s\n]*([\w\-\_\.]+)[\s\n]*{/g;
+  const layerBlockMatches = cssText.match(layerBlockRegex);
+  if (layerBlockMatches) {
+    let lastIndex = 0;
+    for (const layerBlockMatch of layerBlockMatches) {
+      const startIndex = cssText.indexOf(layerBlockMatch, lastIndex);
+      ranges.push(startIndex);
+      layersList.push(layerBlockMatch);
+      rangesCount++;
+      lastIndex = startIndex;
+    }
 
-      // Find matching closing bracket
-      let braceCount = 1;
-      let endIndex = startIndex;
-      while (endIndex < cssText.length && braceCount > 0) {
-        if (cssText[endIndex] === '{') braceCount++;
-        else if (cssText[endIndex] === '}') braceCount--;
-        endIndex++;
+    ranges.push(cssTextLen);
+  }
+
+  const layerBlocks = [];
+  for (let i = 0; i < rangesCount; i++) {
+    const start = ranges[i];
+    const end = ranges[i + 1];
+    let leftBracket = 0;
+    let rightBracket = 0;
+    for (let j = start; j <= end; j++) {
+      const char = cssText[j];
+      if (char === '{') {
+        leftBracket++;
+      } else if (char === '}') {
+        rightBracket++;
       }
-
-      const content = cssText.slice(startIndex, endIndex - 1).trim();
-      if (!layerBlocks[name]) layerBlocks[name] = [];
-      layerBlocks[name].push(content);
-
-      // Move pointer past this block
-      i = endIndex;
-    } else {
-      resultCSS += cssText[i];
-      i++;
+      if (leftBracket === rightBracket) {
+        if (char === '}') {
+          const head = layersList[i];
+          const identifierMatches = head.match(/@layer[\s\n]*([\w\-\_\.]+)[\s\n]*{/i);
+          if (identifierMatches) {
+            const identifier = identifierMatches[1].trim();
+            const index = layersSequence.indexOf(identifier);
+            let precedence = 0;
+            if (index === -1) {
+              precedence = i;
+            } else if (index !== 0) {
+              precedence = -1 / index;
+            } else {
+              precedence = -Infinity;
+            }
+            // The precedence of styles in a layer block are lower than top-level styles
+            layerBlocks.push({
+              head: head,
+              identifier: identifier,
+              start: start,
+              end: j + 1,
+              transformed: cssText.slice(start, j + 1).replace(head, replacementAtRule),
+              precedence: precedence
+            });
+          }
+          break;
+        }
+      }
     }
   }
 
-  // Step 3: Reorder and wrap blocks
-  const orderedCSS = [];
+  let result = cssText;
+  let offset = 0;
+  for (const layerBlock of layerBlocks) {
+    result = result.slice(0, layerBlock.start + offset).concat(result.slice(layerBlock.end + offset));
+    offset -= layerBlock.end - layerBlock.start;
+  }
 
-  layerOrder.forEach((name) => {
-    const blocks = layerBlocks[name];
-    if (blocks) {
-      blocks.forEach((content) => {
-        orderedCSS.push(`${replacementAtRule} {\n  /* originally @layer ${name} */\n${content}\n}`);
-      });
-      delete layerBlocks[name];
-    }
+  // this operation will break the ordering of start and end indexes
+  // the precedence most be sorted after removing the original blocks
+  layerBlocks.sort(function (a, b) {
+    return a.precedence - b.precedence;
   });
 
-  Object.entries(layerBlocks).forEach(([name, blocks]) => {
-    blocks.forEach((content) => {
-      orderedCSS.push(`${replacementAtRule} {\n  /* originally @layer ${name} */\n${content}\n}`);
-    });
-  });
+  if (orderingMatches) {
+    result = result.replace(orderingMatches[0], '');
+  }
 
-  // Combine everything
-  return (resultCSS + '\n\n' + orderedCSS.join('\n\n')).trim();
+  result = layerBlocks
+    .map((e) => e.transformed)
+    .join('')
+    .concat(result);
+
+  return result;
 }
