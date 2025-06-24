@@ -168,7 +168,6 @@ export function getStyles(): Styles {
 
   for (const element of svgElements) {
     const selector = generateElementSelector(element);
-    const tag = element.tagName.toLowerCase();
     if (!SVGPresentationAttributes.hasOwnProperty(selector)) {
       SVGPresentationAttributes[selector] = {};
     }
@@ -178,7 +177,7 @@ export function getStyles(): Styles {
 
       if (value != null && value.trim() !== '') {
         // Attribute explicitly set on this element
-        SVGPresentationAttributes[selector][attribute] = value!;
+        SVGPresentationAttributes[selector][attribute] = value;
         continue;
       } else {
         // Try to inherit from ancestor in SVGPresentationAttributes
@@ -248,6 +247,42 @@ export function getStyles(): Styles {
                 // Skipped due to CORS/security
               }
             }
+            break;
+          }
+
+          case CSSRule.CHARSET_RULE: {
+            break;
+          }
+
+          case CSSRule.COUNTER_STYLE_RULE: {
+            break;
+          }
+
+          case CSSRule.FONT_FACE_RULE: {
+            break;
+          }
+
+          case CSSRule.FONT_FEATURE_VALUES_RULE: {
+            break;
+          }
+
+          case CSSRule.KEYFRAMES_RULE: {
+            break;
+          }
+
+          case CSSRule.KEYFRAME_RULE: {
+            break;
+          }
+
+          case CSSRule.NAMESPACE_RULE: {
+            break;
+          }
+
+          case CSSRule.PAGE_RULE: {
+            break;
+          }
+
+          case CSSRule.SUPPORTS_RULE: {
             break;
           }
 
