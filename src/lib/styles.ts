@@ -282,7 +282,7 @@ export function getStyles(): Styles {
         }
 
         case CSSRule.SUPPORTS_RULE: {
-           const supportsRule = rule as CSSSupportsRule;
+          const supportsRule = rule as CSSSupportsRule;
           const supports = `@supports ${supportsRule.conditionText}`;
           if (!container.hasOwnProperty(supports)) {
             container[supports] = {};
@@ -449,6 +449,8 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
   };
 
   const originalTheme = evaluateTheme(mainBackgroundColor, mainTextColor);
+
+  console.log(object, originalTheme);
 
   if (originalTheme === 'light') {
     return newStyles;
