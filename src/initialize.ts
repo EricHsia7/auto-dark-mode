@@ -3,11 +3,16 @@ import { initializePanel } from './interface/panel/index';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
-import { transformLayersInStyleTags } from './lib/transform-layers';
+import { transformLayerCSS } from './lib/transform-layers';
 
 export async function initialize() {
-  // Transform layers
-  transformLayersInStyleTags();
+  // Transform layers in style tags
+  const styleTags = document.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
+  for (const styleTag of styleTags) {
+    const cssText = styleTag.textContent;
+    const transformedCSS = transformLayerCSS(cssText);
+    styleTag.textContent = transformedCSS;
+  }
 
   // Inline external/foreign CSS
   await inlineCSS();

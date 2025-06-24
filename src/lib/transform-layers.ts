@@ -69,12 +69,3 @@ export function transformLayerCSS(cssText: string, replacementAtRule: string = '
   // Combine everything
   return (resultCSS + '\n\n' + orderedCSS.join('\n\n')).trim();
 }
-
-export function transformLayersInStyleTags(): void {
-  const styleTags = document.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
-  for (const styleTag of styleTags) {
-    const cssText = styleTag.textContent;
-    const transformedCSS = transformLayerCSS(cssText);
-    styleTag.textContent = transformedCSS;
-  }
-}
