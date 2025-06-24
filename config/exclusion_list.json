@@ -1,9 +1,24 @@
 {
   "exclusion_list": [
     {
-      "description": "To avoid reCAPTCHA.",
-      "name": "Google",
-      "pattern": "*://*.google.com/*"
+      "description": "",
+      "name": "Google Accounts",
+      "pattern": "*://accounts.google.*/*"
+    },
+    {
+      "description": "",
+      "name": "Google Myaccount",
+      "pattern": "*://myaccount.google.*/*"
+    },
+    {
+      "description": "",
+      "name": "Google Accounts",
+      "pattern": "*://accounts.google.*.*/*"
+    },
+    {
+      "description": "",
+      "name": "Google Myaccount",
+      "pattern": "*://myaccount.google.*.*/*"
     },
     {
       "description": "To avoid reCAPTCHA.",
