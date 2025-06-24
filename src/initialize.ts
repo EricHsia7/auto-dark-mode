@@ -3,8 +3,12 @@ import { initializePanel } from './interface/panel/index';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
+import { transformLayersInStyleTags } from './lib/transform-layers';
 
 export async function initialize() {
+  // Transform layers
+  transformLayersInStyleTags();
+
   // Inline external/foreign CSS
   await inlineCSS();
 

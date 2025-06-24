@@ -193,107 +193,113 @@ export function getStyles(): Styles {
   stylesCollection['@stylesheet-svg-presentation-attributes'] = SVGPresentationAttributes;
 
   // Extract external/internal styles
-  if ('styleSheets' in document) {
-    function processRules(rules: CSSRuleList, container: { [key: string]: any }) {
-      for (const rule of rules) {
-        switch (rule.type) {
-          case CSSRule.STYLE_RULE: {
-            const styleRule = rule as CSSStyleRule;
-            const selectorText = styleRule.selectorText;
-            if (!container.hasOwnProperty(selectorText)) {
-              container[selectorText] = {};
-            }
-            const extendedRuleStyle = Array.from(styleRule.style).concat(['background' /*, 'border' */]);
-            for (const prop of extendedRuleStyle) {
-              const value = styleRule.style.getPropertyValue(prop).trim();
-              if (value !== '') {
-                container[selectorText][prop] = value;
-                // Check if value refers to a CSS variable
-                const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
-                if (cssVarMatch !== null) {
-                  const cssVariableKey = cssVarMatch[1];
-                  if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
-                    cssVariableReferenceMap[cssVariableKey] = [0, 0];
-                  }
-                  if (prop === 'background' || prop === 'background-color') {
-                    cssVariableReferenceMap[cssVariableKey][0] += 1;
-                  }
-                  if (prop === 'color') {
-                    cssVariableReferenceMap[cssVariableKey][1] += 1;
-                  }
+  function processRules(rules: CSSRuleList, container: { [key: string]: any }) {
+    for (const rule of rules) {
+      switch (rule.type) {
+        case CSSRule.STYLE_RULE: {
+          const styleRule = rule as CSSStyleRule;
+          const selectorText = styleRule.selectorText;
+          if (!container.hasOwnProperty(selectorText)) {
+            container[selectorText] = {};
+          }
+          const extendedRuleStyle = Array.from(styleRule.style).concat(['background' /*, 'border' */]);
+          for (const prop of extendedRuleStyle) {
+            const value = styleRule.style.getPropertyValue(prop).trim();
+            if (value !== '') {
+              container[selectorText][prop] = value;
+              // Check if value refers to a CSS variable
+              const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
+              if (cssVarMatch !== null) {
+                const cssVariableKey = cssVarMatch[1];
+                if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
+                  cssVariableReferenceMap[cssVariableKey] = [0, 0];
+                }
+                if (prop === 'background' || prop === 'background-color') {
+                  cssVariableReferenceMap[cssVariableKey][0] += 1;
+                }
+                if (prop === 'color') {
+                  cssVariableReferenceMap[cssVariableKey][1] += 1;
                 }
               }
             }
-            break;
           }
+          break;
+        }
 
-          case CSSRule.MEDIA_RULE: {
-            const mediaRule = rule as CSSMediaRule;
-            const media = `@media ${mediaRule.conditionText}`;
-            if (!container.hasOwnProperty(media)) {
-              container[media] = {};
+        case CSSRule.MEDIA_RULE: {
+          const mediaRule = rule as CSSMediaRule;
+          const media = `@media ${mediaRule.conditionText}`;
+          if (!container.hasOwnProperty(media)) {
+            container[media] = {};
+          }
+          processRules(mediaRule.cssRules, container[media]);
+          break;
+        }
+
+        case CSSRule.IMPORT_RULE: {
+          const importRule = rule as CSSImportRule;
+          if (importRule.styleSheet) {
+            // Import rules with nested stylesheets
+            try {
+              processRules(importRule.styleSheet.cssRules, container);
+            } catch (e) {
+              // Skipped due to CORS/security
             }
-            processRules(mediaRule.cssRules, container[media]);
-            break;
           }
+          break;
+        }
 
-          case CSSRule.IMPORT_RULE: {
-            const importRule = rule as CSSImportRule;
-            if (importRule.styleSheet) {
-              // Import rules with nested stylesheets
-              try {
-                processRules(importRule.styleSheet.cssRules, container);
-              } catch (e) {
-                // Skipped due to CORS/security
-              }
-            }
-            break;
-          }
+        case CSSRule.CHARSET_RULE: {
+          break;
+        }
 
-          case CSSRule.CHARSET_RULE: {
-            break;
-          }
+        case CSSRule.COUNTER_STYLE_RULE: {
+          break;
+        }
 
-          case CSSRule.COUNTER_STYLE_RULE: {
-            break;
-          }
+        case CSSRule.FONT_FACE_RULE: {
+          break;
+        }
 
-          case CSSRule.FONT_FACE_RULE: {
-            break;
-          }
+        case CSSRule.FONT_FEATURE_VALUES_RULE: {
+          break;
+        }
 
-          case CSSRule.FONT_FEATURE_VALUES_RULE: {
-            break;
-          }
+        case CSSRule.KEYFRAMES_RULE: {
+          break;
+        }
 
-          case CSSRule.KEYFRAMES_RULE: {
-            break;
-          }
+        case CSSRule.KEYFRAME_RULE: {
+          break;
+        }
 
-          case CSSRule.KEYFRAME_RULE: {
-            break;
-          }
+        case CSSRule.NAMESPACE_RULE: {
+          break;
+        }
 
-          case CSSRule.NAMESPACE_RULE: {
-            break;
-          }
+        case CSSRule.PAGE_RULE: {
+          break;
+        }
 
-          case CSSRule.PAGE_RULE: {
-            break;
+        case CSSRule.SUPPORTS_RULE: {
+           const supportsRule = rule as CSSSupportsRule;
+          const supports = `@supports ${supportsRule.conditionText}`;
+          if (!container.hasOwnProperty(supports)) {
+            container[supports] = {};
           }
+          processRules(supportsRule.cssRules, container[supports]);
+          break;
+        }
 
-          case CSSRule.SUPPORTS_RULE: {
-            break;
-          }
-
-          default: {
-            // container[`@unknown-${rule.type}`] = rule.cssText;
-            break;
-          }
+        default: {
+          // container[`@unknown-${rule.type}`] = rule.cssText;
+          break;
         }
       }
     }
+  }
 
+  if ('styleSheets' in document) {
     for (const sheet of document.styleSheets) {
       try {
         if (!sheet.cssRules) continue;

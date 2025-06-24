@@ -1,3 +1,5 @@
+import { transformLayerCSS } from './transform-layers';
+
 // Promisified GM_xmlhttpRequest
 function fetchCSS(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -43,16 +45,17 @@ export async function inlineCSS(): Promise<true> {
       const href = link.href;
       const cssSourceCode = await fetchCSS(href);
       const resolvedCssSourceCode = resolveRelativeURLs(cssSourceCode, href);
+      const transformedCssSourceCode = transformLayerCSS(resolvedCssSourceCode);
       let css = '';
       if (link.hasAttribute('media')) {
         const conditionText = link.getAttribute('media');
         if (conditionText === 'all') {
-          css = resolvedCssSourceCode;
+          css = transformedCssSourceCode;
         } else {
-          css = `@media ${conditionText}{${resolvedCssSourceCode}}`;
+          css = `@media ${conditionText}{${transformedCssSourceCode}}`;
         }
       } else {
-        css = resolvedCssSourceCode;
+        css = transformedCssSourceCode;
       }
       const style = document.createElement('style');
       style.textContent = css;
