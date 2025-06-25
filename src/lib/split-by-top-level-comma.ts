@@ -15,7 +15,10 @@ export function splitByTopLevelComma(value: string): Array<string> {
       rightBracket += 1;
     }
     if (leftBracket === rightBracket) {
-      if (char === ',' || i === len1) {
+      if (char === ',') {
+        result.push(value.slice(start, i).trim());
+        start = i + 1;
+      } else if (i === len1) {
         result.push(value.slice(start, i + 1).trim());
         start = i + 1;
       }
