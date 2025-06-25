@@ -1,4 +1,4 @@
-export function splitByTopLevelComma(value: string): Array<string> {
+export function splitByTopLevelDelimiter(value: string): Array<string> {
   value = value.trim();
   let leftBracket = 0;
   let rightBracket = 0;
@@ -9,13 +9,13 @@ export function splitByTopLevelComma(value: string): Array<string> {
   for (let i = 0; i < len; i++) {
     const char = value[i];
     if (char === '(') {
-      leftBracket += 1;
+      leftBracket++;
     }
     if (char === ')') {
-      rightBracket += 1;
+      rightBracket++;
     }
     if (leftBracket === rightBracket) {
-      if (char === ',') {
+      if (char === ',' || char === ' ') {
         result.push(value.slice(start, i).trim());
         start = i + 1;
       } else if (i === len1) {

@@ -3,7 +3,7 @@ import { initializePanel } from './interface/panel/index';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
-import { transformLayerCSS } from './lib/transform-layers';
+import { transformLayerCSS } from './lib/transform-layer-css';
 
 export async function initialize() {
   // Transform layers in style tags

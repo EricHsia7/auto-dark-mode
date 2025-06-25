@@ -4,7 +4,7 @@ import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
 import { isSVGElement } from './is-svg-element';
-import { splitByTopLevelComma } from './split-by-top-level-comma';
+import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -373,13 +373,13 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
-        let invertedColors = [];
-        const colors = splitByTopLevelComma(value);
+        let invertedColors = value;
+        const colors = splitByTopLevelDelimiter(value);
         for (const color of colors) {
           const parsedColor = parseColor(color);
           if (parsedColor) {
             const invertedColor = invertColor(parsedColor);
-            invertedColors.push(colorToString(invertedColor));
+            invertedColors = invertedColors.replace(color, colorToString(invertedColor));
 
             if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
               let weight = 0;
@@ -427,11 +427,9 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
                 }
               }
             }
-          } else {
-            invertedColors.push(value); // If parsing fails, keep original
           }
         }
-        newStyles[key] = invertedColors.join(',');
+        newStyles[key] = invertedColors;
       } else if (isPreserved(key)) {
         newStyles[key] = value;
       }

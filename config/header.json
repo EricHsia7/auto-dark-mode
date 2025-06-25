@@ -1,6 +1,6 @@
 {
   "name": "auto-dark-mode",
-  "version": "0.23.8",
+  "version": "0.24.0",
   "description": "Darken Any Website",
   "author": "erichsia7",
   "inject-into": "content",
