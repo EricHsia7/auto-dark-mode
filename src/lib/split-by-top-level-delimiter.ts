@@ -5,7 +5,6 @@ export function splitByTopLevelDelimiter(value: string): Array<string> {
   let start = 0;
   const result: Array<string> = [];
   const len = value.length;
-  // const len1 = len - 1;
   for (let i = 0, l = len, l1 = len - 1; i < l; i++) {
     const char = value[i];
     if (char === '(') {
