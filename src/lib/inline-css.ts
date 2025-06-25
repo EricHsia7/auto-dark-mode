@@ -1,3 +1,4 @@
+import { resolveRelativeURLs } from './resolve-relative-urls';
 import { transformLayerCSS } from './transform-layer-css';
 
 // Promisified GM_xmlhttpRequest
@@ -17,22 +18,6 @@ function fetchCSS(url: string): Promise<string> {
         reject(new Error(`Error fetching CSS from ${url}: ${err}`));
       }
     });
-  });
-}
-
-function resolveRelativeURLs(cssText: string, cssHref: string): string {
-  const base = new URL(cssHref);
-  return cssText.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g, (match, quote, urlPath) => {
-    if (/^(data:|https?:|\/)/.test(urlPath)) {
-      // Absolute URL or data URI — do not touch
-      return `url(${quote}${urlPath}${quote})`;
-    }
-    try {
-      const resolved = new URL(urlPath, base).href;
-      return `url(${quote}${resolved}${quote})`;
-    } catch (e) {
-      return match;
-    }
   });
 }
 
