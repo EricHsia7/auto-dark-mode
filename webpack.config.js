@@ -96,7 +96,8 @@ module.exports = (env, argv) => {
           extractComments: false,
           terserOptions: {
             compress: {
-              inline: false
+              inline: false,
+              loops: false
             }
           }
         }),
