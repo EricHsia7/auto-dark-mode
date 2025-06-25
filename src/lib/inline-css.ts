@@ -22,7 +22,7 @@ function fetchCSS(url: string): Promise<string> {
 }
 
 export async function inlineCSS(): Promise<true> {
-  const linkElements = Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'));
+  const linkElements = document.querySelectorAll('link[rel="stylesheet"][href]') as NodeListOf<HTMLLinkElement>;
   const fragment = new DocumentFragment();
   const linksToRemove = [];
   for (const link of linkElements) {
