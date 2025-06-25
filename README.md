@@ -16,6 +16,7 @@
 1. Install a userscript manager.
     > You can use [@quoid/userscripts](https://github.com/quoid/userscripts) on Safari.
 2. [Download the latest release](https://erichsia7.github.io/auto-dark-mode/auto-dark-mode.user.js) or add the script via the userscript manager.
+3. You can optionally install [@erichsia7/auto-dark-mode-anti-white-flash](https://github.com/EricHsia7/auto-dark-mode-anti-white-flash).
 
 ## Development
 
