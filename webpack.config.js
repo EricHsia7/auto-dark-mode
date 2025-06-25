@@ -93,13 +93,15 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [
         new TerserPlugin({
-          extractComments: false,
+          extractComments: false
+          /*
           terserOptions: {
             compress: {
               inline: false,
               loops: false
             }
           }
+          */
         }),
         new CssMinimizerPlugin()
       ]
