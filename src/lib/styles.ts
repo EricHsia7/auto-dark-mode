@@ -379,7 +379,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           const parsedColor = parseColor(color);
           if (parsedColor) {
             const invertedColor = invertColor(parsedColor);
-            invertedColors.replace(color, colorToString(invertedColor));
+            invertedColors = invertedColors.replace(color, colorToString(invertedColor));
 
             if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
               let weight = 0;
