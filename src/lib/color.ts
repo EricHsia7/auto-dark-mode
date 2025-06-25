@@ -89,7 +89,12 @@ export interface FunctionalKeyword {
   // "none" my not mean "transparent," so keep it as-is
 }
 
-export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword;
+export interface UnknownString {
+  type: 'unknown';
+  value: string;
+}
+
+export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
 
 const functionalKeywords = {
   currentcolor: true,
@@ -522,7 +527,12 @@ export function parseColor(value: string): Color {
     return result;
   }
 
-  return fallbackColor;
+  const unknownString: UnknownString = {
+    type: 'unknown',
+    value: value
+  };
+
+  return unknownString;
 }
 
 function invertStops(colorStops: ColorStopArray): ColorStopArray {
@@ -693,6 +703,11 @@ export function invertColor(color: Color): Color {
       break;
     }
 
+    case 'unknown': {
+      return color;
+      break;
+    }
+
     default: {
       return color; // Fallback for any other types
       break;
@@ -786,6 +801,10 @@ export function colorToString(color: Color): string {
     }
 
     case 'keyword': {
+      return color.value;
+    }
+
+    case 'unknown': {
       return color.value;
     }
 
