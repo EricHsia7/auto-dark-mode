@@ -15,14 +15,11 @@ export function splitByTopLevelDelimiter(value: string): Array<string> {
       rightBracket++;
     }
     if (leftBracket === rightBracket) {
-      if (char === ',') {
+      if (char === ',' || char === ' ') {
         result.push(value.slice(start, i).trim());
         start = i + 1;
       } else if (i === len1) {
         result.push(value.slice(start, i + 1).trim());
-        start = i + 1;
-      } else if (leftBracket > 0 && char === ' ') {
-        result.push(value.slice(start, i).trim());
         start = i + 1;
       }
     }
