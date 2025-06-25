@@ -43,4 +43,7 @@ export async function initialize() {
     // Prepare control panel
     initializePanel(strings);
   }
+
+  const autoDarkModeInitializedEvent = new CustomEvent('autodarkmodeinitialized', {});
+  document.dispatchEvent(autoDarkModeInitializedEvent);
 }
