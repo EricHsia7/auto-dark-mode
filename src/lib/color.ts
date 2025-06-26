@@ -1,4 +1,5 @@
 import { namedColors } from './named-colors';
+import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 
 export interface ColorRGB {
   type: 'rgb';
@@ -41,6 +42,7 @@ export interface ColorHSLA_Variable {
 export interface Variable {
   type: 'variable';
   ref: string; // var(--name)
+  args: Array<Color | Variable['ref']>;
 }
 
 export interface UnitedNumber {
@@ -137,12 +139,38 @@ export function parseColor(value: string): Color {
     rgba: [255, 255, 255, 0]
   };
 
-  if (value.startsWith('var(')) {
+  if (value.startsWith('--')) {
+    const variableName = value.trim();
     const result: Variable = {
       type: 'variable',
-      ref: value
+      ref: `var(${variableName})`,
+      args: [variableName]
     };
     return result;
+  }
+
+  if (value.startsWith('var(')) {
+    const trimmed = value.trim();
+    const variableRegex = /^var\((.*)\)$/i;
+    const variableMatches = trimmed.match(variableRegex);
+    if (variableMatches) {
+      const args: Array<any> = splitByTopLevelDelimiter(variableMatches[1]);
+      for (let i = 0, l = args.length, offset = 0; i < l; i++) {
+        const arg = args[i + offset];
+        if (arg !== '' && variableRegex.test(arg)) {
+          args.splice(i + offset, 1, parseColor(arg));
+        } else if (arg === '') {
+          args.splice(i + offset, 1);
+          offset--;
+        }
+      }
+      const result: Variable = {
+        type: 'variable',
+        ref: value,
+        args: args
+      };
+      return result;
+    }
   }
 
   // handle rgb/rgba
@@ -162,10 +190,7 @@ export function parseColor(value: string): Color {
           const parameter = match.trim();
           if (parameter.startsWith('var')) {
             containVariables = true;
-            const variable: Variable = {
-              type: 'variable',
-              ref: parameter
-            };
+            const variable = parseColor(parameter) as Variable;
             parameters.push(variable);
           } else if (/^\d+$/.test(parameter)) {
             const integer: number = parseInt(parameter, 10);
@@ -226,10 +251,7 @@ export function parseColor(value: string): Color {
           const parameter = match.trim();
           if (parameter.startsWith('var')) {
             containVariables = true;
-            const variable: Variable = {
-              type: 'variable',
-              ref: parameter
-            };
+            const variable = parseColor(parameter) as Variable;
             parameters.push(variable);
           } else if (/^\d+$/.test(parameter)) {
             const integer: number = parseInt(parameter, 10);
@@ -654,7 +676,21 @@ export function invertColor(color: Color): Color {
     }
 
     case 'variable': {
-      return color; // Referenced variables are not inverted
+      const argsLen = color.args.length;
+      for (let i = 0, l = argsLen; i < l; i++) {
+        const arg = color.args[i];
+        if (typeof arg === 'object') {
+          if (Array.isArray(arg)) {
+            const argLen = arg.length;
+            for (let j = 0, n = argLen; j < n; j++) {
+              arg.splice(j, 1, invertColor(arg[j]));
+            }
+          } else {
+            color.args.splice(i, 1, invertColor(arg));
+          }
+        }
+      }
+      return color;
       break;
     }
 
@@ -778,6 +814,7 @@ export function colorToString(color: Color): string {
     }
 
     case 'variable': {
+      console.log('variable', JSON.stringify(color));
       return color.ref;
     }
 
