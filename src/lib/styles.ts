@@ -1,5 +1,6 @@
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
+import { isElementExcluded, registerExcludedElement } from './exclusion-list';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
@@ -301,13 +302,15 @@ export function getStyles(): Styles {
     for (const sheet of document.styleSheets) {
       try {
         if (!sheet.cssRules) continue;
-        if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
+        if (isElementExcluded(sheet.ownerNode as HTMLElement)) continue;
+        // if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
         const identifier = sheet.ownerNode?.id || generateIdentifier();
         const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
         const sheetName = `@stylesheet-${name}-${identifier}`;
         stylesCollection[sheetName] = sheetObj;
+        registerExcludedElement(sheet.ownerNode as HTMLElement);
       } catch (e) {
         console.log(e);
         // Skipped due to access restrictions
@@ -316,8 +319,6 @@ export function getStyles(): Styles {
   }
 
   // Capture all inline stylesCollection (lambda stylesCollection)
-
-
   const lambdaStyles: StyleSheet = {};
   const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
   for (const element of elementsWithInlineStyle) {

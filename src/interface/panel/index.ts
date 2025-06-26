@@ -1,3 +1,4 @@
+import { registerExcludedElement } from '../../lib/exclusion-list';
 import { StyleSheetCSSArray, StyleSheetCSSItem } from '../../lib/styles';
 
 let panelInitialized: boolean = false;
@@ -45,6 +46,7 @@ function generateElementOfStylesheet(): HTMLElement {
 function generateElementOfStyleTag(): HTMLStyleElement {
   const newStyleTagElement = document.createElement('style');
   newStyleTagElement.setAttribute('auto-dark-mode-stylesheet-name', '');
+  registerExcludedElement(newStyleTagElement);
   return newStyleTagElement;
 }
 
