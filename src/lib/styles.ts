@@ -300,12 +300,11 @@ export function getStyles(): Styles {
     for (const sheet of document.styleSheets) {
       try {
         if (!sheet.cssRules) continue;
-        const node = sheet.ownerNode as HTMLElement;
-        if (Array.from(node.attributes).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
+        if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
-        const identifier = node?.id || generateIdentifier();
-        const name = node?.nodeName.toString().toLowerCase();
+        const identifier = sheet.ownerNode?.id || generateIdentifier();
+        const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
         const sheetName = `@stylesheet-${name}-${identifier}`;
         stylesCollection[sheetName] = sheetObj;
       } catch (e) {
