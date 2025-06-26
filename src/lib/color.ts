@@ -683,14 +683,7 @@ export function invertColor(color: Color): Color {
 
     case 'variable': {
       for (let i = color.args.length - 1; i >= 0; i--) {
-        const arg = color.args[i];
-        if (Array.isArray(arg)) {
-          for (let j = arg.length - 1; j >= 0; j--) {
-            arg.splice(j, 1, invertColor(arg[j]));
-          }
-        } else {
-          color.args.splice(i, 1, invertColor(arg));
-        }
+        color.args.splice(i, 1, invertColor(color.args[i]));
       }
       return color;
       break;
@@ -821,8 +814,18 @@ export function colorToString(color: Color): string {
     }
 
     case 'variable': {
+      const arr: Array<any> = color.args;
+      for (let i = arr.length - 1; i >= 0; i--) {
+        arr.splice(i, 1, colorToString(arr[i]));
+      }
+
       console.log('variable', JSON.stringify(color));
-      return color.ref;
+
+      return `var(${arr.flat(8).join(',')}`;
+    }
+
+    case 'variable-n': {
+      return color.name;
     }
 
     case 'linear-gradient': {
