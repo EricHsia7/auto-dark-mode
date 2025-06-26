@@ -25,6 +25,7 @@ export async function initialize() {
 
   // Extract styles
   const styles = getStyles();
+  currentStyles = styles;
 
   // Invert styles
   const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
