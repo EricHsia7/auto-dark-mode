@@ -11,12 +11,11 @@ function generateElementOfStylesheet(): HTMLElement {
 
   const newStylesheetNameElement = document.createElement('div');
   newStylesheetNameElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet_name');
-  // newStylesheetNameElement.innerText = stylesString.name;
 
   const newStylesheetToggleElement = document.createElement('div');
   newStylesheetToggleElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet_toggle');
   newStylesheetToggleElement.setAttribute('state', 'on');
-  // newStylesheetToggleElement.setAttribute('name', stylesString.name);
+  newStylesheetToggleElement.setAttribute('name', '');
   newStylesheetToggleElement.onclick = function () {
     const stylesheetsState = stylesheetsElement.getAttribute('state');
     if (stylesheetsState === 'on') {
@@ -41,6 +40,12 @@ function generateElementOfStylesheet(): HTMLElement {
   newStylesheetElement.appendChild(newStylesheetToggleElement);
 
   return newStylesheetElement;
+}
+
+function generateElementOfStyleTag(): HTMLStyleElement {
+  const newStyleTagElement = document.createElement('style');
+  newStyleTagElement.setAttribute('auto-dark-mode-stylesheet-name', '');
+  return newStyleTagElement;
 }
 
 export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
@@ -74,7 +79,7 @@ export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
       const newStyleTagsFragment = new DocumentFragment();
       const newStylesheetsFragment = new DocumentFragment();
       for (let o = 0; o < Math.abs(capacity); o++) {
-        const newStyleTagElement = generateElementOfTab();
+        const newStyleTagElement = generateElementOfStyleTag();
         newStyleTagsFragment.appendChild(newStyleTagElement);
         const newStylesheetElement = generateElementOfStylesheet();
         newStylesheetsFragment.appendChild(newStylesheetElement);
