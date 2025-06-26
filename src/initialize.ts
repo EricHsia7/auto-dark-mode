@@ -2,10 +2,11 @@ import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
-import { generateCssFromStyles, getPartialStyles, getStyles, invertStyles, Styles, StylesCollection } from './lib/styles';
+import { generateCssFromStyles, getStyles, invertStyles, Styles, StylesCollection } from './lib/styles';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
 let lastUpdateTime = 0;
+let currentStyles = {} as Styles;
 let updating = false;
 
 export async function initialize() {
@@ -74,7 +75,11 @@ export async function initialize() {
       */
       lastUpdateTime = now;
       const styles = getStyles();
-      const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
+      // Patch styles
+      const patchedStylesCollection = Object.assign({}, currentStyles.stylesCollection || {}, styles.stylesCollection);
+      const patchedReferenceMap = Object.assign({}, currentStyles.referenceMap || {}, styles.referenceMap);
+      currentStyles = { stylesCollection: patchedStylesCollection, referenceMap: patchedReferenceMap };
+      const invertedStyles = invertStyles(patchedStylesCollection, patchedReferenceMap) as StylesCollection;
       const stylesheets = generateCssFromStyles(invertedStyles, false);
       updateStylesheets(stylesheets);
       updating = false;
