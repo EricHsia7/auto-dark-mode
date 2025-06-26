@@ -6,8 +6,11 @@ import { generateCssFromStyles, getPartialStyles, getStyles, invertStyles, Style
 import { transformLayerCSS } from './lib/transform-layer-css';
 
 let lastUpdateTime = 0;
+let updating = false;
 
 export async function initialize() {
+  updating = true;
+
   // Transform layers in style tags
   const styleTags = document.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
   for (const styleTag of styleTags) {
@@ -21,7 +24,6 @@ export async function initialize() {
 
   // Extract styles
   const styles = getStyles();
-  currentStyles = styles;
 
   // Invert styles
   const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
@@ -41,50 +43,43 @@ export async function initialize() {
   updateStylesheets(stylesheets);
 
   lastUpdateTime = new Date().getTime();
+  updating = false;
 
   // Listen to changes
   const observer = new MutationObserver((mutationList, observer) => {
-    const now = new Date().getTime();
-    // if (now - lastUpdateTime > 1) {
-    let shouldGetFullStyles = false;
-    let shouldGetPartialStyles = false;
+    if (!updating) {
+      updating = true;
+      const now = new Date().getTime();
 
-    for (const mutation of mutationList) {
-      if (mutation.type === 'childList') {
-        mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLLinkElement || (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style' && !node.hasAttribute('auto-dark-mode-stylesheet-name'))) {
-            shouldGetFullStyles = true;
-          } else if (node instanceof HTMLElement) {
+      // if (now - lastUpdateTime > 300) {
+      /*
+      let shouldGetFullStyles = false;
+      let shouldGetPartialStyles = false;
+
+      for (const mutation of mutationList) {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node instanceof HTMLLinkElement || (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style' && !node.hasAttribute('auto-dark-mode-stylesheet-name'))) {
+              shouldGetFullStyles = true;
+            } else if (node instanceof HTMLElement) {
+              shouldGetPartialStyles = true;
+            }
+          });
+        } else if (mutation.type === 'attributes') {
+          if (mutation.attributeName === 'style') {
             shouldGetPartialStyles = true;
           }
-        });
-      } else if (mutation.type === 'attributes') {
-        if (mutation.attributeName === 'style') {
-          shouldGetPartialStyles = true;
         }
       }
-    }
-
-    if (shouldGetFullStyles) {
+      */
       lastUpdateTime = now;
-      // Extract full styles
       const styles = getStyles();
       const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
       const stylesheets = generateCssFromStyles(invertedStyles, false);
       updateStylesheets(stylesheets);
-    } else if (shouldGetPartialStyles) {
-      lastUpdateTime = now;
-      // Extract partial styles
-      const styles = getPartialStyles(mutationList);
-      // Patch styles
-      const patchedStylesCollection = Object.assign({}, currentStyles.stylesCollection || {}, styles.stylesCollection);
-      const patchedReferenceMap = Object.assign({}, currentStyles.referenceMap || {}, styles.referenceMap);
-      currentStyles = { stylesCollection: patchedStylesCollection, referenceMap: patchedReferenceMap };
-      const invertedStyles = invertStyles(patchedStylesCollection, patchedReferenceMap) as StylesCollection;
-      const stylesheets = generateCssFromStyles(invertedStyles, false);
-      updateStylesheets(stylesheets);
+      updating = false;
+      // }
     }
-    // }
   });
 
   observer.observe(document.body, { attributes: true, childList: true, subtree: true });
