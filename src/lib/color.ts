@@ -42,7 +42,12 @@ export interface ColorHSLA_Variable {
 export interface Variable {
   type: 'variable';
   ref: string; // var(--name)
-  args: Array<Color | Variable['ref']>;
+  args: Array<Color>;
+}
+
+export interface VariableName {
+  type: 'variable-n';
+  name: string;
 }
 
 export interface UnitedNumber {
@@ -96,7 +101,7 @@ export interface UnknownString {
   value: string;
 }
 
-export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
+export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | VariableName | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
 
 const functionalKeywords = {
   currentcolor: true,
@@ -139,16 +144,7 @@ export function parseColor(value: string): Color {
     rgba: [255, 255, 255, 0]
   };
 
-  if (value.startsWith('--')) {
-    const variableName = value.trim();
-    const result: Variable = {
-      type: 'variable',
-      ref: `var(${variableName})`,
-      args: [variableName]
-    };
-    return result;
-  }
-
+  // handle variable
   if (value.startsWith('var(')) {
     const trimmed = value.trim();
     const variableRegex = /^var\((.*)\)$/i;
@@ -171,6 +167,16 @@ export function parseColor(value: string): Color {
       };
       return result;
     }
+  }
+
+  // handle variable name
+  if (value.startsWith('--')) {
+    const variableName = value.trim();
+    const result: VariableName = {
+      type: 'variable-n',
+      name: variableName
+    };
+    return result;
   }
 
   // handle rgb/rgba
@@ -676,21 +682,22 @@ export function invertColor(color: Color): Color {
     }
 
     case 'variable': {
-      const argsLen = color.args.length;
-      for (let i = 0, l = argsLen; i < l; i++) {
+      for (let i = color.args.length - 1; i >= 0; i--) {
         const arg = color.args[i];
-        if (typeof arg === 'object') {
-          if (Array.isArray(arg)) {
-            const argLen = arg.length;
-            for (let j = 0, n = argLen; j < n; j++) {
-              arg.splice(j, 1, invertColor(arg[j]));
-            }
-          } else {
-            color.args.splice(i, 1, invertColor(arg));
+        if (Array.isArray(arg)) {
+          for (let j = arg.length - 1; j >= 0; j--) {
+            arg.splice(j, 1, invertColor(arg[j]));
           }
+        } else {
+          color.args.splice(i, 1, invertColor(arg));
         }
       }
       return color;
+      break;
+    }
+
+    case 'variable-n': {
+      return color; // Variable references are not inverted
       break;
     }
 
