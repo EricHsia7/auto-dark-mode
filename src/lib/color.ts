@@ -821,7 +821,7 @@ export function colorToString(color: Color): string {
 
       console.log('variable', JSON.stringify(color));
 
-      return `var(${arr.flat(8).join(',')}`;
+      return `var(${arr.flat(8).join(',')})`;
     }
 
     case 'variable-n': {
