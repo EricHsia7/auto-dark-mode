@@ -48,13 +48,21 @@ export async function initialize() {
   updating = false;
 
   // Listen to changes
-  const observer = new MutationObserver((mutationList, observer) => {
-    if (!updating) {
-      updating = true;
-      const now = new Date().getTime();
+  const observer = new MutationObserver(function (mutationList, observer) {
+    handleMutation(mutationList, observer);
+  });
 
-      // if (now - lastUpdateTime > 300) {
-      /*
+  observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+}
+
+async function handleMutation(mutationList, observer) {
+  if (!updating) {
+    updating = true;
+    const now = new Date().getTime();
+    lastUpdateTime = now;
+
+    // if (now - lastUpdateTime > 300) {
+    /*
       let shouldGetFullStyles = false;
       let shouldGetPartialStyles = false;
 
@@ -74,19 +82,30 @@ export async function initialize() {
         }
       }
       */
-      lastUpdateTime = now;
-      const styles = getStyles();
-      // Patch styles
-      const patchedStylesCollection = Object.assign({}, currentStyles.stylesCollection || {}, styles.stylesCollection);
-      const patchedReferenceMap = Object.assign({}, currentStyles.referenceMap || {}, styles.referenceMap);
-      currentStyles = { stylesCollection: patchedStylesCollection, referenceMap: patchedReferenceMap };
-      const invertedStyles = invertStyles(patchedStylesCollection, patchedReferenceMap) as StylesCollection;
-      const stylesheets = generateCssFromStyles(invertedStyles, false);
-      updateStylesheets(stylesheets);
-      updating = false;
-      // }
-    }
-  });
+    // Inline external css
+    await inlineCSS();
 
-  observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+    // Extract styles
+    const styles = getStyles();
+
+    // Patch styles
+    const patchedStylesCollection = Object.assign({}, currentStyles.stylesCollection || {}, styles.stylesCollection);
+    const patchedReferenceMap = Object.assign({}, currentStyles.referenceMap || {}, styles.referenceMap);
+    currentStyles = { stylesCollection: patchedStylesCollection, referenceMap: patchedReferenceMap };
+
+    // Invert styles
+    const invertedStyles = invertStyles(patchedStylesCollection, patchedReferenceMap) as StylesCollection;
+
+    // Generate css
+    const stylesheets = generateCssFromStyles(invertedStyles, false);
+
+    // Apply updates
+    updateStylesheets(stylesheets);
+
+    updating = false;
+    // }
+    return;
+  } else {
+    return;
+  }
 }
