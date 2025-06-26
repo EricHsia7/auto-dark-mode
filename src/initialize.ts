@@ -13,7 +13,7 @@ export async function initialize() {
     initializeButton();
 
     // Prepare control panel
-    initializePanel(stylesheets);
+    initializePanel();
   }
 
   // Transform layers in style tags
