@@ -354,6 +354,8 @@ export function getStyles(): Styles {
   return results;
 }
 
+export function getPartialStyles(mutationList): Styles {}
+
 export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
   const newStyles: any = {};
   let backgroundColorRed = 0;
