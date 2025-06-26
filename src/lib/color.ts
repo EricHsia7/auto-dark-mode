@@ -113,25 +113,24 @@ const functionalKeywords = {
 };
 
 function parseColorStops(components: Array<string>): ColorStopArray {
-  const positionRegex = /([\.\d]+(cm|mm|in|px|pt|pc|rem|ex|ch|em|vw|vh|vmin|vmax|%))$/;
   const colorStops: ColorStopArray = [];
   for (const component of components) {
-    const trimmedComponent = component.trim();
-    const matches = trimmedComponent.match(positionRegex);
-    if (matches) {
-      const color = parseColor(trimmedComponent.replace(positionRegex, '').trim()) as ColorStop['color'];
-      const position = matches[0].trim();
-      colorStops.push({
-        type: 'stop',
-        color: color,
-        position: position
-      });
-    } else {
-      const color = parseColor(trimmedComponent) as ColorStop['color'];
+    const args = splitByTopLevelDelimiter(component);
+    const argsLen = args.length;
+    if (argsLen === 1) {
+      const color = parseColor(args[0].trim()) as ColorStop['color'];
       colorStops.push({
         type: 'stop',
         color: color,
         position: ''
+      });
+    } else if (argsLen === 2) {
+      const color = parseColor(args[0].trim()) as ColorStop['color'];
+      const position = args[1].trim();
+      colorStops.push({
+        type: 'stop',
+        color: color,
+        position: position
       });
     }
   }
@@ -818,9 +817,6 @@ export function colorToString(color: Color): string {
       for (let i = arr.length - 1; i >= 0; i--) {
         arr.splice(i, 1, colorToString(arr[i]));
       }
-
-      console.log('variable', JSON.stringify(color));
-
       return `var(${arr.flat(8).join(',')})`;
     }
 
