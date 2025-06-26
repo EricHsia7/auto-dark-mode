@@ -301,7 +301,13 @@ export function getStyles(): Styles {
       try {
         if (!sheet.cssRules) continue;
         const node = sheet.ownerNode as HTMLElement;
-        if (node.hasAttribute('auto-dark-mode-stylesheet-name')) continue;
+        if (
+          Array.from(node.attributes)
+            .map((attr) => attr.name)
+            .indexOf('auto-dark-mode-stylesheet-name') > -1
+        ) {
+          continue;
+        }
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
         const identifier = node?.id || generateIdentifier();
