@@ -5,6 +5,8 @@ import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
+let lastUpdateTime = 0;
+
 export async function initialize() {
   if (!isFramed()) {
     // Prepare button
@@ -37,6 +39,52 @@ export async function initialize() {
   // Update stylesheets
   updateStylesheets(stylesheets);
 
-  const autoDarkModeInitializedEvent = new CustomEvent('autodarkmodeinitialized', {});
-  document.dispatchEvent(autoDarkModeInitializedEvent);
+  lastUpdateTime = new Date().getTime();
+
+  // Listen to changes
+  const observer = new MutationObserver((mutationList, observer) => {
+    if (
+      mutationList.some((mutation) => {
+        const type = mutation.type;
+        if (type === 'childList') {
+          return true;
+        } else if (type === 'attributes') {
+          if (mutation.attributeName === 'style') {
+            return true;
+          }
+        }
+      })
+    ) {
+      const now = new Date().getTime();
+      if (now - lastUpdateTime > 500) {
+        lastUpdateTime = now;
+        // Extract styles
+        const styles = getStyles();
+
+        // Invert styles
+        const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
+
+        // Generate inverted css
+        const stylesheets = generateCssFromStyles(invertedStyles, false);
+
+        // Update stylesheets
+        updateStylesheets(stylesheets);
+      }
+    }
+
+    /*
+    for (const mutation of mutationList) {
+      switch (mutation.type) {
+        case 'childList':
+          break;
+        case 'attributes':     
+          break;
+        default:
+          break;
+      }
+    }
+    */
+  });
+
+  observer.observe(document.body, { attributes: true, childList: true, subtree: true });
 }
