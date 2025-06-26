@@ -157,9 +157,9 @@ export function parseColor(value: string): Color {
       const args: Array<any> = splitByTopLevelDelimiter(variableMatches[1]);
       for (let i = 0, l = args.length, offset = 0; i < l; i++) {
         const arg = args[i + offset];
-        if (arg !== '' && variableRegex.test(arg)) {
+        if (arg !== '') {
           args.splice(i + offset, 1, parseColor(arg));
-        } else if (arg === '') {
+        } else {
           args.splice(i + offset, 1);
           offset--;
         }
