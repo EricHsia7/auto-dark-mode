@@ -150,13 +150,12 @@ export function parseColor(value: string): Color {
     const variableMatches = trimmed.match(variableRegex);
     if (variableMatches) {
       const args: Array<any> = splitByTopLevelDelimiter(variableMatches[1]);
-      for (let i = 0, l = args.length, offset = 0; i < l; i++) {
-        const arg = args[i + offset];
+      for (let i = args.length - 1; i >= 0; i--) {
+        const arg = args[i];
         if (arg !== '') {
-          args.splice(i + offset, 1, parseColor(arg));
+          args.splice(i, 1, parseColor(arg));
         } else {
-          args.splice(i + offset, 1);
-          offset--;
+          args.splice(i, 1);
         }
       }
       const result: Variable = {
