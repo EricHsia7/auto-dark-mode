@@ -308,6 +308,7 @@ export function getStyles(): Styles {
         const sheetName = `@stylesheet-${name}-${identifier}`;
         stylesCollection[sheetName] = sheetObj;
       } catch (e) {
+        console.log(e);
         // Skipped due to access restrictions
       }
     }
