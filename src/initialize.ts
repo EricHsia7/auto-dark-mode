@@ -6,7 +6,6 @@ import { generateCssFromStyles, getPartialStyles, getStyles, invertStyles, Style
 import { transformLayerCSS } from './lib/transform-layer-css';
 
 let lastUpdateTime = 0;
-let currentStyles = {} as Styles;
 
 export async function initialize() {
   // Transform layers in style tags
