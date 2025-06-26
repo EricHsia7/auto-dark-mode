@@ -64,7 +64,7 @@ async function handleMutation(mutationList, observer) {
           if (node instanceof HTMLLinkElement || (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style' && !node.hasAttribute('auto-dark-mode-stylesheet-name'))) {
             needUpdate = true;
             break;
-          } else if (node instanceof HTMLElement) {
+          } else if (node instanceof HTMLElement || node instanceof SVGElement) {
             needUpdate = true;
             break;
           }
@@ -76,27 +76,6 @@ async function handleMutation(mutationList, observer) {
       const now = new Date().getTime();
       lastUpdateTime = now;
 
-      // if (now - lastUpdateTime > 300) {
-      /*
-      let shouldGetFullStyles = false;
-      let shouldGetPartialStyles = false;
-
-      for (const mutation of mutationList) {
-        if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach((node) => {
-            if (node instanceof HTMLLinkElement || (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style' && !node.hasAttribute('auto-dark-mode-stylesheet-name'))) {
-              shouldGetFullStyles = true;
-            } else if (node instanceof HTMLElement) {
-              shouldGetPartialStyles = true;
-            }
-          });
-        } else if (mutation.type === 'attributes') {
-          if (mutation.attributeName === 'style') {
-            shouldGetPartialStyles = true;
-          }
-        }
-      }
-      */
       // Inline external css
       await inlineCSS();
 
