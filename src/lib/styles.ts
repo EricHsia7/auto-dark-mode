@@ -1,5 +1,6 @@
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
+import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
@@ -315,15 +316,7 @@ export function getStyles(): Styles {
   }
 
   // Capture all inline stylesCollection (lambda stylesCollection)
-  function generateElementSelector(element: HTMLElement): string {
-    const tag = element.tagName.toLowerCase();
-    if (!element.id) {
-      element.id = `_${generateIdentifier()}`;
-    }
-    const id = element.id ? `#${element.id}` : '';
-    const classes = element.classList.length > 0 ? `.${Array.from(element.classList).join('.')}` : '';
-    return `${tag}${id}${classes}`;
-  }
+
 
   const lambdaStyles: StyleSheet = {};
   const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
@@ -354,7 +347,81 @@ export function getStyles(): Styles {
   return results;
 }
 
-export function getPartialStyles(mutationList): Styles {}
+export function getPartialStyles(mutationList): Styles {
+  const stylesCollection: StylesCollection = {};
+  const cssVariableReferenceMap: CSSVariableReferenceMap = {};
+
+  const lambdaStyles: StyleSheet = {};
+
+  mutationList.forEach((mutation) => {
+    if (mutation.type === 'attributes' && mutation.target instanceof HTMLElement) {
+      const element = mutation.target as HTMLElement;
+      if (element.style.length > 0) {
+        const selector = generateElementSelector(element);
+        if (!lambdaStyles.hasOwnProperty(selector)) {
+          lambdaStyles[selector] = {};
+        }
+        for (const prop of element.style) {
+          const value = element.style.getPropertyValue(prop).trim();
+          if (value !== '') {
+            lambdaStyles[selector][prop] = value;
+            // Track CSS variable usage
+            const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
+            if (cssVarMatch !== null) {
+              const cssVariableKey = cssVarMatch[1];
+              if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
+                cssVariableReferenceMap[cssVariableKey] = [0, 0];
+              }
+              if (prop === 'background' || prop === 'background-color') {
+                cssVariableReferenceMap[cssVariableKey][0] += 1;
+              }
+              if (prop === 'color') {
+                cssVariableReferenceMap[cssVariableKey][1] += 1;
+              }
+            }
+          }
+        }
+      }
+    }
+    // Handle childList mutations for added/removed nodes
+    if (mutation.type === 'childList') {
+      mutation.addedNodes.forEach((node) => {
+        if (node instanceof HTMLElement && node.style.length > 0) {
+          const selector = generateElementSelector(node);
+          if (!lambdaStyles.hasOwnProperty(selector)) {
+            lambdaStyles[selector] = {};
+          }
+          for (const prop of node.style) {
+            const value = node.style.getPropertyValue(prop).trim();
+            if (value !== '') {
+              lambdaStyles[selector][prop] = value;
+              const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
+              if (cssVarMatch !== null) {
+                const cssVariableKey = cssVarMatch[1];
+                if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
+                  cssVariableReferenceMap[cssVariableKey] = [0, 0];
+                }
+                if (prop === 'background' || prop === 'background-color') {
+                  cssVariableReferenceMap[cssVariableKey][0] += 1;
+                }
+                if (prop === 'color') {
+                  cssVariableReferenceMap[cssVariableKey][1] += 1;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+  });
+
+  stylesCollection['@stylesheet-lambda'] = lambdaStyles;
+
+  return {
+    stylesCollection: stylesCollection,
+    referenceMap: cssVariableReferenceMap
+  };
+}
 
 export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
   const newStyles: any = {};

@@ -2,10 +2,11 @@ import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
-import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
+import { generateCssFromStyles, getPartialStyles, getStyles, invertStyles, Styles, StylesCollection } from './lib/styles';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
 let lastUpdateTime = 0;
+let currentStyles = {} as Styles;
 
 export async function initialize() {
   // Transform layers in style tags
@@ -21,6 +22,7 @@ export async function initialize() {
 
   // Extract styles
   const styles = getStyles();
+  currentStyles = styles;
 
   // Invert styles
   const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
@@ -43,47 +45,47 @@ export async function initialize() {
 
   // Listen to changes
   const observer = new MutationObserver((mutationList, observer) => {
-    if (
-      mutationList.some((mutation) => {
-        const type = mutation.type;
-        if (type === 'childList') {
-          return true;
-        } else if (type === 'attributes') {
+    const now = new Date().getTime();
+    if (now - lastUpdateTime > 500) {
+      let shouldGetFullStyles = false;
+      let shouldGetPartialStyles = false;
+
+      for (const mutation of mutationList) {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node instanceof HTMLLinkElement || (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style' && !node.hasAttribute('auto-dark-mode-stylesheet-name'))) {
+              shouldGetFullStyles = true;
+            } else if (node instanceof HTMLElement) {
+              shouldGetPartialStyles = true;
+            }
+          });
+        } else if (mutation.type === 'attributes') {
           if (mutation.attributeName === 'style') {
-            return true;
+            shouldGetPartialStyles = true;
           }
         }
-      })
-    ) {
-      const now = new Date().getTime();
-      if (now - lastUpdateTime > 500) {
+      }
+
+      if (shouldGetFullStyles) {
         lastUpdateTime = now;
-        // Extract styles
+        // Extract full styles
         const styles = getStyles();
-
-        // Invert styles
         const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
-
-        // Generate inverted css
         const stylesheets = generateCssFromStyles(invertedStyles, false);
-
-        // Update stylesheets
+        updateStylesheets(stylesheets);
+      } else if (shouldGetPartialStyles) {
+        lastUpdateTime = now;
+        // Extract partial styles
+        const styles = getPartialStyles(mutationList);
+        // Patch styles
+        const patchedStylesCollection = Object.assign(currentStyles.stylesCollection, styles.stylesCollection);
+        const patchedReferenceMap = Object.assign(currentStyles.referenceMap, styles.referenceMap);
+        currentStyles = { stylesCollection: patchedStylesCollection, referenceMap: patchedReferenceMap };
+        const invertedStyles = invertStyles(patchedStylesCollection, patchedReferenceMap) as StylesCollection;
+        const stylesheets = generateCssFromStyles(invertedStyles, false);
         updateStylesheets(stylesheets);
       }
     }
-
-    /*
-    for (const mutation of mutationList) {
-      switch (mutation.type) {
-        case 'childList':
-          break;
-        case 'attributes':     
-          break;
-        default:
-          break;
-      }
-    }
-    */
   });
 
   observer.observe(document.body, { attributes: true, childList: true, subtree: true });
