@@ -78,8 +78,8 @@ export async function initialize() {
       // Extract partial styles
       const styles = getPartialStyles(mutationList);
       // Patch styles
-      const patchedStylesCollection = Object.assign(currentStyles.stylesCollection, styles.stylesCollection);
-      const patchedReferenceMap = Object.assign(currentStyles.referenceMap, styles.referenceMap);
+      const patchedStylesCollection = Object.assign({}, currentStyles.stylesCollection || {}, styles.stylesCollection);
+      const patchedReferenceMap = Object.assign({}, currentStyles.referenceMap || {}, styles.referenceMap);
       currentStyles = { stylesCollection: patchedStylesCollection, referenceMap: patchedReferenceMap };
       const invertedStyles = invertStyles(patchedStylesCollection, patchedReferenceMap) as StylesCollection;
       const stylesheets = generateCssFromStyles(invertedStyles, false);
