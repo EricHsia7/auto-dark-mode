@@ -8,14 +8,6 @@ import { transformLayerCSS } from './lib/transform-layer-css';
 let lastUpdateTime = 0;
 
 export async function initialize() {
-  if (!isFramed()) {
-    // Prepare button
-    initializeButton();
-
-    // Prepare control panel
-    initializePanel();
-  }
-
   // Transform layers in style tags
   const styleTags = document.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
   for (const styleTag of styleTags) {
@@ -35,6 +27,14 @@ export async function initialize() {
 
   // Generate inverted css
   const stylesheets = generateCssFromStyles(invertedStyles, false);
+
+  if (!isFramed()) {
+    // Prepare button
+    initializeButton();
+
+    // Prepare control panel
+    initializePanel();
+  }
 
   // Update stylesheets
   updateStylesheets(stylesheets);
