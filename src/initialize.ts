@@ -38,13 +38,13 @@ export async function initialize() {
   // Generate inverted css
   const stylesheets = generateCssFromStyles(invertedStyles, false);
 
-  if (!isFramed()) {
-    // Prepare button
-    initializeButton();
+  // if (!isFramed()) {
+  // Prepare button
+  initializeButton();
 
-    // Prepare control panel
-    initializePanel();
-  }
+  // Prepare control panel
+  initializePanel();
+  // }
 
   // Update stylesheets
   updateStylesheets(stylesheets);
