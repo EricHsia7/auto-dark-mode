@@ -1,5 +1,6 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
+import { deepAssign } from './lib/deep-assign';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, Styles, StylesCollection } from './lib/styles';
@@ -99,8 +100,8 @@ function handleMutation(mutationsList, obs) {
 async function update() {
   await inlineCSS();
   const styles = getStyles();
-  const patchedStylesCollection = Object.assign({}, currentStyles.stylesCollection || {}, styles.stylesCollection);
-  const patchedReferenceMap = Object.assign({}, currentStyles.referenceMap || {}, styles.referenceMap);
+  const patchedStylesCollection = deepAssign(currentStyles.stylesCollection, styles.stylesCollection);
+  const patchedReferenceMap = deepAssign(currentStyles.referenceMap, styles.referenceMap);
   currentStyles = { stylesCollection: patchedStylesCollection, referenceMap: patchedReferenceMap };
   const invertedStyles = invertStyles(patchedStylesCollection, patchedReferenceMap) as StylesCollection;
   const stylesheets = generateCssFromStyles(invertedStyles, false);
