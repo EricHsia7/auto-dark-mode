@@ -67,12 +67,12 @@ function handleMutation(mutationsList, obs) {
   let needUpdate = false;
   for (const mutation of currentMutationsList) {
     if (mutation.type === 'childList') {
-      mutation.addedNodes.forEach((node) => {
+      for (const node of mutation.addedNodes) {
         if (node instanceof HTMLLinkElement || (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style' && !node.hasAttribute('auto-dark-mode-stylesheet-name')) || node instanceof HTMLElement) {
           needUpdate = true;
           break;
         }
-      });
+      }
     } else if (mutation.type === 'attributes') {
       if (mutation.attributeName === 'style') {
         // needUpdate = true;
