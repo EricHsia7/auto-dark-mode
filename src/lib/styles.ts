@@ -193,7 +193,6 @@ export function getStyles(): Styles {
   }
 
   stylesCollection['@stylesheet-svg-presentation-attributes'] = SVGPresentationAttributes;
-  addToSet(processedElements, Array.from(svgElements));
 
   // Extract external/internal styles
   function processRules(rules: CSSRuleList, container: { [key: string]: any }) {
@@ -346,6 +345,8 @@ export function getStyles(): Styles {
   }
 
   stylesCollection['@stylesheet-lambda'] = lambdaStyles;
+
+  addToSet(processedElements, Array.from(svgElements));
   addToSet(processedElements, Array.from(elementsWithInlineStyle));
 
   const results = {
