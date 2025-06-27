@@ -5,8 +5,15 @@ import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, Styles, StylesCollection } from './lib/styles';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
-let lastUpdateTime = 0;
 let currentStyles = {} as Styles;
+let isProcessing = false;
+const targetNode = document.body;
+const config = {
+  childList: true,
+  subtree: true,
+  characterData: true
+};
+const mutationsListQueue = [];
 
 export async function initialize() {
   // Transform layers in style tags
@@ -41,52 +48,62 @@ export async function initialize() {
   // Update stylesheets
   updateStylesheets(stylesheets);
 
-  lastUpdateTime = new Date().getTime();
-
   // Listen to changes
-  const observer = new MutationObserver((mutationList, observer) => {
-    const now = new Date().getTime();
-    // if (now - lastUpdateTime > 1) {
-    let shouldGetFullStyles = false;
-    let shouldGetPartialStyles = false;
+  const observer = new MutationObserver(handleMutation);
 
-    for (const mutation of mutationList) {
-      if (mutation.type === 'childList') {
-        mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLLinkElement || (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style' && !node.hasAttribute('auto-dark-mode-stylesheet-name'))) {
-            shouldGetFullStyles = true;
-          } else if (node instanceof HTMLElement) {
-            shouldGetPartialStyles = true;
-          }
-        });
-      } else if (mutation.type === 'attributes') {
-        if (mutation.attributeName === 'style') {
-          shouldGetPartialStyles = true;
+  // Initial observation
+  observer.observe(targetNode, config);
+}
+
+function handleMutation(mutationsList, obs) {
+  if (mutationsList.length > 0) {
+    mutationsListQueue.push(mutationsList);
+  }
+
+  if (isProcessing) return;
+
+  const currentMutationsList = mutationsListQueue.unshift();
+
+  let needUpdate = false;
+  for (const mutation of currentMutationsList) {
+    if (mutation.type === 'childList') {
+      mutation.addedNodes.forEach((node) => {
+        if (node instanceof HTMLLinkElement || (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style' && !node.hasAttribute('auto-dark-mode-stylesheet-name')) || node instanceof HTMLElement) {
+          needUpdate = true;
+          break;
         }
+      });
+    } else if (mutation.type === 'attributes') {
+      if (mutation.attributeName === 'style') {
+        // needUpdate = true;
       }
     }
+  }
 
-    if (shouldGetFullStyles) {
-      lastUpdateTime = now;
-      // Extract full styles
-      const styles = getStyles();
-      const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
-      const stylesheets = generateCssFromStyles(invertedStyles, false);
-      updateStylesheets(stylesheets);
-    } else if (shouldGetPartialStyles) {
-      lastUpdateTime = now;
-      // Extract partial styles
-      // const styles = getPartialStyles(mutationList);
-      // Patch styles
-      const patchedStylesCollection = Object.assign({}, currentStyles.stylesCollection || {}, styles.stylesCollection);
-      const patchedReferenceMap = Object.assign({}, currentStyles.referenceMap || {}, styles.referenceMap);
-      currentStyles = { stylesCollection: patchedStylesCollection, referenceMap: patchedReferenceMap };
-      const invertedStyles = invertStyles(patchedStylesCollection, patchedReferenceMap) as StylesCollection;
-      const stylesheets = generateCssFromStyles(invertedStyles, false);
-      updateStylesheets(stylesheets);
+  if (!needUpdate) return;
+
+  // Pause observing to avoid reacting to mutations caused by the processing
+  obs.disconnect();
+  isProcessing = true;
+
+  // Process the mutations
+  update(mutationsList, obs).then(function () {
+    isProcessing = false;
+    // Resume observing
+    obs.observe(targetNode, config);
+    if (mutationsListQueue.length > 0) {
+      handleMutation([], obs);
     }
-    // }
   });
+}
 
-  observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+async function update() {
+  await inlineCSS();
+  const styles = getStyles();
+  const patchedStylesCollection = Object.assign({}, currentStyles.stylesCollection || {}, styles.stylesCollection);
+  const patchedReferenceMap = Object.assign({}, currentStyles.referenceMap || {}, styles.referenceMap);
+  currentStyles = { stylesCollection: patchedStylesCollection, referenceMap: patchedReferenceMap };
+  const invertedStyles = invertStyles(patchedStylesCollection, patchedReferenceMap) as StylesCollection;
+  const stylesheets = generateCssFromStyles(invertedStyles, false);
+  updateStylesheets(stylesheets);
 }
