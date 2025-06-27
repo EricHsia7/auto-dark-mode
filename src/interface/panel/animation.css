@@ -30,6 +30,6 @@
 
   100% {
     opacity: 1;
-    --auto-dark-mode-overlay-mask-percentage: 80%;
+    --auto-dark-mode-overlay-mask-percentage: 70%;
   }
 }
