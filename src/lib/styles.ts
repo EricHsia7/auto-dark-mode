@@ -1,4 +1,4 @@
-import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
+import { averageColor, ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
@@ -380,99 +380,32 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           if (parsedColor) {
             const invertedColor = invertColor(parsedColor);
             invertedColors = invertedColors.replace(color, colorToString(invertedColor));
-
-            if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
-              let weight = 0;
-              let r = 0;
-              let g = 0;
-              let b = 0;
-              if (parsedColor.type === 'rgba') {
-                weight = parsedColor.rgba[3];
-                r = (parsedColor.rgba[0] / 255) * weight;
-                g = (parsedColor.rgba[1] / 255) * weight;
-                b = (parsedColor.rgba[2] / 255) * weight;
-              }
-              if (parsedColor.type === 'rgb') {
-                weight = 1;
-                r = (parsedColor.rgb[0] / 255) * weight;
-                g = (parsedColor.rgb[1] / 255) * weight;
-                b = (parsedColor.rgb[2] / 255) * weight;
-              }
-              if (key === 'background-color' || key === 'background') {
-                backgroundColorRed += r;
-                backgroundColorGreen += g;
-                backgroundColorBlue += b;
-                backgroundColorQuantity += weight;
-              }
-              if (key === 'color') {
-                textColorRed += r;
-                textColorGreen += g;
-                textColorBlue += b;
-                textColorQuantity += weight;
-              }
-              if (key.startsWith('--')) {
-                if (referenceMap.hasOwnProperty(key)) {
-                  if (referenceMap[key][0] > referenceMap[key][1]) {
-                    backgroundColorRed += r;
-                    backgroundColorGreen += g;
-                    backgroundColorBlue += b;
-                    backgroundColorQuantity += weight;
-                  }
-                  if (referenceMap[key][0] < referenceMap[key][1]) {
-                    textColorRed += r;
-                    textColorGreen += g;
-                    textColorBlue += b;
-                    textColorQuantity += weight;
-                  }
+            const [r, g, b, weight] = averageColor(parsedColor).rgba;
+            if (key === 'background-color' || key === 'background') {
+              backgroundColorRed += (r / 255) * weight;
+              backgroundColorGreen += (g / 255) * weight;
+              backgroundColorBlue += (b / 255) * weight;
+              backgroundColorQuantity += weight;
+            }
+            if (key === 'color') {
+              textColorRed += (r / 255) * weight;
+              textColorGreen += (g / 255) * weight;
+              textColorBlue += (b / 255) * weight;
+              textColorQuantity += weight;
+            }
+            if (key.startsWith('--')) {
+              if (referenceMap.hasOwnProperty(key)) {
+                if (referenceMap[key][0] > referenceMap[key][1]) {
+                  backgroundColorRed += (r / 255) * weight;
+                  backgroundColorGreen += (g / 255) * weight;
+                  backgroundColorBlue += (b / 255) * weight;
+                  backgroundColorQuantity += weight;
                 }
-              }
-            } else if (parsedColor.type === 'linear-gradient' || parsedColor.type === 'conic-gradient' || parsedColor.type === 'radial-gradient') {
-              for (const colorStop of parsedColor.colorStops) {
-                if (colorStop.color.type === 'rgba' || colorStop.color.type === 'rgb') {
-                  let weight = 0;
-                  let r = 0;
-                  let g = 0;
-                  let b = 0;
-                  if (colorStop.color.type === 'rgba') {
-                    weight = colorStop.color.rgba[3];
-                    r = (colorStop.color.rgba[0] / 255) * weight;
-                    g = (colorStop.color.rgba[1] / 255) * weight;
-                    b = (colorStop.color.rgba[2] / 255) * weight;
-                  }
-                  if (colorStop.color.type === 'rgb') {
-                    weight = 1;
-                    r = (colorStop.color.rgb[0] / 255) * weight;
-                    g = (colorStop.color.rgb[1] / 255) * weight;
-                    b = (colorStop.color.rgb[2] / 255) * weight;
-                  }
-                  if (key === 'background-image' || key === 'background') {
-                    backgroundColorRed += r;
-                    backgroundColorGreen += g;
-                    backgroundColorBlue += b;
-                    backgroundColorQuantity += weight;
-                  }
-                  if (key === 'color') {
-                    textColorRed += r;
-                    textColorGreen += g;
-                    textColorBlue += b;
-                    textColorQuantity += weight;
-                  }
-                  if (key.startsWith('--')) {
-                    if (referenceMap.hasOwnProperty(key)) {
-                      if (referenceMap[key][0] > referenceMap[key][1]) {
-                        backgroundColorRed += r;
-                        backgroundColorGreen += g;
-                        backgroundColorBlue += b;
-                        backgroundColorQuantity += weight;
-                      }
-                      if (referenceMap[key][0] < referenceMap[key][1]) {
-                        textColorRed += r;
-                        textColorGreen += g;
-                        textColorBlue += b;
-                        textColorQuantity += weight;
-                      }
-                    }
-                  }
+                if (referenceMap[key][0] < referenceMap[key][1]) {
+                  textColorRed += (r / 255) * weight;
+                  textColorGreen += (g / 255) * weight;
+                  textColorBlue += (b / 255) * weight;
+                  textColorQuantity += weight;
                 }
               }
             }

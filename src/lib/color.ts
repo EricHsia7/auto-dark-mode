@@ -749,6 +749,190 @@ export function invertColor(color: Color): Color {
   }
 }
 
+export function averageColor(color: Color): ColorRGBA {
+  switch (color.type) {
+    case 'rgb': {
+      const [r, g, b] = color.rgb;
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [r, g, b, 1]
+      };
+      return result;
+      break;
+    }
+
+    case 'rgb-v': {
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [0, 0, 0, 0]
+      };
+      return result;
+      break;
+    }
+
+    case 'rgba': {
+      return color;
+      break;
+    }
+
+    case 'rgba-v': {
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [0, 0, 0, 0]
+      };
+      return result;
+      break;
+    }
+
+    case 'linear-gradient': {
+      let totalR = 0;
+      let totalG = 0;
+      let totalB = 0;
+      let quantity = 0;
+      for (const colorStop of color.colorStops) {
+        const [r, g, b, a] = averageColor(colorStop.color).rgba;
+        totalR += r;
+        totalG += g;
+        totalB += b;
+        quantity += a;
+      }
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [totalR / quantity, totalG / quantity, totalB / quantity, 1]
+      };
+      return result;
+      break;
+    }
+
+    case 'radial-gradient': {
+      let totalR = 0;
+      let totalG = 0;
+      let totalB = 0;
+      let quantity = 0;
+      for (const colorStop of color.colorStops) {
+        const [r, g, b, a] = averageColor(colorStop.color).rgba;
+        totalR += r;
+        totalG += g;
+        totalB += b;
+        quantity += a;
+      }
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [totalR / quantity, totalG / quantity, totalB / quantity, 1]
+      };
+      return result;
+      break;
+    }
+
+    case 'conic-gradient': {
+      let totalR = 0;
+      let totalG = 0;
+      let totalB = 0;
+      let quantity = 0;
+      for (const colorStop of color.colorStops) {
+        const [r, g, b, a] = averageColor(colorStop.color).rgba;
+        totalR += r;
+        totalG += g;
+        totalB += b;
+        quantity += a;
+      }
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [totalR / quantity, totalG / quantity, totalB / quantity, 1]
+      };
+      return result;
+      break;
+    }
+
+    case 'hsl-v': {
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [0, 0, 0, 0]
+      };
+      return result;
+      break;
+    }
+
+    case 'hsla-v': {
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [0, 0, 0, 0]
+      };
+      return result;
+      break;
+    }
+
+    case 'variable': {
+      const arr: Array<any> = color.args;
+      for (let i = arr.length - 1; i >= 0; i--) {
+        arr.splice(i, 1, averageColor(arr[i]));
+      }
+      const flatten = arr.flat(8);
+      let totalR = 0;
+      let totalG = 0;
+      let totalB = 0;
+      let quantity = 0;
+      for (const color of flatten) {
+        const [r, g, b, a] = color.rgba;
+        totalR += r;
+        totalG += g;
+        totalB += b;
+        quantity += a;
+      }
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [totalR / quantity, totalG / quantity, totalB / quantity, 1]
+      };
+      return result;
+      break;
+    }
+
+    case 'variable-n': {
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [0, 0, 0, 0]
+      };
+      return result;
+      break;
+    }
+
+    case 'keyword': {
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [0, 0, 0, 0]
+      };
+      return result;
+      break;
+    }
+
+    case 'url': {
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [0, 0, 0, 0]
+      };
+      return result;
+      break;
+    }
+
+    case 'unknown': {
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [0, 0, 0, 0]
+      };
+      return result;
+      break;
+    }
+
+    default:
+      const result: ColorRGBA = {
+        type: 'rgba',
+        rgba: [0, 0, 0, 0]
+      };
+      return result;
+      break;
+  }
+}
+
 export function colorToString(color: Color): string {
   switch (color.type) {
     case 'rgb': {
