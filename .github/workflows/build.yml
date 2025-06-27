@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - dev-dynamic-update
+      - dev-dynamic-update-processed-element
 
 jobs:
   build:

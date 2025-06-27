@@ -95,6 +95,8 @@ export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
       const stylesheetElements = stylesheetsElement.querySelectorAll('.auto_dark_mode_panel_stylesheets_stylesheet');
       for (let o = 0; o < Math.abs(capacity); o++) {
         const groupIndex = currentStyleTagQuantity - 1 - o;
+        autoDarkModeElements.delete(styleTagElements[groupIndex]);
+        autoDarkModeElements.delete(stylesheetElements[groupIndex]);
         styleTagElements[groupIndex].remove();
         stylesheetElements[groupIndex].remove();
       }
