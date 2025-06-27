@@ -445,7 +445,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
                     g = (colorStop.color.rgb[1] / 255) * weight;
                     b = (colorStop.color.rgb[2] / 255) * weight;
                   }
-                  if (key === 'background-color' || key === 'background') {
+                  if (key === 'background-image' || key === 'background') {
                     backgroundColorRed += r;
                     backgroundColorGreen += g;
                     backgroundColorBlue += b;
