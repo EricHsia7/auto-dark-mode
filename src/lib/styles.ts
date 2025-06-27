@@ -2,6 +2,7 @@ import { addToSet } from './add-to-set';
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
 import { generateElementSelector } from './generate-element-selector';
+import { generateIdentifier } from './generate-identifier';
 import { autoDarkModeElements, processedElements } from './index';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
@@ -310,7 +311,7 @@ export function getStyles(): Styles {
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
         // const selector = generateElementSelector(sheet.ownerNode as HTMLElement);
-        const identifier = sheet.ownerNode?.id;
+        const identifier = sheet.ownerNode?.id || generateIdentifier();
         const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
         const sheetName = `@stylesheet-${name}-${identifier}`;
         stylesCollection[sheetName] = sheetObj;
