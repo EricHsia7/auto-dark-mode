@@ -62,7 +62,7 @@ function handleMutation(mutationsList, obs) {
 
   if (isProcessing) return;
 
-  const currentMutationsList = mutationsListQueue.pop();
+  const currentMutationsList = mutationsListQueue.shift();
 
   let needUpdate = false;
   for (const mutation of currentMutationsList) {
