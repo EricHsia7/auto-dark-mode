@@ -62,16 +62,15 @@ function handleMutation(mutationsList, obs) {
 
   if (isProcessing) return;
 
-  const currentMutationsList = mutationsListQueue.unshift();
+  const currentMutationsList = mutationsListQueue.pop();
 
   let needUpdate = false;
   for (const mutation of currentMutationsList) {
     if (mutation.type === 'childList') {
       for (const node of mutation.addedNodes) {
-        if (node instanceof HTMLLinkElement || (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style' && !node.hasAttribute('auto-dark-mode-stylesheet-name')) || node instanceof HTMLElement) {
-          needUpdate = true;
-          break;
-        }
+        if (node instanceof HTMLElement) needUpdate = true;
+        if (node instanceof HTMLLinkElement) needUpdate = true;
+        if (node instanceof HTMLStyleElement && node.tagName.toLowerCase() === 'style') needUpdate = true;
       }
     } else if (mutation.type === 'attributes') {
       if (mutation.attributeName === 'style') {
