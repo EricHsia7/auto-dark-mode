@@ -426,6 +426,55 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
                   }
                 }
               }
+            } else if (parsedColor.type === 'linear-gradient' || parsedColor.type === 'conic-gradient' || parsedColor.type === 'radial-gradient') {
+              for (const colorStop of parsedColor.colorStops) {
+                if (colorStop.color.type === 'rgba' || colorStop.color.type === 'rgb') {
+                  let weight = 0;
+                  let r = 0;
+                  let g = 0;
+                  let b = 0;
+                  if (colorStop.color.type === 'rgba') {
+                    weight = colorStop.color.rgba[3];
+                    r = (colorStop.color.rgba[0] / 255) * weight;
+                    g = (colorStop.color.rgba[1] / 255) * weight;
+                    b = (colorStop.color.rgba[2] / 255) * weight;
+                  }
+                  if (colorStop.color.type === 'rgb') {
+                    weight = 1;
+                    r = (colorStop.color.rgb[0] / 255) * weight;
+                    g = (colorStop.color.rgb[1] / 255) * weight;
+                    b = (colorStop.color.rgb[2] / 255) * weight;
+                  }
+                  if (key === 'background-color' || key === 'background') {
+                    backgroundColorRed += r;
+                    backgroundColorGreen += g;
+                    backgroundColorBlue += b;
+                    backgroundColorQuantity += weight;
+                  }
+                  if (key === 'color') {
+                    textColorRed += r;
+                    textColorGreen += g;
+                    textColorBlue += b;
+                    textColorQuantity += weight;
+                  }
+                  if (key.startsWith('--')) {
+                    if (referenceMap.hasOwnProperty(key)) {
+                      if (referenceMap[key][0] > referenceMap[key][1]) {
+                        backgroundColorRed += r;
+                        backgroundColorGreen += g;
+                        backgroundColorBlue += b;
+                        backgroundColorQuantity += weight;
+                      }
+                      if (referenceMap[key][0] < referenceMap[key][1]) {
+                        textColorRed += r;
+                        textColorGreen += g;
+                        textColorBlue += b;
+                        textColorQuantity += weight;
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
