@@ -1,3 +1,4 @@
+import { autoDarkModeElements } from '../../lib/index';
 import { StyleSheetCSSArray, StyleSheetCSSItem } from '../../lib/styles';
 
 let panelInitialized: boolean = false;
@@ -39,12 +40,15 @@ function generateElementOfStylesheet(): HTMLElement {
   newStylesheetToggleElement.appendChild(newThumbElement);
   newStylesheetElement.appendChild(newStylesheetToggleElement);
 
+  autoDarkModeElements.add(newStylesheetElement);
   return newStylesheetElement;
 }
 
 function generateElementOfStyleTag(): HTMLStyleElement {
   const newStyleTagElement = document.createElement('style');
   newStyleTagElement.setAttribute('auto-dark-mode-stylesheet-name', '');
+
+  autoDarkModeElements.add(newStyleTagElement);
   return newStyleTagElement;
 }
 
