@@ -586,13 +586,18 @@ export function invertColor(color: Color): Color {
         return color;
       }
 
-      const [R, G, B] = color.rgb;
+      const minimumValue = 0.09;
+      const equalizer = 0.8;
 
-      const r = R / 255;
-      const g = G / 255;
-      const b = B / 255;
+      const [r, g, b] = color.rgb;
 
-      const originalValue = Math.max(r, g, b);
+      const average = (r + g + b) / 3;
+      const R = r * (1 - equalizer) + average * equalizer;
+      const G = g * (1 - equalizer) + average * equalizer;
+      const B = b * (1 - equalizer) + average * equalizer;
+
+      const originalValue = Math.max(R, G, B) / 255;
+
       if (originalValue === 0) {
         const result0: ColorRGB = {
           type: 'rgb',
@@ -600,7 +605,8 @@ export function invertColor(color: Color): Color {
         };
         return result0;
       }
-      const newValue = 0.09 + (1 - 0.09) * (1 - originalValue);
+
+      const newValue = minimumValue + (1 - minimumValue) * (1 - originalValue);
       const scaler = newValue / originalValue;
 
       const red = Math.round(R * scaler);
@@ -611,6 +617,7 @@ export function invertColor(color: Color): Color {
         type: 'rgb',
         rgb: [red, green, blue]
       };
+
       // color = (r,g,b) where 0 <= r, g, b <= 1
       // scaler = t where 0 < t <= 1
       // newColor = color' = t * color = (tr,tg,tb)
