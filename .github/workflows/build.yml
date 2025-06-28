@@ -23,6 +23,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: List directories and files in node_modules
+        run: |
+          echo "Listing directories and files in node_modules/css-select and node_modules/svgo:"
+          find node_modules/css-select node_modules/svgo -type f -name "*.js" -print 2>/dev/null || echo "One or more directories not found"
+          echo "Full directory structure of node_modules/css-select:"
+          ls -R node_modules/css-select 2>/dev/null || echo "css-select directory not found"
+          echo "Full directory structure of node_modules/svgo:"
+          ls -R node_modules/svgo 2>/dev/null || echo "svgo directory not found"
+        shell: bash
+
       - name: Build project
         run: webpack --mode=production
 
