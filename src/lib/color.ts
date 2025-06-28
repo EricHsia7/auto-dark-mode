@@ -582,7 +582,7 @@ function invertStops(colorStops: ColorStopArray): ColorStopArray {
 export function invertColor(color: Color): Color {
   switch (color.type) {
     case 'rgb': {
-      if (isColorVibrant(color) > 0.31) {
+      if (isColorVibrant(color) > 0.27) {
         return color;
       }
 
@@ -866,8 +866,8 @@ export function isColorDark(color: ColorRGBA): number {
 }
 
 export function isColorVibrant(color: ColorRGB): number {
-  // const p = 0.00526701208730907 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.2315923467761 + 0.005789762029929 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.268849448143961 + 0.00445659947538687 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.20534779494441;
-  const p = 0.006339594673 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.1357803475 + 0.006733518277 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1787805054 + 0.005240646414 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.1162090602;
+  // const p = 0.006339594673 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.1357803475 + 0.006733518277 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1787805054 + 0.005240646414 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.1162090602;
+  const p = 0.006669426162 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.07742765348 + 0.007073453738 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1163189972 + 0.005399325815 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.06675079166;
   const q = Math.min(Math.max(p / 3, 0), 1);
   // ./data/vibrancy.csv
   return q;
