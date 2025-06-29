@@ -906,7 +906,8 @@ export function isColorVibrant(color: ColorRGB): number {
   // return q;
   // ./data/vibrancy.csv
 
-  const [prg, pgb, pbr] = getPerChannelDifference(color);
+  const [r, g, b] = color.rgb;
+  const [prg, pgb, pbr] = getPerChannelDifference(r, g, b);
 
   const [RG_avg, RG_stdev] = mergeStats(baseStats.avg[0], baseStats.stdev[0], baseStats.n, prg, 0, 1);
   const [GB_avg, GB_stdev] = mergeStats(baseStats.avg[1], baseStats.stdev[1], baseStats.n, pgb, 0, 1);
