@@ -594,7 +594,6 @@ function invertStops(colorStops: ColorStopArray): ColorStopArray {
 export function invertColor(color: Color): Color {
   switch (color.type) {
     case 'rgb': {
-      console.log(JSON.stringify(color), isColorVibrant(color));
       if (isColorVibrant(color) > 0) {
         return color;
       }
