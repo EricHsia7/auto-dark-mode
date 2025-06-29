@@ -4,6 +4,12 @@ export interface Stats {
   stdev: [number, number, number];
 }
 
+// Compute per-channel differences: |R - G|, |G - B|, |B - R|
+export function getPerChannelDifference(color: ColorRGB): [RG: number, GB: number, BR: number] {
+  const [r, g, b] = color.rgb;
+  return [Math.abs(r - g), Math.abs(g - b), Math.abs(b - r)];
+}
+
 export function computeStats(colors: number[][]): Stats {
   const n = colors.length;
   let RG_total = 0,
@@ -14,7 +20,7 @@ export function computeStats(colors: number[][]): Stats {
     BR_sq = 0;
 
   for (const c of colors) {
-    const [prg, pgb, pbr] = p(c);
+    const [prg, pgb, pbr] = getPerChannelDifference(c);
     RG_total += prg;
     RG_sq += prg ** 2;
     GB_total += pgb;

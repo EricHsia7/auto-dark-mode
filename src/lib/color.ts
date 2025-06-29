@@ -1,6 +1,6 @@
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
-import { computeStats, mergeStats } from './stats';
+import { computeStats, getPerChannelDifference, mergeStats } from './stats';
 
 export interface ColorRGB {
   type: 'rgb';
@@ -897,12 +897,6 @@ const baseColors: number[][] = [
 ];
 
 const baseStats = computeStats(baseColors); // Precompute once
-
-// Compute per-channel differences: |R - G|, |G - B|, |B - R|
-function getPerChannelDifference(color: ColorRGB): number[] {
-  const [r, g, b] = color.rgb;
-  return [Math.abs(r - g), Math.abs(g - b), Math.abs(b - r)];
-}
 
 export function isColorVibrant(color: ColorRGB): number {
   // const p = 0.006339594673 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.1357803475 + 0.006733518277 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1787805054 + 0.005240646414 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.1162090602;
