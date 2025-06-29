@@ -132,6 +132,17 @@ function parseColorStops(components: Array<string>): ColorStopArray {
         color: color,
         position: position
       });
+    } else if (argsLen > 2) {
+      const color = parseColor(args[0].trim()) as ColorStop['color'];
+      const position = args
+        .slice(1)
+        .map((e) => e.trim())
+        .join(' ');
+      colorStops.push({
+        type: 'stop',
+        color: color,
+        position: position
+      });
     }
   }
   return colorStops;
@@ -582,7 +593,7 @@ function invertStops(colorStops: ColorStopArray): ColorStopArray {
 export function invertColor(color: Color): Color {
   switch (color.type) {
     case 'rgb': {
-      if (isColorVibrant(color) > 0.31) {
+      if (isColorVibrant(color) > 0.49) {
         return color;
       }
 
