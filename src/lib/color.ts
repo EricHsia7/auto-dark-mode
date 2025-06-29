@@ -598,7 +598,7 @@ export function invertColor(color: Color): Color {
       }
 
       const minimumValue = 0.09;
-      const equalizer = 0.8;
+      const equalizer = 13 / 17;
 
       const [r, g, b] = color.rgb;
 
