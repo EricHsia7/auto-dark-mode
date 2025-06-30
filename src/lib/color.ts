@@ -598,10 +598,13 @@ export function invertColor(color: Color): Color {
         return color;
       }
 
-      const minimumValue = 5 / 51;
-      const equalizer = 11 / 17;
-
       const [r, g, b] = color.rgb;
+
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+
+      const minimumValue = 5 / 51;
+      const equalizer = (max - min) / max;
 
       const average = (r + g + b) / 3;
       const R = r * (1 - equalizer) + average * equalizer;
