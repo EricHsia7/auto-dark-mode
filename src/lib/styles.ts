@@ -44,9 +44,12 @@ export function getStyles(): Styles {
         '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb',
         '--auto-dark-mode-stylesheet-default-bdbdbd': '#bdbdbd'
       },
-      'html, body, section, header, main, footer, article': {
+      'html, body': {
         'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+      },
+      'section, header, main, footer, article': {
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'h1, h2, h3, h4, h5, h6, span, time, a, a:hover': {
         'background-color': 'rgba(0, 0, 0, 0)',
@@ -55,6 +58,9 @@ export function getStyles(): Styles {
       'pre, code, p': {
         'background-color': 'rgba(0, 0, 0, 0)',
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+      },
+      'math, mi, mn, mo, mtext, ms, mspace, mglyph, mrow, mfenced, mfrac, msqrt, mroot, mstyle, merror, mpadded, mphantom, menclose, semantics, msub, msup, msubsup, munder, mover, munderover, mmultiscripts, mprescripts, mtable, mtr, mtd, mlabeledtr': {
+        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
         'background-color': 'rgba(0, 0, 0, 0)',
