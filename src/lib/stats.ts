@@ -21,20 +21,20 @@ export function computeStats(colors: number[][]): Stats {
   for (const c of colors) {
     const [prg, pgb, pbr] = getPerChannelDifference(c[0], c[1], c[2]);
     RG_total += prg;
-    RG_sq += prg ** 2;
+    RG_sq += Math.pow(prg, 2);
     GB_total += pgb;
-    GB_sq += pgb ** 2;
+    GB_sq += Math.pow(pgb, 2);
     BR_total += pbr;
-    BR_sq += pbr ** 2;
+    BR_sq += Math.pow(pbr, 2);
   }
 
   const RG_avg = RG_total / n;
   const GB_avg = GB_total / n;
   const BR_avg = BR_total / n;
 
-  const RG_stdev = Math.sqrt(RG_sq / n - RG_avg ** 2);
-  const GB_stdev = Math.sqrt(GB_sq / n - GB_avg ** 2);
-  const BR_stdev = Math.sqrt(BR_sq / n - BR_avg ** 2);
+  const RG_stdev = Math.sqrt(RG_sq / n - Math.pow(RG_avg, 2));
+  const GB_stdev = Math.sqrt(GB_sq / n - Math.pow(GB_avg, 2));
+  const BR_stdev = Math.sqrt(BR_sq / n - Math.pow(BR_avg, 2));
 
   return {
     n,
@@ -46,6 +46,6 @@ export function computeStats(colors: number[][]): Stats {
 export function mergeStats(avg1: number, stdev1: number, n1: number, avg2: number, stdev2: number, n2: number): [number, number] {
   const merged_n = n1 + n2;
   const merged_avg = (n1 * avg1 + n2 * avg2) / merged_n;
-  const merged_var = (n1 * (stdev1 ** 2 + avg1 ** 2) + n2 * (stdev2 ** 2 + avg2 ** 2)) / merged_n - merged_avg ** 2;
+  const merged_var = (n1 * (Math.pow(stdev1, 2) + Math.pow(avg1, 2)) + n2 * (Math.pow(stdev2, 2) + Math.pow(avg2, 2))) / merged_n - Math.pow(merged_avg, 2);
   return [merged_avg, Math.sqrt(merged_var)];
 }
