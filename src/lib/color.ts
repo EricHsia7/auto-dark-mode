@@ -600,6 +600,14 @@ export function invertColor(color: Color): Color {
 
       const [r, g, b] = color.rgb;
 
+      if (r === 0 && g === 0 && b === 0) {
+        const result0: ColorRGB = {
+          type: 'rgb',
+          rgb: [255, 255, 255]
+        };
+        return result0;
+      }
+
       const max = Math.max(r, g, b);
       const min = Math.min(r, g, b);
 
@@ -612,15 +620,6 @@ export function invertColor(color: Color): Color {
       const B = b * (1 - equalizer) + average * equalizer;
 
       const originalValue = Math.max(R, G, B) / 255;
-
-      if (originalValue === 0) {
-        const result0: ColorRGB = {
-          type: 'rgb',
-          rgb: [255, 255, 255]
-        };
-        return result0;
-      }
-
       const newValue = minimumValue + (1 - minimumValue) * (1 - originalValue);
       const scaler = newValue / originalValue;
 
