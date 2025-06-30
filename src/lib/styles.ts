@@ -148,7 +148,7 @@ export function getStyles(): Styles {
 
   // Extract svg presentation attributes
   const SVGPresentationAttributes: StyleSheet = {};
-  const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text') as NodeListOf<HTMLElement>;
+  const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text, svg tspan, svg textPath') as NodeListOf<HTMLElement>;
 
   function getInheritedStyle(element: Element, property: string): string | undefined {
     let parent = element.parentElement;
