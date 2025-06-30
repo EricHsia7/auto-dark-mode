@@ -60,7 +60,8 @@ export function getStyles(): Styles {
         'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'math, mi, mn, mo, mtext, ms, mspace, mglyph, mrow, mfenced, mfrac, msqrt, mroot, mstyle, merror, mpadded, mphantom, menclose, semantics, msub, msup, msubsup, munder, mover, munderover, mmultiscripts, mprescripts, mtable, mtr, mtd, mlabeledtr': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'background-color': 'rgba(0, 0, 0, 0)',
+        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
         'background-color': 'rgba(0, 0, 0, 0)',
@@ -147,7 +148,7 @@ export function getStyles(): Styles {
 
   // Extract svg presentation attributes
   const SVGPresentationAttributes: StyleSheet = {};
-  const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g') as NodeListOf<HTMLElement>;
+  const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text') as NodeListOf<HTMLElement>;
 
   function getInheritedStyle(element: Element, property: string): string | undefined {
     let parent = element.parentElement;
