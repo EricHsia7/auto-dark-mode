@@ -611,7 +611,7 @@ export function invertColor(color: Color): Color {
       const max = Math.max(r, g, b);
       const min = Math.min(r, g, b);
 
-      const minimumValue = 5 / 51;
+      const minimumValue = 4 / 85;
       const equalizer = Math.sqrt((max - min) / max);
 
       const average = (r + g + b) / 3;
