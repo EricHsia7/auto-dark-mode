@@ -1,9 +1,10 @@
-export function splitByTopLevelDelimiter(value: string): Array<string> {
+export function splitByTopLevelDelimiter(value: string): { result: Array<string>; delimiters: Array<',' | ' '> } {
   value = value.trim();
   let leftBracket = 0;
   let rightBracket = 0;
   let start = 0;
   const result: Array<string> = [];
+  const delimiters: Array<',' | ' '> = [];
   const len = value.length;
   for (let i = 0, l = len, l1 = len - 1; i < l; i++) {
     const char = value[i];
@@ -16,6 +17,7 @@ export function splitByTopLevelDelimiter(value: string): Array<string> {
     if (leftBracket === rightBracket) {
       if (char === ',' || char === ' ') {
         result.push(value.slice(start, i).trim());
+        delimiters.push(char);
         start = i + 1;
       } else if (i === l1) {
         result.push(value.slice(start, i + 1).trim());
@@ -23,5 +25,5 @@ export function splitByTopLevelDelimiter(value: string): Array<string> {
       }
     }
   }
-  return result;
+  return { result, delimiters };
 }

@@ -4,6 +4,7 @@ import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
 import { isSVGElement } from './is-svg-element';
+import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 
 export type CSSProperties = {
@@ -380,13 +381,14 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
-        let invertedColors = value;
         const colors = splitByTopLevelDelimiter(value);
-        for (const color of colors) {
+        const colorsLen = colors.result.length;
+        for (let i = colorsLen - 1; i >= 0; i--) {
+          const color = colors.result[i];
           const parsedColor = parseColor(color);
           if (parsedColor) {
             const invertedColor = invertColor(parsedColor);
-            invertedColors = invertedColors.replace(color, colorToString(invertedColor));
+            colors.result.splice(i, 1, colorToString(invertedColor));
 
             if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
               let weight = 0;
@@ -436,6 +438,8 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             }
           }
         }
+
+        const invertedColors = joinByDelimiters(colors.result, colors.delimiters);
         newStyles[key] = invertedColors;
       } else if (isPreserved(key)) {
         newStyles[key] = value;

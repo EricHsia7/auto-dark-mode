@@ -116,7 +116,7 @@ const functionalKeywords = {
 function parseColorStops(components: Array<string>): ColorStopArray {
   const colorStops: ColorStopArray = [];
   for (const component of components) {
-    const args = splitByTopLevelDelimiter(component);
+    const args = splitByTopLevelDelimiter(component).result;
     const argsLen = args.length;
     if (argsLen === 1) {
       const color = parseColor(args[0].trim()) as ColorStop['color'];
@@ -161,7 +161,7 @@ export function parseColor(value: string): Color {
     const variableRegex = /^var\((.*)\)$/i;
     const variableMatches = trimmed.match(variableRegex);
     if (variableMatches) {
-      const args: Array<any> = splitByTopLevelDelimiter(variableMatches[1]);
+      const args: Array<any> = splitByTopLevelDelimiter(variableMatches[1]).result;
       for (let i = args.length - 1; i >= 0; i--) {
         const arg = args[i];
         if (arg !== '') {
