@@ -7,7 +7,10 @@ const svgElements = {
   polygon: true,
   line: true,
   polyline: true,
-  g: true
+  g: true,
+  text: true,
+  tspan: true,
+  textPath: true
 };
 
 export function isSVGElement(tag: string): boolean {
