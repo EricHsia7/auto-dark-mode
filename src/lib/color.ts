@@ -1,3 +1,4 @@
+import { clamp } from './clamp';
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
@@ -612,20 +613,23 @@ export function invertColor(color: Color): Color {
       const min = Math.min(r, g, b);
 
       const minimumValue = 4 / 85;
-      const equalizer = Math.sqrt((max - min) / max);
+      const saturation = (max - min) / max;
+
+      const equalizerBase = (1 - max / 255) * Math.pow(saturation, 2);
+      const equalizer = -0.09 + equalizerBase * 1.09;
 
       const average = (r + g + b) / 3;
       const R = r * (1 - equalizer) + average * equalizer;
       const G = g * (1 - equalizer) + average * equalizer;
       const B = b * (1 - equalizer) + average * equalizer;
 
-      const originalValue = Math.max(R, G, B) / 255;
-      const newValue = minimumValue + (1 - minimumValue) * (1 - originalValue);
-      const scaler = newValue / originalValue;
+      const equalizedValue = Math.max(R, G, B) / 255;
+      const newValue = minimumValue + (1 - minimumValue) * (1 - equalizedValue);
+      const scaler = newValue / equalizedValue;
 
-      const red = Math.round(R * scaler);
-      const green = Math.round(G * scaler);
-      const blue = Math.round(B * scaler);
+      const red = clamp(0, Math.round(R * scaler), 255);
+      const green = clamp(0, Math.round(G * scaler), 255);
+      const blue = clamp(0, Math.round(B * scaler), 255);
 
       const result: ColorRGB = {
         type: 'rgb',
@@ -880,7 +884,7 @@ export function colorToString(color: Color): string {
 
 export function isColorDark(color: ColorRGBA): number {
   const p = -0.002315205943 * color.rgba[0] + 0.724916473719 + -0.00518915994 * color.rgba[1] + 1.093306292424 - 0.001444153598 * color.rgba[2] + 0.627977492263;
-  const q = Math.min(Math.max(p * color.rgba[3], 0), 1);
+  const q = clamp(0, p * color.rgba[3], 1);
   // ./data/darkness.csv
   return q;
   // higher number means higher probability
