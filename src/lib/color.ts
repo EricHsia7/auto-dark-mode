@@ -615,7 +615,7 @@ export function invertColor(color: Color): Color {
       const minimumValue = 4 / 85;
       const saturation = (max - min) / max;
 
-      const equalizerBase = Math.pow(saturation, 0.35);
+      const equalizerBase = Math.sqrt(saturation);
       const equalizer = -0.1 + equalizerBase * 1.1;
 
       const average = (r + g + b) / 3;
