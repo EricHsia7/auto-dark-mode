@@ -103,10 +103,17 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
 
           for (const attribute of ['fill', 'stroke', 'color']) {
             const value = element.getAttribute(attribute);
-            if (value != null && value.trim() !== '') {
-              // Attribute explicitly set on this element
+            // Attribute explicitly set on this element
+            if (value.toLowerCase() === 'currentcolor') {
+              // Try to inherit from ancestor in presentationAttributes
+              const inherited = getInheritedPresentationAttribute(element, 'color', presentationAttributes);
+              if (inherited === undefined) {
+                presentationAttributes[selector][attribute] = '#000000';
+              } else {
+                presentationAttributes[selector][attribute] = inherited;
+              }
+            } else if (value != null && value.trim() !== '') {
               presentationAttributes[selector][attribute] = value;
-              continue;
             } else {
               // Try to inherit from ancestor in presentationAttributes
               const inherited = getInheritedPresentationAttribute(element, attribute, presentationAttributes);
