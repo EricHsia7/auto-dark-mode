@@ -122,7 +122,7 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
         for (const element of svgElements) {
           const selector = generateElementSelector(element);
           if (presentationAttributes.hasOwnProperty(selector)) {
-            for (const property of presentationAttributes[selector]) {
+            for (const property in presentationAttributes[selector]) {
               const value = presentationAttributes[selector][property];
               const colors = splitByTopLevelDelimiter(value);
               const colorsLen = colors.result.length;
