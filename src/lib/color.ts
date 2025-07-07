@@ -1,7 +1,9 @@
 import { clamp } from './clamp';
+import { isFunctionalKeyword } from './is-functional-keyword';
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
+import { systemColors } from './system-colors';
 
 export interface ColorRGB {
   type: 'rgb';
@@ -93,7 +95,7 @@ export interface _URL {
 
 export interface FunctionalKeyword {
   type: 'keyword';
-  value: 'inherit' | 'initial' | 'unset' | 'revert' | 'currentcolor' | 'none';
+  value: 'currentcolor' | 'inherit' | 'initial' | 'revert' | 'unset' | 'none';
   // "transparent" is converted to rgba
   // "none" my not mean "transparent," so keep it as-is
 }
@@ -104,15 +106,6 @@ export interface UnknownString {
 }
 
 export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | VariableName | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
-
-const functionalKeywords = {
-  currentcolor: true,
-  inherit: true,
-  initial: true,
-  revert: true,
-  unset: true,
-  none: true
-};
 
 function parseColorStops(components: Array<string>): ColorStopArray {
   const colorStops: ColorStopArray = [];
@@ -548,7 +541,7 @@ export function parseColor(value: string): Color {
   }
 
   // handle functional keywords
-  if (functionalKeywords.hasOwnProperty(value.toLowerCase())) {
+  if (isFunctionalKeyword(value)) {
     const result: FunctionalKeyword = {
       type: 'keyword',
       value: value as FunctionalKeyword['value']
@@ -557,11 +550,21 @@ export function parseColor(value: string): Color {
   }
 
   // handle named colors
-  const foundColor = namedColors[value.toLowerCase()];
-  if (foundColor) {
+  const foundNamedColor = namedColors[value.toLowerCase()];
+  if (foundNamedColor) {
     const result: ColorRGB = {
       type: 'rgb',
-      rgb: foundColor
+      rgb: foundNamedColor
+    };
+    return result;
+  }
+
+  // handle system colors
+  const foundSystemColor = systemColors[value.toLowerCase()];
+  if (foundSystemColor) {
+    const result: ColorRGB = {
+      type: 'rgb',
+      rgb: foundSystemColor
     };
     return result;
   }

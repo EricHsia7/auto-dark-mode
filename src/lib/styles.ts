@@ -39,61 +39,55 @@ export function getStyles(): Styles {
   const cssVariableReferenceMap: CSSVariableReferenceMap = {};
   const stylesCollection: StylesCollection = {
     '@stylesheet-default': {
-      ':root': {
-        '--auto-dark-mode-stylesheet-default-ffffff': '#ffffff',
-        '--auto-dark-mode-stylesheet-default-000000': '#000000',
-        '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb',
-        '--auto-dark-mode-stylesheet-default-bdbdbd': '#bdbdbd'
-      },
       'html, body': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'background-color': '#ffffff',
+        'color': '#000000'
       },
       'section, header, main, footer, article': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'h1, h2, h3, h4, h5, h6, span, time, a, a:hover': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'color': '#000000'
       },
       'pre, code, p': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'color': '#000000'
       },
       'math, mi, mn, mo, mtext, ms, mspace, mglyph, mrow, mfenced, mfrac, msqrt, mroot, mstyle, merror, mpadded, mphantom, menclose, semantics, msub, msup, msubsup, munder, mover, munderover, mmultiscripts, mprescripts, mtable, mtr, mtd, mlabeledtr': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'color': '#000000'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'border-color': 'var(--auto-dark-mode-stylesheet-default-000000)',
+        'border-color': '#000000',
         'border-style': 'solid',
         'border-width': '1px',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'color': '#000000'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
-        color: 'var(--auto-dark-mode-stylesheet-default-bdbdbd)'
+        color: '#bdbdbd'
       },
       'th, td': {
-        'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px'
       },
       'th': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'tr': {
-        'border-bottom-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-bottom-color': '#e5e7eb',
         'border-bottom-style': 'solid',
         'border-bottom-width': '1px'
       },
       'thead': {
-        'border-bottom-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-bottom-color': '#e5e7eb',
         'border-bottom-style': 'solid',
         'border-bottom-width': '2px'
       },
       'tfoot': {
-        'border-top-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-top-color': '#e5e7eb',
         'border-top-style': 'solid',
         'border-top-width': '2px'
       },
@@ -101,42 +95,42 @@ export function getStyles(): Styles {
         border: 'none'
       },
       'blockquote': {
-        'border-left-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'border-left-color': '#e5e7eb',
+        'color': '#000000'
       },
       'hr': {
         'border': 'none',
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)'
+        'background-color': '#e5e7eb'
       },
       'figcaption, caption': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'details': {
-        'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px'
       },
       'summary': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'small': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'strong': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'em': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'ul, ol': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'li': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'mark': {
-        'background-color': 'rgba(248, 255, 0, 0.5)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'background-color': 'rgba(247, 209, 84, 0.5)',
+        'color': '#000000'
       }
     },
     '@stylesheet-image-dimming': {

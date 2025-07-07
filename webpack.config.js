@@ -71,7 +71,7 @@ module.exports = (env, argv) => {
         {
           test: /\.css$/i,
           use: [
-            { loader: 'style-loader', options: { attributes: { id: 'auto-dark-mode-interface' }, injectType: 'singletonStyleTag' } },
+            { loader: 'style-loader', options: { attributes: { id: 'auto-dark-mode-css' }, injectType: 'singletonStyleTag' } },
             'css-loader',
             {
               loader: 'postcss-loader',
