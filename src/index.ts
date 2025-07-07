@@ -1,5 +1,6 @@
 import { initialize } from './initialize';
 
+import './interface/system-colors.css';
 import './interface/theme.css';
 
 import './interface/button/index.css';

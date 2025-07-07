@@ -1,7 +1,10 @@
 import { clamp } from './clamp';
+import { isFunctionalKeyword } from './is-functional-keyword';
+import { isSystemColor } from './is-system-color';
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
+import { systemColorsTable } from './system-colors';
 
 export interface ColorRGB {
   type: 'rgb';
@@ -93,7 +96,7 @@ export interface _URL {
 
 export interface FunctionalKeyword {
   type: 'keyword';
-  value: 'inherit' | 'initial' | 'unset' | 'revert' | 'currentcolor' | 'none';
+  value: 'currentcolor' | 'inherit' | 'initial' | 'revert' | 'unset' | 'none';
   // "transparent" is converted to rgba
   // "none" my not mean "transparent," so keep it as-is
 }
@@ -548,7 +551,7 @@ export function parseColor(value: string): Color {
   }
 
   // handle functional keywords
-  if (functionalKeywords.hasOwnProperty(value.toLowerCase())) {
+  if (isFunctionalKeyword(value)) {
     const result: FunctionalKeyword = {
       type: 'keyword',
       value: value as FunctionalKeyword['value']
@@ -564,6 +567,14 @@ export function parseColor(value: string): Color {
       rgb: foundColor
     };
     return result;
+  }
+
+  // handle system colors
+  if (isSystemColor(value)) {
+    const keyword = value.toLowerCase();
+    if (systemColorsTable.hasOwnProperty(keyword)) {
+      return systemColorsTable[keyword];
+    }
   }
 
   const unknownString: UnknownString = {
