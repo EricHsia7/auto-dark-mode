@@ -1,5 +1,5 @@
 import { generateElementSelector } from './generate-element-selector';
-import { isSVGElement } from './is-svg-element';
+import { isSVGElement } from './svg-elements';
 
 export function getInheritedPresentationAttribute(element: Element, property: string, presentationAttributeMap: object): string | undefined {
   let parent = element.parentElement;

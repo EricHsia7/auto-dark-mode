@@ -7,6 +7,7 @@ import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { svgElementsQuerySelectorString } from './svg-elements';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -144,7 +145,7 @@ export function getStyles(): Styles {
 
   // Extract svg presentation attributes
   const SVGPresentationAttributes: StyleSheet = {};
-  const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text, svg tspan, svg textPath') as NodeListOf<HTMLElement>;
+  const svgElements = document.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
 
   for (const element of svgElements) {
     const selector = generateElementSelector(element);

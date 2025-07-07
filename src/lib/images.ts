@@ -6,6 +6,7 @@ import { getSVGContent } from './get-svg-content';
 import { invertPropertyValuePairs } from './invert-property-value-pairs';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { svgElementsQuerySelectorString } from './svg-elements';
 
 export type ImageItemContentType = 'image/svg+xml';
 
@@ -91,7 +92,7 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
         }
 
         // cascade presentation attributes
-        const svgElements = doc.querySelectorAll('svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text, svg tspan, svg textPath') as NodeListOf<HTMLElement>;
+        const svgElements = doc.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
         const presentationAttributes = {};
         for (const element of svgElements) {
           const selector = generateElementSelector(element);
