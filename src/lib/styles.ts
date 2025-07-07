@@ -2,7 +2,7 @@ import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
-import { getInheritedPresentationAttribute } from './get-inherited-style';
+import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
 import { joinByDelimiters } from './join-by-delimiters';

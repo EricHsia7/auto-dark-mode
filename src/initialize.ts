@@ -1,5 +1,6 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel } from './interface/panel/index';
+import { generateCSSFromImageItems, getImageItems, invertImageItems } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
@@ -35,6 +36,21 @@ export async function initialize() {
     fragment.appendChild(styleSheet);
   }
   document.documentElement.appendChild(fragment);
+
+  // Get images
+  const imageitems = await getImageItems();
+
+  // Invert images
+  const invertedImageItems = await invertImageItems(imageitems);
+
+  // Generate css
+  const invertImageItemsCSS = generateCSSFromImageItems(invertedImageItems);
+
+  // Inject css
+  const imageItemsStyle = document.createElement('style');
+  imageItemsStyle.textContent = invertImageItemsCSS;
+  // imageItemsStyle.setAttribute('auto-dark-mode-stylesheet-name', name);
+  document.documentElement.appendChild(imageItemsStyle);
 
   if (!isFramed()) {
     // Prepare button

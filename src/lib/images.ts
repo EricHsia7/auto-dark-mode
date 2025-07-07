@@ -1,7 +1,7 @@
 import { colorToString, invertColor, parseColor } from './color';
 import { generateElementSelector } from './generate-element-selector';
 import { getContentType } from './get-content-type';
-import { getInheritedPresentationAttribute } from './get-inherited-style';
+import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
 import { getSVGContent } from './get-svg-content';
 import { invertPropertyValuePairs } from './invert-property-value-pairs';
 import { joinByDelimiters } from './join-by-delimiters';
@@ -20,7 +20,7 @@ export interface ImageItemPictureSource {
   type: 'source';
   source: string;
   contentType: ImageItemContentType;
-  media: string;
+  mediaQueryConditionText: string;
   selector: string;
 }
 
@@ -56,7 +56,7 @@ export async function getImageItems(): Promise<ImageItemArray> {
           type: 'source',
           source: source,
           contentType: contentType,
-          media: media,
+          mediaQueryConditionText: media,
           selector: selector
         };
         result.push(item);
@@ -148,4 +148,16 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
   }
 }
 
-export function generateCSSFromImageItems(imageItems: ImageItemArray) {}
+export function generateCSSFromImageItems(imageItems: ImageItemArray) {
+  let rules = [];
+  for (const imageItem of imageItems) {
+    const selector = imageItem.selector;
+    const css = `${selector}{position:relative;}${selector}::after{position:absolute;top:0;left:0;width:100%;height:100%;content:'';background-image:url('${imageItem.source}');background-size:contain;background-repeat:no-repeat;background-position:top left;pointer-events:none;user-select:none;-webkit-user-select:none;}`;
+    if (imageItem.type === 'img') {
+      rules.push(css);
+    } else if (imageItem.type === 'source') {
+      rules.push(`@media ${imageItem.mediaQueryConditionText}{${css}}`);
+    }
+  }
+  return rules.join('');
+}
