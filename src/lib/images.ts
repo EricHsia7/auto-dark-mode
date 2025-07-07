@@ -146,6 +146,7 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
         break;
     }
   }
+  return result;
 }
 
 export function generateCSSFromImageItems(imageItems: ImageItemArray) {
