@@ -155,12 +155,12 @@ export function generateCSSFromImageItems(imageItems: ImageItemArray) {
   let rules = [];
   for (const imageItem of imageItems) {
     const selector = imageItem.selector;
-    const css = `${selector}{position:relative;}${selector}::after{position:absolute;top:0;left:0;width:100%;height:100%;content:'';background-image:url('${imageItem.source}');background-size:contain;background-repeat:no-repeat;background-position:top left;pointer-events:none;user-select:none;-webkit-user-select:none;}`;
+    const css = `${selector}{content:url('${imageItem.source}');}`;
     if (imageItem.type === 'img') {
       rules.push(css);
     } else if (imageItem.type === 'source') {
       rules.push(`@media ${imageItem.mediaQueryConditionText}{${css}}`);
     }
   }
-  return rules.join('');
+  return `@media (prefers-color-scheme:dark){${rules.join('')}}`;
 }
