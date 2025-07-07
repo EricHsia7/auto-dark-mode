@@ -138,8 +138,9 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
             }
           }
         }
-
-        imageItem.source = `data:image/svg+xml,${encodeURIComponent(doc.querySelector('svg').outerHTML).replace(/'/g, '%27').replace(/"/g, '%22')}`;
+        const serializer = new XMLSerializer();
+        const string = serializer.serializeToString(doc.querySelector('svg'));
+        imageItem.source = `data:image/svg+xml,${encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')}`;
         result.push(imageItem);
         break;
       }
