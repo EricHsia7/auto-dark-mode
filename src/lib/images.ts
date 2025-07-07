@@ -71,109 +71,104 @@ export async function getImageItems(): Promise<ImageItemArray> {
   return result;
 }
 
-export async function invertImageItems(imageItems: ImageItemArray): Promise<ImageItemArray> {
-  const result: ImageItemArray = [];
-  for (const imageItem of imageItems) {
-    switch (imageItem.contentType) {
-      case 'image/svg+xml': {
-        // get content
-        const content = await getSVGContent(imageItem.source);
+export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem> {
+  switch (imageItem.contentType) {
+    case 'image/svg+xml': {
+      // get content
+      const content = await getSVGContent(imageItem.source);
 
-        // parse svg
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(content, 'text/html');
+      // parse svg
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(content, 'text/html');
 
-        // invert inline styles
-        const styleTagElements = doc.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
-        for (const styleTagElement of styleTagElements) {
-          const cssSourceCode = styleTagElement.textContent;
-          const invertedCssSourceCode = invertPropertyValuePairs(cssSourceCode);
-          styleTagElement.textContent = invertedCssSourceCode;
+      // invert inline styles
+      const styleTagElements = doc.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
+      for (const styleTagElement of styleTagElements) {
+        const cssSourceCode = styleTagElement.textContent;
+        const invertedCssSourceCode = invertPropertyValuePairs(cssSourceCode);
+        styleTagElement.textContent = invertedCssSourceCode;
+      }
+
+      // cascade presentation attributes
+      const svgElements = doc.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
+      const presentationAttributes = {};
+      for (const element of svgElements) {
+        const selector = generateElementSelector(element);
+
+        if (!presentationAttributes.hasOwnProperty(selector)) {
+          presentationAttributes[selector] = {};
         }
 
-        // cascade presentation attributes
-        const svgElements = doc.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
-        const presentationAttributes = {};
-        for (const element of svgElements) {
-          const selector = generateElementSelector(element);
-
-          if (!presentationAttributes.hasOwnProperty(selector)) {
-            presentationAttributes[selector] = {};
-          }
-
-          for (const attribute of ['fill', 'stroke', 'color']) {
-            const value = element.getAttribute(attribute);
-            // Attribute explicitly set on this element
-            if (value !== null && typeof value === 'string') {
-              if (value.trim().toLowerCase() === 'currentcolor') {
-                // Try to inherit from ancestor in presentationAttributes
-                const inherited = getInheritedPresentationAttribute(element, 'color', presentationAttributes);
-                if (inherited === undefined) {
-                  presentationAttributes[selector][attribute] = '#000000';
-                } else {
-                  presentationAttributes[selector][attribute] = inherited;
-                }
-                continue;
-              } else if (value.trim() !== '') {
-                presentationAttributes[selector][attribute] = value;
-                continue;
+        for (const attribute of ['fill', 'stroke', 'color']) {
+          const value = element.getAttribute(attribute);
+          // Attribute explicitly set on this element
+          if (value !== null && typeof value === 'string') {
+            if (value.trim().toLowerCase() === 'currentcolor') {
+              // Try to inherit from ancestor in presentationAttributes
+              const inherited = getInheritedPresentationAttribute(element, 'color', presentationAttributes);
+              if (inherited === undefined) {
+                presentationAttributes[selector][attribute] = '#000000';
+              } else {
+                presentationAttributes[selector][attribute] = inherited;
               }
-            }
-
-            // Try to inherit from ancestor in presentationAttributes
-            const inherited = getInheritedPresentationAttribute(element, attribute, presentationAttributes);
-            if (inherited !== undefined) {
-              presentationAttributes[selector][attribute] = inherited;
+              continue;
+            } else if (value.trim() !== '') {
+              presentationAttributes[selector][attribute] = value;
               continue;
             }
           }
-        }
 
-        // invert presentation attributes
-        for (const element of svgElements) {
-          const selector = generateElementSelector(element);
-          if (presentationAttributes.hasOwnProperty(selector)) {
-            for (const property in presentationAttributes[selector]) {
-              const value = presentationAttributes[selector][property];
-              const colors = splitByTopLevelDelimiter(value);
-              const colorsLen = colors.result.length;
-              for (let i = colorsLen - 1; i >= 0; i--) {
-                const color = colors.result[i];
-                const parsedColor = parseColor(color);
-                if (parsedColor) {
-                  const invertedColor = invertColor(parsedColor);
-                  colors.result.splice(i, 1, colorToString(invertedColor));
-                }
-              }
-              element.setAttribute(property, joinByDelimiters(colors.result, colors.delimiters));
-            }
+          // Try to inherit from ancestor in presentationAttributes
+          const inherited = getInheritedPresentationAttribute(element, attribute, presentationAttributes);
+          if (inherited !== undefined) {
+            presentationAttributes[selector][attribute] = inherited;
+            continue;
           }
         }
-
-        // convert to string
-        const serializer = new XMLSerializer();
-        const string = serializer.serializeToString(doc.querySelector('svg'));
-        imageItem.source = `data:image/svg+xml,${encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')}`;
-        result.push(imageItem);
-        break;
       }
-      default:
-        break;
+
+      // invert presentation attributes
+      for (const element of svgElements) {
+        const selector = generateElementSelector(element);
+        if (presentationAttributes.hasOwnProperty(selector)) {
+          for (const property in presentationAttributes[selector]) {
+            const value = presentationAttributes[selector][property];
+            const colors = splitByTopLevelDelimiter(value);
+            const colorsLen = colors.result.length;
+            for (let i = colorsLen - 1; i >= 0; i--) {
+              const color = colors.result[i];
+              const parsedColor = parseColor(color);
+              if (parsedColor) {
+                const invertedColor = invertColor(parsedColor);
+                colors.result.splice(i, 1, colorToString(invertedColor));
+              }
+            }
+            element.setAttribute(property, joinByDelimiters(colors.result, colors.delimiters));
+          }
+        }
+      }
+
+      // convert to string
+      const serializer = new XMLSerializer();
+      const string = serializer.serializeToString(doc.querySelector('svg'));
+      imageItem.source = `data:image/svg+xml,${encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')}`;
+      return imageItem;
+      break;
     }
+    default:
+      return imageItem;
+      break;
   }
-  return result;
 }
 
-export function generateCSSFromImageItems(imageItems: ImageItemArray) {
-  let rules = [];
-  for (const imageItem of imageItems) {
-    const selector = imageItem.selector;
-    const css = `${selector}{content:url('${imageItem.source}');}`;
-    if (imageItem.type === 'img') {
-      rules.push(css);
-    } else if (imageItem.type === 'source') {
-      rules.push(`@media ${imageItem.mediaQueryConditionText}{${css}}`);
-    }
+export function generateCSSFromImageItem(imageItem: ImageItem): string {
+  let rules = '';
+  const selector = imageItem.selector;
+  const css = `${selector}{content:url('${imageItem.source}');}`;
+  if (imageItem.type === 'img') {
+    rules = css;
+  } else if (imageItem.type === 'source') {
+    rules = `@media ${imageItem.mediaQueryConditionText}{${css}}`;
   }
-  return `@media (prefers-color-scheme:dark){${rules.join('')}}`;
+  return `@media (prefers-color-scheme:dark){${rules}}`;
 }

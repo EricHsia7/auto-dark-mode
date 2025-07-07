@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - dev-invert-svg-image
+      - dev-invert-svg-image-parallel
 
 jobs:
   build:
