@@ -1,5 +1,6 @@
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
+import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
@@ -315,16 +316,6 @@ export function getStyles(): Styles {
   }
 
   // Capture all inline stylesCollection (lambda stylesCollection)
-  function generateElementSelector(element: HTMLElement): string {
-    const tag = element.tagName.toLowerCase();
-    if (!element.id) {
-      element.id = `_${generateIdentifier()}`;
-    }
-    const id = element.id ? `#${element.id}` : '';
-    const classes = element.classList.length > 0 ? `.${Array.from(element.classList).join('.')}` : '';
-    return `${tag}${id}${classes}`;
-  }
-
   const lambdaStyles: StyleSheet = {};
   const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
   for (const element of elementsWithInlineStyle) {

@@ -1,3 +1,4 @@
+import { generateElementSelector } from './generate-element-selector';
 import { getContentType } from './get-content-type';
 
 export type ImageContentType = 'image/svg+xml';
@@ -6,6 +7,7 @@ export interface ImageItem {
   type: 'img';
   source: string;
   contentType: ImageContentType;
+  selector: string;
 }
 
 export interface PictureSourceItem {
@@ -13,12 +15,14 @@ export interface PictureSourceItem {
   source: string;
   contentType: ImageContentType;
   media: string;
+  selector: string;
 }
 
 export async function getImageItems() {
   const result = [];
   const elements = document.querySelectorAll('img, picture source') as NodeListOf<HTMLElement>;
   for (const element of elements) {
+    const selector = generateElementSelector(element);
     const tagName = element.tagName.toLowerCase();
     switch (tagName) {
       case 'img': {
@@ -27,7 +31,8 @@ export async function getImageItems() {
         const item: ImageItem = {
           type: 'img',
           source: source,
-          contentType: contentType
+          contentType: contentType,
+          selector: selector
         };
         result.push(item);
         break;
@@ -41,7 +46,8 @@ export async function getImageItems() {
           type: 'source',
           source: source,
           contentType: contentType,
-          media: media
+          media: media,
+          selector: selector
         };
         result.push(item);
         break;
@@ -54,8 +60,6 @@ export async function getImageItems() {
   return result;
 }
 
-export function invertImageItems() {
-  
-}
+export function invertImageItems() {}
 
 export function generateCSSFromImageItems() {}
