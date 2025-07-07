@@ -2,6 +2,9 @@ function fetchSVG(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
       method: 'GET',
+      headers: {
+        Accept: 'image/svg+xml'
+      },
       url,
       onload: function (response) {
         if (response.status === 200) {
