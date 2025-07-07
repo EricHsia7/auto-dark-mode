@@ -37,20 +37,24 @@ export async function initialize() {
   }
   document.documentElement.appendChild(fragment);
 
-  // Get images
-  const imageitems = await getImageItems();
+  try {
+    // Get images
+    const imageitems = await getImageItems();
 
-  // Invert images
-  const invertedImageItems = await invertImageItems(imageitems);
+    // Invert images
+    const invertedImageItems = await invertImageItems(imageitems);
 
-  // Generate css
-  const invertImageItemsCSS = generateCSSFromImageItems(invertedImageItems);
+    // Generate css
+    const invertImageItemsCSS = generateCSSFromImageItems(invertedImageItems);
 
-  // Inject css
-  const imageItemsStyle = document.createElement('style');
-  imageItemsStyle.textContent = invertImageItemsCSS;
-  // imageItemsStyle.setAttribute('auto-dark-mode-stylesheet-name', name);
-  document.documentElement.appendChild(imageItemsStyle);
+    // Inject css
+    const imageItemsStyle = document.createElement('style');
+    imageItemsStyle.textContent = invertImageItemsCSS;
+    // imageItemsStyle.setAttribute('auto-dark-mode-stylesheet-name', name);
+    document.documentElement.appendChild(imageItemsStyle);
+  } catch (e) {
+    console.log(e);
+  }
 
   if (!isFramed()) {
     // Prepare button
