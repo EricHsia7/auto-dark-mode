@@ -77,7 +77,6 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
       case 'image/svg+xml': {
         // get content
         const content = await getSVGContent(imageItem.source);
-        console.log(content);
 
         // parse svg
         const parser = new DOMParser();
@@ -104,7 +103,7 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
           for (const attribute of ['fill', 'stroke', 'color']) {
             const value = element.getAttribute(attribute);
             // Attribute explicitly set on this element
-            if (value != null) {
+            if (value !== null && typeof value === 'string') {
               if (value.toLowerCase() === 'currentcolor') {
                 // Try to inherit from ancestor in presentationAttributes
                 const inherited = getInheritedPresentationAttribute(element, 'color', presentationAttributes);
