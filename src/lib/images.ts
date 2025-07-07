@@ -42,7 +42,7 @@ export async function getImageItem(element: HTMLImageElement | HTMLSourceElement
         contentType: contentType,
         selector: selector
       };
-      result.push(item);
+      return item;
       break;
     }
 
