@@ -24,13 +24,14 @@ function getMimeTypeFromDataURL(dataURL: string): string {
 }
 
 export async function getContentType(url: string): Promise<string> {
-  if (url.startsWith('http')) {
-    return await getContentTypeFromHeaders(url);
-  }
-
   if (url.startsWith('data:')) {
     return getMimeTypeFromDataURL(url);
+  } else {
+    try {
+      return await getContentTypeFromHeaders(url);
+    } catch (e) {
+      // skip due to error
+      return '';
+    }
   }
-
-  return '';
 }

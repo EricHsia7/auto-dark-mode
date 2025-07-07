@@ -1,6 +1,6 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel } from './interface/panel/index';
-import { generateCSSFromImageItems, getImageItems, invertImageItems } from './lib/images';
+import { generateCSSFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
@@ -37,23 +37,22 @@ export async function initialize() {
   }
   document.documentElement.appendChild(fragment);
 
-  try {
-    // Get images
-    const imageitems = await getImageItems();
+  // Invert images
+  const imageElements = document.querySelectorAll('img, picture source');
+  for (const imageElement of imageElements) {
+    getImageItem(imageElement).then((imageItem) => {
+      if (typeof imageItem !== 'boolean') {
+        invertImageItem(imageItem).then((invertImageItem) => {
+          // Generate css
+          const invertImageItemCSS = generateCSSFromImageItem(invertImageItem);
 
-    // Invert images
-    const invertedImageItems = await invertImageItems(imageitems);
-
-    // Generate css
-    const invertImageItemsCSS = generateCSSFromImageItems(invertedImageItems);
-
-    // Inject css
-    const imageItemsStyle = document.createElement('style');
-    imageItemsStyle.textContent = invertImageItemsCSS;
-    // imageItemsStyle.setAttribute('auto-dark-mode-stylesheet-name', name);
-    document.documentElement.appendChild(imageItemsStyle);
-  } catch (e) {
-    console.log(e);
+          // Inject css
+          const imageItemsStyle = document.createElement('style');
+          imageItemsStyle.textContent = invertImageItemCSS;
+          document.documentElement.appendChild(imageItemsStyle);
+        });
+      }
+    });
   }
 
   if (!isFramed()) {

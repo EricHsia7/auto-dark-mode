@@ -57,7 +57,7 @@ export function invertPropertyValuePairs(cssText: string): string {
       .slice(0, propertyValuePair.start + offset)
       .concat(invertedColors)
       .concat(result.slice(propertyValuePair.end + offset));
-    offset += invertedColors.length - propertyValuePair.value.length;
+    offset += invertedColors.length - (propertyValuePair.end - propertyValuePair.start);
   }
 
   return result;
