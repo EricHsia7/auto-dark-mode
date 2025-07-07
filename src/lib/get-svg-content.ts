@@ -48,6 +48,12 @@ export async function getSVGContent(url: string): Promise<string> {
   if (url.startsWith('data:')) {
     return getSVGContentFromDataURL(url);
   } else {
-    return await fetchSVG(url);
+    try {
+      const content = await fetchSVG(url);
+      return content;
+    } catch (e) {
+      // skip due to error
+      return '';
+    }
   }
 }
