@@ -1,6 +1,6 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel } from './interface/panel/index';
-import { generateCSSFromImageItem, getImageItems, invertImageItem } from './lib/images';
+import { generateCSSFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
@@ -37,19 +37,21 @@ export async function initialize() {
   }
   document.documentElement.appendChild(fragment);
 
-  // Get images
-  const imageItems = await getImageItems();
-
   // Invert images
-  for (const imageItem of imageItems) {
-    invertImageItem(imageItem).then((invertImageItem) => {
-      // Generate css
-      const invertImageItemCSS = generateCSSFromImageItem(invertImageItem);
+  const imageElements = document.querySelectorAll('img, picture source');
+  for (const imageElement of imageElements) {
+    getImageItem(imageElement).then((imageItem) => {
+      if (typeof imageItem !== 'boolean') {
+        invertImageItem(imageItem).then((invertImageItem) => {
+          // Generate css
+          const invertImageItemCSS = generateCSSFromImageItem(invertImageItem);
 
-      // Inject css
-      const imageItemsStyle = document.createElement('style');
-      imageItemsStyle.textContent = invertImageItemCSS;
-      document.documentElement.appendChild(imageItemsStyle);
+          // Inject css
+          const imageItemsStyle = document.createElement('style');
+          imageItemsStyle.textContent = invertImageItemCSS;
+          document.documentElement.appendChild(imageItemsStyle);
+        });
+      }
     });
   }
 
