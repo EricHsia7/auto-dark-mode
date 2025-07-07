@@ -104,7 +104,7 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
             const value = element.getAttribute(attribute);
             // Attribute explicitly set on this element
             if (value !== null && typeof value === 'string') {
-              if (value.toLowerCase() === 'currentcolor') {
+              if (value.trim().toLowerCase() === 'currentcolor') {
                 // Try to inherit from ancestor in presentationAttributes
                 const inherited = getInheritedPresentationAttribute(element, 'color', presentationAttributes);
                 if (inherited === undefined) {
