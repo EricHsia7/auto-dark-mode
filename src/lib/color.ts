@@ -107,15 +107,6 @@ export interface UnknownString {
 
 export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | VariableName | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
 
-const functionalKeywords = {
-  currentcolor: true,
-  inherit: true,
-  initial: true,
-  revert: true,
-  unset: true,
-  none: true
-};
-
 function parseColorStops(components: Array<string>): ColorStopArray {
   const colorStops: ColorStopArray = [];
   for (const component of components) {
