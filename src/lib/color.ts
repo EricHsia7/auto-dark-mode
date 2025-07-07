@@ -1,10 +1,9 @@
 import { clamp } from './clamp';
 import { isFunctionalKeyword } from './is-functional-keyword';
-import { isSystemColor } from './is-system-color';
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
-import { systemColorsTable } from './system-colors';
+import { systemColors } from './system-colors';
 
 export interface ColorRGB {
   type: 'rgb';
@@ -560,21 +559,23 @@ export function parseColor(value: string): Color {
   }
 
   // handle named colors
-  const foundColor = namedColors[value.toLowerCase()];
-  if (foundColor) {
+  const foundNamedColor = namedColors[value.toLowerCase()];
+  if (foundNamedColor) {
     const result: ColorRGB = {
       type: 'rgb',
-      rgb: foundColor
+      rgb: foundNamedColor
     };
     return result;
   }
 
   // handle system colors
-  if (isSystemColor(value)) {
-    const keyword = value.toLowerCase();
-    if (systemColorsTable.hasOwnProperty(keyword)) {
-      return systemColorsTable[keyword];
-    }
+  const foundSystemColor = systemColors[value.toLowerCase()];
+  if (foundSystemColor) {
+    const result: ColorRGB = {
+      type: 'rgb',
+      rgb: foundSystemColor
+    };
+    return result;
   }
 
   const unknownString: UnknownString = {
