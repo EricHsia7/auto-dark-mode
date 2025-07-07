@@ -80,7 +80,7 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
 
         // parse svg
         const parser = new DOMParser();
-        const doc = parser.parseFromString(content, 'image/svg+xml');
+        const doc = parser.parseFromString(content, 'text/html');
 
         // invert inline styles
         const styleTagElements = doc.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
@@ -91,7 +91,7 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
         }
 
         // cascade presentation attributes
-        const svgElements = doc.querySelectorAll('path, rect, circle, ellipse, polygon, line, polyline, g, text, tspan, textPath') as NodeListOf<HTMLElement>;
+        const svgElements = doc.querySelectorAll('svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text, svg tspan, svg textPath') as NodeListOf<HTMLElement>;
         const presentationAttributes = {};
         for (const element of svgElements) {
           const selector = generateElementSelector(element);
@@ -138,7 +138,7 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
           }
         }
 
-        imageItem.source = `data:image/svg+xml,${encodeURIComponent(doc.documentElement.outerHTML).replace(/'/g, '%27').replace(/"/g, '%22')}`;
+        imageItem.source = `data:image/svg+xml,${encodeURIComponent(doc.querySelector('svg').outerHTML).replace(/'/g, '%27').replace(/"/g, '%22')}`;
         result.push(imageItem);
         break;
       }
