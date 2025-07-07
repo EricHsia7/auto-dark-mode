@@ -2,9 +2,9 @@ import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
+import { getInheritedPresentationAttribute } from './get-inherited-style';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { isSVGElement } from './is-svg-element';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 
@@ -146,26 +146,6 @@ export function getStyles(): Styles {
   const SVGPresentationAttributes: StyleSheet = {};
   const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text, svg tspan, svg textPath') as NodeListOf<HTMLElement>;
 
-  function getInheritedStyle(element: Element, property: string): string | undefined {
-    let parent = element.parentElement;
-    let depth = 0;
-    while (parent && depth < 16) {
-      if (isSVGElement(parent.tagName)) {
-        const parentSelector = generateElementSelector(parent);
-        if (SVGPresentationAttributes.hasOwnProperty(parentSelector)) {
-          if (SVGPresentationAttributes[parentSelector].hasOwnProperty(property)) {
-            return SVGPresentationAttributes[parentSelector][property];
-          }
-        }
-        parent = parent.parentElement;
-      } else {
-        break;
-      }
-      depth++;
-    }
-    return undefined;
-  }
-
   for (const element of svgElements) {
     const selector = generateElementSelector(element);
     if (!SVGPresentationAttributes.hasOwnProperty(selector)) {
@@ -181,7 +161,7 @@ export function getStyles(): Styles {
         continue;
       } else {
         // Try to inherit from ancestor in SVGPresentationAttributes
-        const inherited = getInheritedStyle(element, attribute);
+        const inherited = getInheritedPresentationAttribute(element, attribute, SVGPresentationAttributes);
         if (inherited !== undefined) {
           SVGPresentationAttributes[selector][attribute] = inherited;
           continue;

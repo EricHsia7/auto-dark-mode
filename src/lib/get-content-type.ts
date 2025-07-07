@@ -18,8 +18,8 @@ async function getContentTypeFromHeaders(url: string): Promise<string> {
   });
 }
 
-function getMimeTypeFromDataURL(dataUrl: string): string {
-  const match = dataUrl.match(/^data:([^;,]+)[;,]/);
+function getMimeTypeFromDataURL(dataURL: string): string {
+  const match = dataURL.match(/^data:([^;,]+)[;,]/);
   return match ? match[1].trim() : '';
 }
 
