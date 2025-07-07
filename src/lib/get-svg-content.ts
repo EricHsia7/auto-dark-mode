@@ -45,13 +45,9 @@ function getSVGContentFromDataURL(dataURL: string): string {
 }
 
 export async function getSVGContent(url: string): Promise<string> {
-  if (url.startsWith('http')) {
-    return await fetchSVG(url);
-  }
-
   if (url.startsWith('data:')) {
     return getSVGContentFromDataURL(url);
+  } else {
+    return await fetchSVG(url);
   }
-
-  return '';
 }
