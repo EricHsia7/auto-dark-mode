@@ -104,23 +104,27 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
           for (const attribute of ['fill', 'stroke', 'color']) {
             const value = element.getAttribute(attribute);
             // Attribute explicitly set on this element
-            if (value.toLowerCase() === 'currentcolor') {
-              // Try to inherit from ancestor in presentationAttributes
-              const inherited = getInheritedPresentationAttribute(element, 'color', presentationAttributes);
-              if (inherited === undefined) {
-                presentationAttributes[selector][attribute] = '#000000';
-              } else {
-                presentationAttributes[selector][attribute] = inherited;
-              }
-            } else if (value != null && value.trim() !== '') {
-              presentationAttributes[selector][attribute] = value;
-            } else {
-              // Try to inherit from ancestor in presentationAttributes
-              const inherited = getInheritedPresentationAttribute(element, attribute, presentationAttributes);
-              if (inherited !== undefined) {
-                presentationAttributes[selector][attribute] = inherited;
+            if (value != null) {
+              if (value.toLowerCase() === 'currentcolor') {
+                // Try to inherit from ancestor in presentationAttributes
+                const inherited = getInheritedPresentationAttribute(element, 'color', presentationAttributes);
+                if (inherited === undefined) {
+                  presentationAttributes[selector][attribute] = '#000000';
+                } else {
+                  presentationAttributes[selector][attribute] = inherited;
+                }
+                continue;
+              } else if (value.trim() !== '') {
+                presentationAttributes[selector][attribute] = value;
                 continue;
               }
+            }
+
+            // Try to inherit from ancestor in presentationAttributes
+            const inherited = getInheritedPresentationAttribute(element, attribute, presentationAttributes);
+            if (inherited !== undefined) {
+              presentationAttributes[selector][attribute] = inherited;
+              continue;
             }
           }
         }
@@ -145,6 +149,8 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
             }
           }
         }
+
+        // convert to string
         const serializer = new XMLSerializer();
         const string = serializer.serializeToString(doc.querySelector('svg'));
         imageItem.source = `data:image/svg+xml,${encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')}`;
