@@ -77,6 +77,7 @@ export async function invertImageItems(imageItems: ImageItemArray): Promise<Imag
       case 'image/svg+xml': {
         // get content
         const content = await getSVGContent(imageItem.source);
+console.log(content);
 
         // parse svg
         const parser = new DOMParser();
