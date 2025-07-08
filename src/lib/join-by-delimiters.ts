@@ -2,8 +2,8 @@ export function joinByDelimiters(array: Array<string>, delimiters: Array<',' | '
   const arrayLen = array.length;
   const delimitersLen = delimiters.length;
   if (arrayLen - 1 === delimitersLen) {
-    for (let i = 1, l = arrayLen; i < l; i++) {
-      array.splice(i, 0, delimiters[i - 1]);
+    for (let i = 1, offset = 0, l = arrayLen; i < l; i++, offset++) {
+      array.splice(i + offset, 0, delimiters[i - 1]);
     }
     return array.join('');
   } else {
