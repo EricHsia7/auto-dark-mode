@@ -1,4 +1,4 @@
-async function getContentTypeFromHeaders(url: string): Promise<string> {
+async function getMimetypeFromHeaders(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
       method: 'HEAD',
@@ -9,10 +9,16 @@ async function getContentTypeFromHeaders(url: string): Promise<string> {
           .find((header) => header.toLowerCase().startsWith('content-type:'))
           ?.split(':')[1]
           ?.trim();
-        resolve(contentType);
+        const mimeTypeRegex = /([a-z]+\/[a-z\+]+)/i;
+        const mimeTypeMatches = contentType.match(mimeTypeRegex);
+        if (mimeTypeMatches) {
+          resolve(mimeTypeMatches[1]);
+        } else {
+          reject(new Error(`Cannot find mimetype from ${url}`));
+        }
       },
       onerror: function (err) {
-        reject(new Error(`Error reading headers from ${url}: ${err}`));
+        reject(new Error(`Error reading mimetype from ${url}: ${err}`));
       }
     });
   });
@@ -28,7 +34,7 @@ export async function getContentType(url: string): Promise<string> {
     return getMimeTypeFromDataURL(url);
   } else {
     try {
-      return await getContentTypeFromHeaders(url);
+      return await getMimetypeFromHeaders(url);
     } catch (e) {
       // skip due to error
       return '';
