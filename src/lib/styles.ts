@@ -134,12 +134,6 @@ export function getStyles(): Styles {
         'background-color': 'rgba(247, 209, 84, 0.5)',
         'color': '#000000'
       }
-    },
-    '@stylesheet-image-dimming': {
-      img: {
-        'filter': 'brightness(70%)',
-        '-webkit-filter': 'brightness(70%)'
-      }
     }
   };
 

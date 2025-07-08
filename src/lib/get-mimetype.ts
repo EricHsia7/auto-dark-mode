@@ -25,8 +25,8 @@ async function getMimetypeFromHeaders(url: string): Promise<string> {
 }
 
 function getMimetypeFromDataURL(dataURL: string): string {
-  const match = dataURL.match(/^data:([^;,]+)[;,]/);
-  return match ? match[1].trim() : '';
+  const matches = dataURL.match(/^data:([^;,]+)[;,]/);
+  return matches ? matches[1].trim() : '';
 }
 
 export async function getMimetype(url: string): Promise<string> {
