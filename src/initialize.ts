@@ -1,6 +1,6 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
-import { generateCSSFromImageItem, getImageItem, invertImageItem } from './lib/images';
+import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getStyles, invertStyles, StylesCollection, StyleSheetCSSArray } from './lib/styles';
@@ -49,7 +49,7 @@ export async function initialize() {
         invertImageItem(imageItem).then((invertImageItem) => {
           if (typeof imageItem !== 'boolean') {
             // Generate css
-            const invertImageItemCSS = generateCSSFromImageItem(invertImageItem);
+            const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
 
             // Update stylesheet
             currentStylesheets.push(invertImageItemCSS);
@@ -69,7 +69,7 @@ export async function initialize() {
               invertImageItem(imageItem).then((invertImageItem) => {
                 if (typeof imageItem !== 'boolean') {
                   // Generate css
-                  const invertImageItemCSS = generateCSSFromImageItem(invertImageItem);
+                  const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
 
                   // Update stylesheet
                   currentStylesheets.push(invertImageItemCSS);
@@ -87,7 +87,7 @@ export async function initialize() {
                 invertImageItem(imageItem).then((invertImageItem) => {
                   if (typeof imageItem !== 'boolean') {
                     // Generate css
-                    const invertImageItemCSS = generateCSSFromImageItem(invertImageItem);
+                    const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
 
                     // Update stylesheet
                     currentStylesheets.push(invertImageItemCSS);

@@ -37,34 +37,35 @@ export async function getImageItem(element: HTMLImageElement | HTMLSourceElement
   switch (tagName) {
     case 'img': {
       const source = element.getAttribute('src');
-      const contentType = await getMimetype(source);
-      const item: ImageItemImg = {
-        type: 'img',
-        source: source,
-        mimetype: contentType,
-        selector: selector
-      };
-      return item;
-      break;
+      if (source) {
+        const mimetype = await getMimetype(source);
+        const item: ImageItemImg = {
+          type: 'img',
+          source: source,
+          mimetype: mimetype,
+          selector: selector
+        };
+        return item;
+      }
     }
 
     case 'source': {
       const source = element.getAttribute('srcset');
-      const media = element.getAttribute('media');
-      const contentType = await getMimetype(source);
-      const item: ImageItemPictureSource = {
-        type: 'source',
-        source: source,
-        mimetype: contentType,
-        mediaQueryConditionText: media,
-        selector: selector
-      };
-      return item;
-      break;
+      if (source) {
+        const media = element.getAttribute('media');
+        const mimetype = await getMimetype(source);
+        const item: ImageItemPictureSource = {
+          type: 'source',
+          source: source,
+          mimetype: mimetype,
+          mediaQueryConditionText: media,
+          selector: selector
+        };
+        return item;
+      }
     }
     default: {
       return false;
-      break;
     }
   }
 }
@@ -159,7 +160,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
   }
 }
 
-export function generateCSSFromImageItem(imageItem: ImageItem): StyleSheetCSSItem {
+export function generateCssFromImageItem(imageItem: ImageItem): StyleSheetCSSItem {
   let rules = '';
   const selector = imageItem.selector;
   const rule = `${selector}{content:url('${imageItem.source}');}`;
@@ -168,10 +169,9 @@ export function generateCSSFromImageItem(imageItem: ImageItem): StyleSheetCSSIte
   } else if (imageItem.type === 'source') {
     rules = `@media ${imageItem.mediaQueryConditionText}{${rule}}`;
   }
-  const css = `@media (prefers-color-scheme:dark){${rules}}`;
   const identifier = generateIdentifier();
   const sheet = `@image-${imageItem.mimetype}-${identifier}`;
-
+  const css = `/* ${sheet} */ @media (prefers-color-scheme:dark){${rules}}`;
   return {
     name: sheet,
     css: css
