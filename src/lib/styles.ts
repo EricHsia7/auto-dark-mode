@@ -1,11 +1,14 @@
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
+import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
+import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { isSVGElement } from './is-svg-element';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { svgElementsQuerySelectorString } from './svg-elements';
+import { SVGPresentationAttributesList } from './svg-presentation-attributes';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -132,38 +135,12 @@ export function getStyles(): Styles {
         'background-color': 'rgba(247, 209, 84, 0.5)',
         'color': '#000000'
       }
-    },
-    '@stylesheet-image-dimming': {
-      img: {
-        'filter': 'brightness(70%)',
-        '-webkit-filter': 'brightness(70%)'
-      }
     }
   };
 
   // Extract svg presentation attributes
   const SVGPresentationAttributes: StyleSheet = {};
-  const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text, svg tspan, svg textPath') as NodeListOf<HTMLElement>;
-
-  function getInheritedStyle(element: Element, property: string): string | undefined {
-    let parent = element.parentElement;
-    let depth = 0;
-    while (parent && depth < 16) {
-      if (isSVGElement(parent.tagName)) {
-        const parentSelector = generateElementSelector(parent);
-        if (SVGPresentationAttributes.hasOwnProperty(parentSelector)) {
-          if (SVGPresentationAttributes[parentSelector].hasOwnProperty(property)) {
-            return SVGPresentationAttributes[parentSelector][property];
-          }
-        }
-        parent = parent.parentElement;
-      } else {
-        break;
-      }
-      depth++;
-    }
-    return undefined;
-  }
+  const svgElements = document.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
 
   for (const element of svgElements) {
     const selector = generateElementSelector(element);
@@ -171,7 +148,7 @@ export function getStyles(): Styles {
       SVGPresentationAttributes[selector] = {};
     }
 
-    for (const attribute of ['fill', 'stroke', 'color']) {
+    for (const attribute of SVGPresentationAttributesList) {
       const value = element.getAttribute(attribute);
 
       if (value != null && value.trim() !== '') {
@@ -180,7 +157,7 @@ export function getStyles(): Styles {
         continue;
       } else {
         // Try to inherit from ancestor in SVGPresentationAttributes
-        const inherited = getInheritedStyle(element, attribute);
+        const inherited = getInheritedPresentationAttribute(element, attribute, SVGPresentationAttributes);
         if (inherited !== undefined) {
           SVGPresentationAttributes[selector][attribute] = inherited;
           continue;
@@ -302,6 +279,7 @@ export function getStyles(): Styles {
     for (const sheet of document.styleSheets) {
       try {
         if (!sheet.cssRules) continue;
+        if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
         const identifier = sheet.ownerNode?.id || generateIdentifier();
@@ -309,22 +287,13 @@ export function getStyles(): Styles {
         const sheetName = `@stylesheet-${name}-${identifier}`;
         stylesCollection[sheetName] = sheetObj;
       } catch (e) {
+        console.log(e);
         // Skipped due to access restrictions
       }
     }
   }
 
   // Capture all inline stylesCollection (lambda stylesCollection)
-  function generateElementSelector(element: HTMLElement): string {
-    const tag = element.tagName.toLowerCase();
-    if (!element.id) {
-      element.id = `_${generateIdentifier()}`;
-    }
-    const id = element.id ? `#${element.id}` : '';
-    const classes = element.classList.length > 0 ? `.${Array.from(element.classList).join('.')}` : '';
-    return `${tag}${id}${classes}`;
-  }
-
   const lambdaStyles: StyleSheet = {};
   const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
   for (const element of elementsWithInlineStyle) {

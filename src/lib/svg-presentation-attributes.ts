@@ -1,0 +1,1 @@
+export const SVGPresentationAttributesList = ['fill', 'stroke', 'color', 'stop-color']

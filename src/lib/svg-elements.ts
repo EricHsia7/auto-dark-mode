@@ -10,7 +10,8 @@ const svgElements = {
   g: true,
   text: true,
   tspan: true,
-  textPath: true
+  textPath: true,
+  stop: true
 };
 
 export function isSVGElement(tag: string): boolean {
@@ -20,3 +21,5 @@ export function isSVGElement(tag: string): boolean {
     return false;
   }
 }
+
+export const svgElementsQuerySelectorString = 'svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text, svg tspan, svg textPath, svg stop';

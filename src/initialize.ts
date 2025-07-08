@@ -1,11 +1,22 @@
 import { initializeButton } from './interface/button/index';
-import { initializePanel } from './interface/panel/index';
+import { initializePanel, updateStylesheets } from './interface/panel/index';
+import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
-import { generateCssFromStyles, getStyles, invertStyles, StylesCollection } from './lib/styles';
+import { generateCssFromStyles, getStyles, invertStyles, StylesCollection, StyleSheetCSSArray } from './lib/styles';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
+let currentStylesheets: StyleSheetCSSArray = [];
+
 export async function initialize() {
+  if (!isFramed()) {
+    // Prepare button
+    initializeButton();
+
+    // Prepare control panel
+    initializePanel();
+  }
+
   // Transform layers in style tags
   const styleTags = document.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
   for (const styleTag of styleTags) {
@@ -24,26 +35,70 @@ export async function initialize() {
   const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
 
   // Generate inverted css
-  const strings = generateCssFromStyles(invertedStyles, false);
+  const stylesheets = generateCssFromStyles(invertedStyles, false);
+  currentStylesheets = stylesheets;
 
-  // Inject stylesheets
-  const fragment = new DocumentFragment();
-  for (const string of strings) {
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = string.css;
-    styleSheet.setAttribute('auto-dark-mode-stylesheet-name', string.name);
-    fragment.appendChild(styleSheet);
+  // Update stylesheets
+  updateStylesheets(stylesheets);
+
+  // Invert images
+  const imageElements = document.querySelectorAll('img, picture source');
+  for (const imageElement of imageElements) {
+    getImageItem(imageElement).then((imageItem) => {
+      if (typeof imageItem !== 'boolean') {
+        invertImageItem(imageItem).then((invertImageItem) => {
+          if (typeof invertImageItem !== 'boolean') {
+            // Generate css
+            const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
+
+            // Update stylesheet
+            currentStylesheets.push(invertImageItemCSS);
+            updateStylesheets(currentStylesheets);
+          }
+        });
+      }
+    });
   }
-  document.documentElement.appendChild(fragment);
 
-  if (!isFramed()) {
-    // Prepare button
-    initializeButton();
+  const observer = new MutationObserver((mutations) => {
+    const imageElementsToUpdate = [];
 
-    // Prepare control panel
-    initializePanel(strings);
-  }
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes') {
+        if (mutation.target instanceof HTMLImageElement) {
+          imageElementsToUpdate.push(mutation.target);
+        }
+      } else if (mutation.type === 'childList') {
+        for (const addedNode of mutation.addedNodes) {
+          if (addedNode instanceof HTMLImageElement) {
+            imageElementsToUpdate.push(addedNode);
+          }
+        }
+      }
+    }
 
-  const autoDarkModeInitializedEvent = new CustomEvent('autodarkmodeinitialized', {});
-  document.dispatchEvent(autoDarkModeInitializedEvent);
+    for (const imageElement of imageElementsToUpdate) {
+      getImageItem(imageElement).then((imageItem) => {
+        if (typeof imageItem !== 'boolean') {
+          invertImageItem(imageItem).then((invertImageItem) => {
+            if (typeof invertImageItem !== 'boolean') {
+              // Generate css
+              const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
+
+              // Update stylesheet
+              currentStylesheets.push(invertImageItemCSS);
+              updateStylesheets(currentStylesheets);
+            }
+          });
+        }
+      });
+    }
+  });
+
+  observer.observe(document.documentElement, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['src', 'srcset'],
+    childList: true
+  });
 }
