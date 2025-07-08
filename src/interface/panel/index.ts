@@ -57,14 +57,16 @@ export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
       toggleElement.setAttribute('name', stylesheet.name);
     }
 
-    function updateStyleTag(styleTagElement: HTMLStyleElement, stylesheet: StyleSheetCSSItem): void {
+    function updateStyleTag(stylesheetElement: HTMLElement, styleTagElement: HTMLStyleElement, stylesheet: StyleSheetCSSItem): void {
+      const toggleElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_toggle') as HTMLElement;
+      const state = toggleElement.getAttribute('state');
       styleTagElement.setAttribute('auto-dark-mode-stylesheet-name', stylesheet.name);
       styleTagElement.textContent = stylesheet.css;
+      styleTagElement.disabled = state === 'on' ? false : true;
     }
 
     updateName(stylesheetElement, stylesheet);
-
-    updateStyleTag(styleTagElement, stylesheet);
+    updateStyleTag(stylesheetElement, styleTagElement, stylesheet);
   }
 
   if (!panelInitialized) {
