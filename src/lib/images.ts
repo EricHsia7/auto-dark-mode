@@ -91,12 +91,12 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
 
       // cascade presentation attributes
       const svgElements = doc.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
-      const presentationAttributes = {};
+      const SVGPresentationAttributes = {};
       for (const element of svgElements) {
         const selector = generateElementSelector(element);
 
-        if (!presentationAttributes.hasOwnProperty(selector)) {
-          presentationAttributes[selector] = {};
+        if (!SVGPresentationAttributes.hasOwnProperty(selector)) {
+          SVGPresentationAttributes[selector] = {};
         }
 
         for (const attribute of SVGPresentationAttributesList) {
@@ -105,23 +105,23 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
           if (value !== null && typeof value === 'string') {
             if (value.trim().toLowerCase() === 'currentcolor') {
               // Try to inherit from ancestor in presentationAttributes
-              const inherited = getInheritedPresentationAttribute(element, 'color', presentationAttributes);
+              const inherited = getInheritedPresentationAttribute(element, 'color', SVGPresentationAttributes);
               if (inherited === undefined) {
-                presentationAttributes[selector][attribute] = '#000000';
+                SVGPresentationAttributes[selector][attribute] = '#000000';
               } else {
-                presentationAttributes[selector][attribute] = inherited;
+                SVGPresentationAttributes[selector][attribute] = inherited;
               }
               continue;
             } else if (value.trim() !== '') {
-              presentationAttributes[selector][attribute] = value;
+              SVGPresentationAttributes[selector][attribute] = value;
               continue;
             }
           }
 
           // Try to inherit from ancestor in presentationAttributes
-          const inherited = getInheritedPresentationAttribute(element, attribute, presentationAttributes);
+          const inherited = getInheritedPresentationAttribute(element, attribute, SVGPresentationAttributes);
           if (inherited !== undefined) {
-            presentationAttributes[selector][attribute] = inherited;
+            SVGPresentationAttributes[selector][attribute] = inherited;
             continue;
           }
         }
@@ -130,9 +130,9 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
       // invert presentation attributes
       for (const element of svgElements) {
         const selector = generateElementSelector(element);
-        if (presentationAttributes.hasOwnProperty(selector)) {
-          for (const property in presentationAttributes[selector]) {
-            const value = presentationAttributes[selector][property];
+        if (SVGPresentationAttributes.hasOwnProperty(selector)) {
+          for (const property in SVGPresentationAttributes[selector]) {
+            const value = SVGPresentationAttributes[selector][property];
             const colors = splitByTopLevelDelimiter(value);
             const colorsLen = colors.result.length;
             for (let i = colorsLen - 1; i >= 0; i--) {
