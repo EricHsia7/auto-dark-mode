@@ -98,7 +98,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
           presentationAttributes[selector] = {};
         }
 
-        for (const attribute of ['fill', 'stroke', 'color']) {
+        for (const attribute of ['fill', 'stroke', 'color', 'stop-color']) {
           const value = element.getAttribute(attribute);
           // Attribute explicitly set on this element
           if (value !== null && typeof value === 'string') {

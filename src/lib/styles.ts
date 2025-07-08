@@ -147,7 +147,7 @@ export function getStyles(): Styles {
       SVGPresentationAttributes[selector] = {};
     }
 
-    for (const attribute of ['fill', 'stroke', 'color']) {
+    for (const attribute of ['fill', 'stroke', 'color', 'stop-color']) {
       const value = element.getAttribute(attribute);
 
       if (value != null && value.trim() !== '') {
