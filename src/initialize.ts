@@ -1,6 +1,5 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
-import { deepAssign } from './lib/deep-assign';
 import { generateCSSFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
@@ -10,6 +9,14 @@ import { transformLayerCSS } from './lib/transform-layer-css';
 let currentStylesheets: StyleSheetCSSArray = [];
 
 export async function initialize() {
+  if (!isFramed()) {
+    // Prepare button
+    initializeButton();
+
+    // Prepare control panel
+    initializePanel();
+  }
+
   // Transform layers in style tags
   const styleTags = document.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
   for (const styleTag of styleTags) {
@@ -51,13 +58,5 @@ export async function initialize() {
         });
       }
     });
-  }
-
-  if (!isFramed()) {
-    // Prepare button
-    initializeButton();
-
-    // Prepare control panel
-    initializePanel();
   }
 }
