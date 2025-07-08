@@ -1,7 +1,7 @@
 import { colorToString, invertColor, parseColor } from './color';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
-import { getContentType } from './get-content-type';
+import { getMimetype } from './get-mimetype';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
 import { getSVGContent } from './get-svg-content';
 import { invertPropertyValuePairs } from './invert-property-value-pairs';
@@ -10,19 +10,19 @@ import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { StyleSheetCSSItem } from './styles';
 import { svgElementsQuerySelectorString } from './svg-elements';
 
-export type ImageItemContentType = 'image/svg+xml';
+export type ImageItemMimetype = 'image/svg+xml';
 
 export interface ImageItemImg {
   type: 'img';
   source: string;
-  contentType: ImageItemContentType;
+  mimetype: ImageItemMimetype;
   selector: string;
 }
 
 export interface ImageItemPictureSource {
   type: 'source';
   source: string;
-  contentType: ImageItemContentType;
+  mimetype: ImageItemMimetype;
   mediaQueryConditionText: string;
   selector: string;
 }
@@ -37,11 +37,11 @@ export async function getImageItem(element: HTMLImageElement | HTMLSourceElement
   switch (tagName) {
     case 'img': {
       const source = element.getAttribute('src');
-      const contentType = await getContentType(source);
+      const contentType = await getMimetype(source);
       const item: ImageItemImg = {
         type: 'img',
         source: source,
-        contentType: contentType,
+        mimetype: contentType,
         selector: selector
       };
       return item;
@@ -51,11 +51,11 @@ export async function getImageItem(element: HTMLImageElement | HTMLSourceElement
     case 'source': {
       const source = element.getAttribute('srcset');
       const media = element.getAttribute('media');
-      const contentType = await getContentType(source);
+      const contentType = await getMimetype(source);
       const item: ImageItemPictureSource = {
         type: 'source',
         source: source,
-        contentType: contentType,
+        mimetype: contentType,
         mediaQueryConditionText: media,
         selector: selector
       };
@@ -70,7 +70,7 @@ export async function getImageItem(element: HTMLImageElement | HTMLSourceElement
 }
 
 export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem | false> {
-  switch (imageItem.contentType) {
+  switch (imageItem.mimetype) {
     case 'image/svg+xml': {
       // get content
       const content = await getSVGContent(imageItem.source);
@@ -170,7 +170,7 @@ export function generateCSSFromImageItem(imageItem: ImageItem): StyleSheetCSSIte
   }
   const css = `@media (prefers-color-scheme:dark){${rules}}`;
   const identifier = generateIdentifier();
-  const sheet = `@image-${imageItem.contentType}-${identifier}`;
+  const sheet = `@image-${imageItem.mimetype}-${identifier}`;
 
   return {
     name: sheet,

@@ -9,10 +9,10 @@ async function getMimetypeFromHeaders(url: string): Promise<string> {
           .find((header) => header.toLowerCase().startsWith('content-type:'))
           ?.split(':')[1]
           ?.trim();
-        const mimeTypeRegex = /([a-z]+\/[a-z\+]+)/i;
-        const mimeTypeMatches = contentType.match(mimeTypeRegex);
-        if (mimeTypeMatches) {
-          resolve(mimeTypeMatches[1].trim());
+        const mimetypeRegex = /([a-z]+\/[a-z\+]+)/i;
+        const mimetypeMatches = contentType.match(mimetypeRegex);
+        if (mimetypeMatches) {
+          resolve(mimetypeMatches[1].trim());
         } else {
           reject(new Error(`Cannot find mimetype from ${url}`));
         }
@@ -24,14 +24,14 @@ async function getMimetypeFromHeaders(url: string): Promise<string> {
   });
 }
 
-function getMimeTypeFromDataURL(dataURL: string): string {
+function getMimetypeFromDataURL(dataURL: string): string {
   const match = dataURL.match(/^data:([^;,]+)[;,]/);
   return match ? match[1].trim() : '';
 }
 
-export async function getContentType(url: string): Promise<string> {
+export async function getMimetype(url: string): Promise<string> {
   if (url.startsWith('data:')) {
-    return getMimeTypeFromDataURL(url);
+    return getMimetypeFromDataURL(url);
   } else {
     try {
       return await getMimetypeFromHeaders(url);
