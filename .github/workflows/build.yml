@@ -5,7 +5,8 @@ on:
   push:
     branches:
       - main
-      - dev-dynamic-update
+      - dev-invert-svg-image
+      - dev-invert-svg-image-parallel
 
 jobs:
   build:

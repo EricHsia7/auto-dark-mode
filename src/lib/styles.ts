@@ -2,10 +2,12 @@ import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { evaluateTheme } from './evaluate-theme';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
+import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
-import { isSVGElement } from './is-svg-element';
+import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { svgElementsQuerySelectorString } from './svg-elements';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -39,54 +41,55 @@ export function getStyles(): Styles {
   const cssVariableReferenceMap: CSSVariableReferenceMap = {};
   const stylesCollection: StylesCollection = {
     '@stylesheet-default': {
-      ':root': {
-        '--auto-dark-mode-stylesheet-default-ffffff': '#ffffff',
-        '--auto-dark-mode-stylesheet-default-000000': '#000000',
-        '--auto-dark-mode-stylesheet-default-e5e7eb': '#e5e7eb',
-        '--auto-dark-mode-stylesheet-default-bdbdbd': '#bdbdbd'
+      'html, body': {
+        'background-color': '#ffffff',
+        'color': '#000000'
       },
-      'html, body, section, header, main, footer, article': {
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-ffffff)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+      'section, header, main, footer, article': {
+        color: '#000000'
       },
       'h1, h2, h3, h4, h5, h6, span, time, a, a:hover': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'color': '#000000'
       },
       'pre, code, p': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'color': '#000000'
+      },
+      'math, mi, mn, mo, mtext, ms, mspace, mglyph, mrow, mfenced, mfrac, msqrt, mroot, mstyle, merror, mpadded, mphantom, menclose, semantics, msub, msup, msubsup, munder, mover, munderover, mmultiscripts, mprescripts, mtable, mtr, mtd, mlabeledtr': {
+        'background-color': 'rgba(0, 0, 0, 0)',
+        'color': '#000000'
       },
       'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
         'background-color': 'rgba(0, 0, 0, 0)',
-        'border-color': 'var(--auto-dark-mode-stylesheet-default-000000)',
+        'border-color': '#000000',
         'border-style': 'solid',
         'border-width': '1px',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'color': '#000000'
       },
       'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
-        color: 'var(--auto-dark-mode-stylesheet-default-bdbdbd)'
+        color: '#bdbdbd'
       },
       'th, td': {
-        'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px'
       },
       'th': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'tr': {
-        'border-bottom-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-bottom-color': '#e5e7eb',
         'border-bottom-style': 'solid',
         'border-bottom-width': '1px'
       },
       'thead': {
-        'border-bottom-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-bottom-color': '#e5e7eb',
         'border-bottom-style': 'solid',
         'border-bottom-width': '2px'
       },
       'tfoot': {
-        'border-top-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-top-color': '#e5e7eb',
         'border-top-style': 'solid',
         'border-top-width': '2px'
       },
@@ -94,42 +97,42 @@ export function getStyles(): Styles {
         border: 'none'
       },
       'blockquote': {
-        'border-left-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'border-left-color': '#e5e7eb',
+        'color': '#000000'
       },
       'hr': {
         'border': 'none',
-        'background-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)'
+        'background-color': '#e5e7eb'
       },
       'figcaption, caption': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'details': {
-        'border-color': 'var(--auto-dark-mode-stylesheet-default-e5e7eb)',
+        'border-color': '#e5e7eb',
         'border-style': 'solid',
         'border-width': '1px'
       },
       'summary': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'small': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'strong': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'em': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'ul, ol': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'li': {
-        color: 'var(--auto-dark-mode-stylesheet-default-000000)'
+        color: '#000000'
       },
       'mark': {
-        'background-color': 'rgba(248, 255, 0, 0.5)',
-        'color': 'var(--auto-dark-mode-stylesheet-default-000000)'
+        'background-color': 'rgba(247, 209, 84, 0.5)',
+        'color': '#000000'
       }
     },
     '@stylesheet-image-dimming': {
@@ -142,27 +145,7 @@ export function getStyles(): Styles {
 
   // Extract svg presentation attributes
   const SVGPresentationAttributes: StyleSheet = {};
-  const svgElements = document.querySelectorAll('svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g') as NodeListOf<HTMLElement>;
-
-  function getInheritedStyle(element: Element, property: string): string | undefined {
-    let parent = element.parentElement;
-    let depth = 0;
-    while (parent && depth < 16) {
-      if (isSVGElement(parent.tagName)) {
-        const parentSelector = generateElementSelector(parent);
-        if (SVGPresentationAttributes.hasOwnProperty(parentSelector)) {
-          if (SVGPresentationAttributes[parentSelector].hasOwnProperty(property)) {
-            return SVGPresentationAttributes[parentSelector][property];
-          }
-        }
-        parent = parent.parentElement;
-      } else {
-        break;
-      }
-      depth++;
-    }
-    return undefined;
-  }
+  const svgElements = document.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
 
   for (const element of svgElements) {
     const selector = generateElementSelector(element);
@@ -179,7 +162,7 @@ export function getStyles(): Styles {
         continue;
       } else {
         // Try to inherit from ancestor in SVGPresentationAttributes
-        const inherited = getInheritedStyle(element, attribute);
+        const inherited = getInheritedPresentationAttribute(element, attribute, SVGPresentationAttributes);
         if (inherited !== undefined) {
           SVGPresentationAttributes[selector][attribute] = inherited;
           continue;
@@ -316,8 +299,6 @@ export function getStyles(): Styles {
   }
 
   // Capture all inline stylesCollection (lambda stylesCollection)
-
-
   const lambdaStyles: StyleSheet = {};
   const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
   for (const element of elementsWithInlineStyle) {
@@ -444,13 +425,14 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
-        let invertedColors = value;
         const colors = splitByTopLevelDelimiter(value);
-        for (const color of colors) {
+        const colorsLen = colors.result.length;
+        for (let i = colorsLen - 1; i >= 0; i--) {
+          const color = colors.result[i];
           const parsedColor = parseColor(color);
           if (parsedColor) {
             const invertedColor = invertColor(parsedColor);
-            invertedColors = invertedColors.replace(color, colorToString(invertedColor));
+            colors.result.splice(i, 1, colorToString(invertedColor));
 
             if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
               let weight = 0;
@@ -500,6 +482,8 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             }
           }
         }
+
+        const invertedColors = joinByDelimiters(colors.result, colors.delimiters);
         newStyles[key] = invertedColors;
       } else if (isPreserved(key)) {
         newStyles[key] = value;

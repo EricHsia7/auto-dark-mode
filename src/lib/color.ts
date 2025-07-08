@@ -1,5 +1,9 @@
+import { clamp } from './clamp';
+import { isFunctionalKeyword } from './is-functional-keyword';
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { computeStats, getPerChannelDifference, mergeStats } from './stats';
+import { systemColors } from './system-colors';
 
 export interface ColorRGB {
   type: 'rgb';
@@ -91,7 +95,7 @@ export interface _URL {
 
 export interface FunctionalKeyword {
   type: 'keyword';
-  value: 'inherit' | 'initial' | 'unset' | 'revert' | 'currentcolor' | 'none';
+  value: 'currentcolor' | 'inherit' | 'initial' | 'revert' | 'unset' | 'none';
   // "transparent" is converted to rgba
   // "none" my not mean "transparent," so keep it as-is
 }
@@ -103,19 +107,10 @@ export interface UnknownString {
 
 export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | VariableName | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
 
-const functionalKeywords = {
-  currentcolor: true,
-  inherit: true,
-  initial: true,
-  revert: true,
-  unset: true,
-  none: true
-};
-
 function parseColorStops(components: Array<string>): ColorStopArray {
   const colorStops: ColorStopArray = [];
   for (const component of components) {
-    const args = splitByTopLevelDelimiter(component);
+    const args = splitByTopLevelDelimiter(component).result;
     const argsLen = args.length;
     if (argsLen === 1) {
       const color = parseColor(args[0].trim()) as ColorStop['color'];
@@ -127,6 +122,17 @@ function parseColorStops(components: Array<string>): ColorStopArray {
     } else if (argsLen === 2) {
       const color = parseColor(args[0].trim()) as ColorStop['color'];
       const position = args[1].trim();
+      colorStops.push({
+        type: 'stop',
+        color: color,
+        position: position
+      });
+    } else if (argsLen > 2) {
+      const color = parseColor(args[0].trim()) as ColorStop['color'];
+      const position = args
+        .slice(1)
+        .map((e) => e.trim())
+        .join(' ');
       colorStops.push({
         type: 'stop',
         color: color,
@@ -149,7 +155,7 @@ export function parseColor(value: string): Color {
     const variableRegex = /^var\((.*)\)$/i;
     const variableMatches = trimmed.match(variableRegex);
     if (variableMatches) {
-      const args: Array<any> = splitByTopLevelDelimiter(variableMatches[1]);
+      const args: Array<any> = splitByTopLevelDelimiter(variableMatches[1]).result;
       for (let i = args.length - 1; i >= 0; i--) {
         const arg = args[i];
         if (arg !== '') {
@@ -535,7 +541,7 @@ export function parseColor(value: string): Color {
   }
 
   // handle functional keywords
-  if (functionalKeywords.hasOwnProperty(value.toLowerCase())) {
+  if (isFunctionalKeyword(value)) {
     const result: FunctionalKeyword = {
       type: 'keyword',
       value: value as FunctionalKeyword['value']
@@ -544,11 +550,21 @@ export function parseColor(value: string): Color {
   }
 
   // handle named colors
-  const foundColor = namedColors[value.toLowerCase()];
-  if (foundColor) {
+  const foundNamedColor = namedColors[value.toLowerCase()];
+  if (foundNamedColor) {
     const result: ColorRGB = {
       type: 'rgb',
-      rgb: foundColor
+      rgb: foundNamedColor
+    };
+    return result;
+  }
+
+  // handle system colors
+  const foundSystemColor = systemColors[value.toLowerCase()];
+  if (foundSystemColor) {
+    const result: ColorRGB = {
+      type: 'rgb',
+      rgb: foundSystemColor
     };
     return result;
   }
@@ -582,35 +598,47 @@ function invertStops(colorStops: ColorStopArray): ColorStopArray {
 export function invertColor(color: Color): Color {
   switch (color.type) {
     case 'rgb': {
-      if (isColorVibrant(color) > 0.31) {
+      if (isColorVibrant(color) > 0) {
         return color;
       }
 
-      const [R, G, B] = color.rgb;
+      const [r, g, b] = color.rgb;
 
-      const r = R / 255;
-      const g = G / 255;
-      const b = B / 255;
-
-      const originalValue = Math.max(r, g, b);
-      if (originalValue === 0) {
+      if (r === 0 && g === 0 && b === 0) {
         const result0: ColorRGB = {
           type: 'rgb',
           rgb: [255, 255, 255]
         };
         return result0;
       }
-      const newValue = 0.09 + (1 - 0.09) * (1 - originalValue);
-      const scaler = newValue / originalValue;
 
-      const red = Math.round(R * scaler);
-      const green = Math.round(G * scaler);
-      const blue = Math.round(B * scaler);
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+
+      const minimumValue = 4 / 85;
+      const saturation = (max - min) / max;
+
+      const equalizerBase = Math.sqrt(saturation);
+      const equalizer = -0.1 + equalizerBase * 1.1;
+
+      const average = (r + g + b) / 3;
+      const R = r * (1 - equalizer) + average * equalizer;
+      const G = g * (1 - equalizer) + average * equalizer;
+      const B = b * (1 - equalizer) + average * equalizer;
+
+      const equalizedValue = Math.max(R, G, B) / 255;
+      const newValue = minimumValue + (1 - minimumValue) * (1 - equalizedValue);
+      const scaler = newValue / equalizedValue;
+
+      const red = clamp(0, Math.round(R * scaler), 255);
+      const green = clamp(0, Math.round(G * scaler), 255);
+      const blue = clamp(0, Math.round(B * scaler), 255);
 
       const result: ColorRGB = {
         type: 'rgb',
         rgb: [red, green, blue]
       };
+
       // color = (r,g,b) where 0 <= r, g, b <= 1
       // scaler = t where 0 < t <= 1
       // newColor = color' = t * color = (tr,tg,tb)
@@ -859,17 +887,43 @@ export function colorToString(color: Color): string {
 
 export function isColorDark(color: ColorRGBA): number {
   const p = -0.002315205943 * color.rgba[0] + 0.724916473719 + -0.00518915994 * color.rgba[1] + 1.093306292424 - 0.001444153598 * color.rgba[2] + 0.627977492263;
-  const q = Math.min(Math.max(p * color.rgba[3], 0), 1);
+  const q = clamp(0, p * color.rgba[3], 1);
   // ./data/darkness.csv
   return q;
   // higher number means higher probability
 }
 
+const baseColors: number[][] = [
+  [255, 255, 255],
+  [192, 192, 192],
+  [128, 128, 128],
+  [64, 64, 64],
+  [0, 0, 0],
+  [255, 0, 0],
+  [0, 255, 0],
+  [0, 0, 255]
+];
+
+const baseStats = computeStats(baseColors); // Precompute once
+
 export function isColorVibrant(color: ColorRGB): number {
-  // const p = 0.00526701208730907 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.2315923467761 + 0.005789762029929 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.268849448143961 + 0.00445659947538687 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.20534779494441;
-  const p = 0.006339594673 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.1357803475 + 0.006733518277 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1787805054 + 0.005240646414 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.1162090602;
-  const q = Math.min(Math.max(p / 3, 0), 1);
+  // const p = 0.006339594673 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.1357803475 + 0.006733518277 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1787805054 + 0.005240646414 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.1162090602;
+  // const p = 0.006669426162 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.07742765348 + 0.007073453738 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1163189972 + 0.005399325815 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.06675079166;
+  // const p = 0.006694646769 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.06369476726 + 0.007040201321 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1045286998 + 0.005413701273 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.05323332153;
+  // const q = Math.min(Math.max(p / 3, 0), 1);
+  // return q;
   // ./data/vibrancy.csv
-  return q;
-  // higher number means higher probability
+
+  const [r, g, b] = color.rgb;
+  const [prg, pgb, pbr] = getPerChannelDifference(r, g, b);
+
+  const [RG_avg, RG_stdev] = mergeStats(baseStats.avg[0], baseStats.stdev[0], baseStats.n, prg, 0, 1);
+  const [GB_avg, GB_stdev] = mergeStats(baseStats.avg[1], baseStats.stdev[1], baseStats.n, pgb, 0, 1);
+  const [BR_avg, BR_stdev] = mergeStats(baseStats.avg[2], baseStats.stdev[2], baseStats.n, pbr, 0, 1);
+
+  const d = (prg - RG_avg) / RG_stdev;
+  const e = (pgb - GB_avg) / GB_stdev;
+  const f = (pbr - BR_avg) / BR_stdev;
+
+  return (d + e + f) / 3;
 }

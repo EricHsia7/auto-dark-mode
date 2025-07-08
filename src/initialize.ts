@@ -1,5 +1,6 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
+import { generateCSSFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { generateCssFromStyles, getPartialStyles, getStyles, invertStyles, Styles, StylesCollection } from './lib/styles';
@@ -29,6 +30,24 @@ export async function initialize() {
 
   // Generate inverted css
   const stylesheets = generateCssFromStyles(invertedStyles, false);
+
+  // Invert images
+  const imageElements = document.querySelectorAll('img, picture source');
+  for (const imageElement of imageElements) {
+    getImageItem(imageElement).then((imageItem) => {
+      if (typeof imageItem !== 'boolean') {
+        invertImageItem(imageItem).then((invertImageItem) => {
+          // Generate css
+          const invertImageItemCSS = generateCSSFromImageItem(invertImageItem);
+
+          // Inject css
+          const imageItemsStyle = document.createElement('style');
+          imageItemsStyle.textContent = invertImageItemCSS;
+          document.documentElement.appendChild(imageItemsStyle);
+        });
+      }
+    });
+  }
 
   if (!isFramed()) {
     // Prepare button
