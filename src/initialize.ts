@@ -61,44 +61,37 @@ export async function initialize() {
   }
 
   const observer = new MutationObserver((mutations) => {
+    const imageElementsToUpdate = [];
+
     for (const mutation of mutations) {
       if (mutation.type === 'attributes') {
         if (mutation.target instanceof HTMLImageElement) {
-          getImageItem(mutation.target).then((imageItem) => {
-            if (typeof imageItem !== 'boolean') {
-              invertImageItem(imageItem).then((invertImageItem) => {
-                if (typeof invertImageItem !== 'boolean') {
-                  // Generate css
-                  const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
-
-                  // Update stylesheet
-                  currentStylesheets.push(invertImageItemCSS);
-                  updateStylesheets(currentStylesheets);
-                }
-              });
-            }
-          });
+          imageElementsToUpdate.push(mutation.target);
         }
       } else if (mutation.type === 'childList') {
         for (const addedNode of mutation.addedNodes) {
           if (addedNode instanceof HTMLImageElement) {
-            getImageItem(addedNode).then((imageItem) => {
-              if (typeof imageItem !== 'boolean') {
-                invertImageItem(imageItem).then((invertImageItem) => {
-                  if (typeof invertImageItem !== 'boolean') {
-                    // Generate css
-                    const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
-
-                    // Update stylesheet
-                    currentStylesheets.push(invertImageItemCSS);
-                    updateStylesheets(currentStylesheets);
-                  }
-                });
-              }
-            });
+            imageElementsToUpdate.push(addedNode);
           }
         }
       }
+    }
+
+    for (const imageElement of imageElementsToUpdate) {
+      getImageItem(imageElement).then((imageItem) => {
+        if (typeof imageItem !== 'boolean') {
+          invertImageItem(imageItem).then((invertImageItem) => {
+            if (typeof invertImageItem !== 'boolean') {
+              // Generate css
+              const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
+
+              // Update stylesheet
+              currentStylesheets.push(invertImageItemCSS);
+              updateStylesheets(currentStylesheets);
+            }
+          });
+        }
+      });
     }
   });
 
