@@ -284,6 +284,7 @@ export function getStyles(): Styles {
     for (const sheet of document.styleSheets) {
       try {
         if (!sheet.cssRules) continue;
+        if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
         const identifier = sheet.ownerNode?.id || generateIdentifier();
@@ -291,6 +292,7 @@ export function getStyles(): Styles {
         const sheetName = `@stylesheet-${name}-${identifier}`;
         stylesCollection[sheetName] = sheetObj;
       } catch (e) {
+        console.log(e);
         // Skipped due to access restrictions
       }
     }
@@ -324,6 +326,82 @@ export function getStyles(): Styles {
   };
 
   return results;
+}
+
+export function getPartialStyles(mutationList): Styles {
+  const stylesCollection: StylesCollection = {};
+  const cssVariableReferenceMap: CSSVariableReferenceMap = {};
+
+  const lambdaStyles: StyleSheet = {};
+
+  mutationList.forEach((mutation) => {
+    if (mutation.type === 'attributes' && mutation.target instanceof HTMLElement) {
+      const element = mutation.target as HTMLElement;
+      if (element.style.length > 0) {
+        const selector = generateElementSelector(element);
+        if (!lambdaStyles.hasOwnProperty(selector)) {
+          lambdaStyles[selector] = {};
+        }
+        for (const prop of element.style) {
+          const value = element.style.getPropertyValue(prop).trim();
+          if (value !== '') {
+            lambdaStyles[selector][prop] = value;
+            // Track CSS variable usage
+            const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
+            if (cssVarMatch !== null) {
+              const cssVariableKey = cssVarMatch[1];
+              if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
+                cssVariableReferenceMap[cssVariableKey] = [0, 0];
+              }
+              if (prop === 'background' || prop === 'background-color') {
+                cssVariableReferenceMap[cssVariableKey][0] += 1;
+              }
+              if (prop === 'color') {
+                cssVariableReferenceMap[cssVariableKey][1] += 1;
+              }
+            }
+          }
+        }
+      }
+    }
+    // Handle childList mutations for added/removed nodes
+    if (mutation.type === 'childList') {
+      mutation.addedNodes.forEach((node) => {
+        if (node instanceof HTMLElement && node.style.length > 0) {
+          const selector = generateElementSelector(node);
+          if (!lambdaStyles.hasOwnProperty(selector)) {
+            lambdaStyles[selector] = {};
+          }
+          for (const prop of node.style) {
+            const value = node.style.getPropertyValue(prop).trim();
+            if (value !== '') {
+              lambdaStyles[selector][prop] = value;
+              const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
+              if (cssVarMatch !== null) {
+                const cssVariableKey = cssVarMatch[1];
+                if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
+                  cssVariableReferenceMap[cssVariableKey] = [0, 0];
+                }
+                if (prop === 'background' || prop === 'background-color') {
+                  cssVariableReferenceMap[cssVariableKey][0] += 1;
+                }
+                if (prop === 'color') {
+                  cssVariableReferenceMap[cssVariableKey][1] += 1;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+  });
+
+  stylesCollection['@stylesheet-lambda'] = lambdaStyles;
+
+  return {
+    stylesCollection: stylesCollection,
+    referenceMap: cssVariableReferenceMap
+  };
 }
 
 export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
