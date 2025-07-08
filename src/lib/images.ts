@@ -1,14 +1,15 @@
 import { colorToString, invertColor, parseColor } from './color';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
-import { getMimetype } from './get-mimetype';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
+import { getMimetype } from './get-mimetype';
 import { getSVGContent } from './get-svg-content';
 import { invertPropertyValuePairs } from './invert-property-value-pairs';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { StyleSheetCSSItem } from './styles';
 import { svgElementsQuerySelectorString } from './svg-elements';
+import { SVGPresentationAttributesList } from './svg-presentation-attributes';
 
 export type ImageItemMimetype = 'image/svg+xml';
 
@@ -98,7 +99,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
           presentationAttributes[selector] = {};
         }
 
-        for (const attribute of ['fill', 'stroke', 'color', 'stop-color']) {
+        for (const attribute of SVGPresentationAttributesList) {
           const value = element.getAttribute(attribute);
           // Attribute explicitly set on this element
           if (value !== null && typeof value === 'string') {

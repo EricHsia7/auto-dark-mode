@@ -8,6 +8,7 @@ import { isPreserved } from './is-preserved';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { svgElementsQuerySelectorString } from './svg-elements';
+import { SVGPresentationAttributesList } from './svg-presentation-attributes';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -147,7 +148,7 @@ export function getStyles(): Styles {
       SVGPresentationAttributes[selector] = {};
     }
 
-    for (const attribute of ['fill', 'stroke', 'color', 'stop-color']) {
+    for (const attribute of SVGPresentationAttributesList) {
       const value = element.getAttribute(attribute);
 
       if (value != null && value.trim() !== '') {
