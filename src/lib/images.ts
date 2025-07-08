@@ -1,26 +1,29 @@
 import { colorToString, invertColor, parseColor } from './color';
 import { generateElementSelector } from './generate-element-selector';
-import { getContentType } from './get-content-type';
+import { generateIdentifier } from './generate-identifier';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
+import { getMimetype } from './get-mimetype';
 import { getSVGContent } from './get-svg-content';
 import { invertPropertyValuePairs } from './invert-property-value-pairs';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { StyleSheetCSSItem } from './styles';
 import { svgElementsQuerySelectorString } from './svg-elements';
+import { SVGPresentationAttributesList } from './svg-presentation-attributes';
 
-export type ImageItemContentType = 'image/svg+xml';
+export type ImageItemMimetype = 'image/svg+xml';
 
 export interface ImageItemImg {
   type: 'img';
   source: string;
-  contentType: ImageItemContentType;
+  mimetype: ImageItemMimetype;
   selector: string;
 }
 
 export interface ImageItemPictureSource {
   type: 'source';
   source: string;
-  contentType: ImageItemContentType;
+  mimetype: ImageItemMimetype;
   mediaQueryConditionText: string;
   selector: string;
 }
@@ -35,40 +38,41 @@ export async function getImageItem(element: HTMLImageElement | HTMLSourceElement
   switch (tagName) {
     case 'img': {
       const source = element.getAttribute('src');
-      const contentType = await getContentType(source);
-      const item: ImageItemImg = {
-        type: 'img',
-        source: source,
-        contentType: contentType,
-        selector: selector
-      };
-      return item;
-      break;
+      if (source) {
+        const mimetype = await getMimetype(source);
+        const item: ImageItemImg = {
+          type: 'img',
+          source: source,
+          mimetype: mimetype,
+          selector: selector
+        };
+        return item;
+      }
     }
 
     case 'source': {
       const source = element.getAttribute('srcset');
-      const media = element.getAttribute('media');
-      const contentType = await getContentType(source);
-      const item: ImageItemPictureSource = {
-        type: 'source',
-        source: source,
-        contentType: contentType,
-        mediaQueryConditionText: media,
-        selector: selector
-      };
-      return item;
-      break;
+      if (source) {
+        const media = element.getAttribute('media');
+        const mimetype = await getMimetype(source);
+        const item: ImageItemPictureSource = {
+          type: 'source',
+          source: source,
+          mimetype: mimetype,
+          mediaQueryConditionText: media,
+          selector: selector
+        };
+        return item;
+      }
     }
     default: {
       return false;
-      break;
     }
   }
 }
 
-export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem> {
-  switch (imageItem.contentType) {
+export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem | false> {
+  switch (imageItem.mimetype) {
     case 'image/svg+xml': {
       // get content
       const content = await getSVGContent(imageItem.source);
@@ -95,7 +99,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem> 
           presentationAttributes[selector] = {};
         }
 
-        for (const attribute of ['fill', 'stroke', 'color']) {
+        for (const attribute of SVGPresentationAttributesList) {
           const value = element.getAttribute(attribute);
           // Attribute explicitly set on this element
           if (value !== null && typeof value === 'string') {
@@ -146,25 +150,29 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem> 
 
       // convert to string
       const serializer = new XMLSerializer();
-      const string = serializer.serializeToString(doc.querySelector('svg'));
+      const string = serializer.serializeToString(doc.body.firstElementChild);
       imageItem.source = `data:image/svg+xml,${encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')}`;
       return imageItem;
-      break;
     }
     default:
-      return imageItem;
-      break;
+      return false;
   }
 }
 
-export function generateCSSFromImageItem(imageItem: ImageItem): string {
+export function generateCssFromImageItem(imageItem: ImageItem): StyleSheetCSSItem {
   let rules = '';
   const selector = imageItem.selector;
-  const css = `${selector}{content:url('${imageItem.source}');}`;
+  const rule = `${selector}{content:url('${imageItem.source}');}`;
   if (imageItem.type === 'img') {
-    rules = css;
+    rules = rule;
   } else if (imageItem.type === 'source') {
-    rules = `@media ${imageItem.mediaQueryConditionText}{${css}}`;
+    rules = `@media ${imageItem.mediaQueryConditionText}{${rule}}`;
   }
-  return `@media (prefers-color-scheme:dark){${rules}}`;
+  const identifier = generateIdentifier();
+  const sheet = `@image-${imageItem.mimetype}-${identifier}`;
+  const css = `/* ${sheet} */ @media (prefers-color-scheme:dark){${rules}}`;
+  return {
+    name: sheet,
+    css: css
+  };
 }

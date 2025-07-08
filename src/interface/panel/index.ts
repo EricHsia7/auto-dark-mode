@@ -1,12 +1,116 @@
+import { StyleSheetCSSArray, StyleSheetCSSItem } from '../../lib/styles';
+
 let panelInitialized: boolean = false;
 let overlayElement;
 let panelElement;
 let stylesheetsElement;
-let stylesheetToggleElements;
-let styleTagElements;
-let stylesheetsQuantity;
 
-export function initializePanel(stylesStrings): void {
+function generateElementOfStylesheet(): HTMLElement {
+  const newStylesheetElement = document.createElement('div');
+  newStylesheetElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet');
+
+  const newStylesheetNameElement = document.createElement('div');
+  newStylesheetNameElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet_name');
+
+  const newStylesheetToggleElement = document.createElement('div');
+  newStylesheetToggleElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet_toggle');
+  newStylesheetToggleElement.setAttribute('state', 'on');
+  newStylesheetToggleElement.setAttribute('name', '');
+  newStylesheetToggleElement.onclick = function () {
+    const stylesheetsState = stylesheetsElement.getAttribute('state');
+    if (stylesheetsState === 'on') {
+      const currentState = newStylesheetToggleElement.getAttribute('state');
+      const nameValue = newStylesheetToggleElement.getAttribute('name');
+      const styleTag = document.querySelector(`style[auto-dark-mode-stylesheet-name="${nameValue}"]`) as HTMLStyleElement;
+      if (currentState === 'on') {
+        newStylesheetToggleElement.setAttribute('state', 'off');
+        styleTag.disabled = true;
+      } else {
+        newStylesheetToggleElement.setAttribute('state', 'on');
+        styleTag.disabled = false;
+      }
+    }
+  };
+
+  const newThumbElement = document.createElement('div');
+  newThumbElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet_toggle_thumb');
+
+  newStylesheetElement.appendChild(newStylesheetNameElement);
+  newStylesheetToggleElement.appendChild(newThumbElement);
+  newStylesheetElement.appendChild(newStylesheetToggleElement);
+
+  return newStylesheetElement;
+}
+
+function generateElementOfStyleTag(): HTMLStyleElement {
+  const newStyleTagElement = document.createElement('style');
+  newStyleTagElement.setAttribute('auto-dark-mode-stylesheet-name', '');
+  return newStyleTagElement;
+}
+
+export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
+  function updateStylesheet(stylesheetElement: HTMLElement, styleTagElement: HTMLStyleElement, stylesheet: StyleSheetCSSItem): void {
+    function updateName(stylesheetElement: HTMLElement, stylesheet: StyleSheetCSSItem): void {
+      const nameElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_name') as HTMLElement;
+      nameElement.innerText = stylesheet.name;
+      const toggleElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_toggle') as HTMLElement;
+      toggleElement.setAttribute('name', stylesheet.name);
+    }
+
+    function updateStyleTag(stylesheetElement: HTMLElement, styleTagElement: HTMLStyleElement, stylesheet: StyleSheetCSSItem): void {
+      const toggleElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_toggle') as HTMLElement;
+      const state = toggleElement.getAttribute('state');
+      styleTagElement.setAttribute('auto-dark-mode-stylesheet-name', stylesheet.name);
+      styleTagElement.textContent = stylesheet.css;
+      styleTagElement.disabled = state === 'on' ? false : true;
+    }
+
+    updateName(stylesheetElement, stylesheet);
+    updateStyleTag(stylesheetElement, styleTagElement, stylesheet);
+  }
+
+  if (!panelInitialized) {
+    return;
+  }
+
+  const currentStyleTagQuantity = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]').length;
+  const stylesheetsQuantity = stylesheets.length;
+  if (stylesheetsQuantity !== currentStyleTagQuantity) {
+    const capacity = currentStyleTagQuantity - stylesheetsQuantity;
+    if (capacity < 0) {
+      const newStyleTagsFragment = new DocumentFragment();
+      const newStylesheetsFragment = new DocumentFragment();
+      for (let o = 0; o < Math.abs(capacity); o++) {
+        const newStyleTagElement = generateElementOfStyleTag();
+        newStyleTagsFragment.appendChild(newStyleTagElement);
+        const newStylesheetElement = generateElementOfStylesheet();
+        newStylesheetsFragment.appendChild(newStylesheetElement);
+      }
+      document.documentElement.append(newStyleTagsFragment);
+      stylesheetsElement.append(newStylesheetsFragment);
+    } else {
+      const styleTagElements = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]');
+      const stylesheetElements = stylesheetsElement.querySelectorAll('.auto_dark_mode_panel_stylesheets_stylesheet');
+      for (let o = 0; o < Math.abs(capacity); o++) {
+        const groupIndex = currentStyleTagQuantity - 1 - o;
+        styleTagElements[groupIndex].remove();
+        stylesheetElements[groupIndex].remove();
+      }
+    }
+  }
+
+  const styleTagElements = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]');
+  const stylesheetElements = stylesheetsElement.querySelectorAll('.auto_dark_mode_panel_stylesheets_stylesheet');
+
+  for (let i = 0; i < stylesheetsQuantity; i++) {
+    const stylesheet = stylesheets[i];
+    const stylesheetElement = stylesheetElements[i];
+    const styleTagElement = styleTagElements[i];
+    updateStylesheet(stylesheetElement, styleTagElement, stylesheet);
+  }
+}
+
+export function initializePanel(): void {
   if (panelInitialized) {
     return;
   } else {
@@ -41,6 +145,9 @@ export function initializePanel(stylesStrings): void {
 
   ((toggleElement) => {
     toggleElement.addEventListener('click', function () {
+      const stylesheetToggleElements = stylesheetsElement.querySelectorAll('.auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle') as NodeListOf<HTMLElement>;
+      const styleTagElements = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]') as NodeListOf<HTMLStyleElement>;
+      const stylesheetsQuantity = styleTagElements.length;
       const state = toggleElement.getAttribute('state');
       let disabled = true;
       let newState = 'off';
@@ -73,46 +180,6 @@ export function initializePanel(stylesStrings): void {
   newStylesheetsElement.classList.add('auto_dark_mode_panel_stylesheets');
   newStylesheetsElement.setAttribute('state', 'on');
 
-  for (const stylesString of stylesStrings) {
-    const newStylesheetElement = document.createElement('div');
-    newStylesheetElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet');
-
-    const newStylesheetNameElement = document.createElement('div');
-    newStylesheetNameElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet_name');
-    newStylesheetNameElement.innerText = stylesString.name;
-
-    const newStylesheetToggleElement = document.createElement('div');
-    newStylesheetToggleElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet_toggle');
-    newStylesheetToggleElement.setAttribute('state', 'on');
-    newStylesheetToggleElement.setAttribute('name', stylesString.name);
-
-    ((stylesheetToggle2) => {
-      stylesheetToggle2.addEventListener('click', function () {
-        const stylesheetsState = stylesheetsElement.getAttribute('state');
-        if (stylesheetsState === 'on') {
-          const currentState = stylesheetToggle2.getAttribute('state');
-          const nameValue = stylesheetToggle2.getAttribute('name');
-          const styleTag = document.querySelector(`style[auto-dark-mode-stylesheet-name="${nameValue}"]`) as HTMLStyleElement;
-          if (currentState === 'on') {
-            stylesheetToggle2.setAttribute('state', 'off');
-            styleTag.disabled = true;
-          } else {
-            stylesheetToggle2.setAttribute('state', 'on');
-            styleTag.disabled = false;
-          }
-        }
-      });
-    })(newStylesheetToggleElement);
-
-    const newThumbElement = document.createElement('div');
-    newThumbElement.classList.add('auto_dark_mode_panel_stylesheets_stylesheet_toggle_thumb');
-
-    newStylesheetElement.appendChild(newStylesheetNameElement);
-    newStylesheetToggleElement.appendChild(newThumbElement);
-    newStylesheetElement.appendChild(newStylesheetToggleElement);
-    newStylesheetsElement.appendChild(newStylesheetElement);
-  }
-
   newPanelBodyElement.appendChild(newStylesheetsElement);
 
   newPanelHeadElement.appendChild(newPanelHeadTitleElement);
@@ -133,9 +200,6 @@ export function initializePanel(stylesStrings): void {
   overlayElement = document.querySelector('.auto_dark_mode_panel_overlay') as HTMLElement;
   panelElement = overlayElement.querySelector('.auto_dark_mode_panel') as HTMLElement;
   stylesheetsElement = panelElement.querySelector('.auto_dark_mode_panel_stylesheets') as HTMLElement;
-  stylesheetToggleElements = stylesheetsElement.querySelectorAll('.auto_dark_mode_panel_stylesheets_stylesheet .auto_dark_mode_panel_stylesheets_stylesheet_toggle') as NodeListOf<HTMLElement>;
-  styleTagElements = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]') as NodeListOf<HTMLStyleElement>;
-  stylesheetsQuantity = stylesStrings.length;
 }
 
 export function openPanel(): void {

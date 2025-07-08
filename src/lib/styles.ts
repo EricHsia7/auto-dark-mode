@@ -8,6 +8,7 @@ import { isPreserved } from './is-preserved';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { svgElementsQuerySelectorString } from './svg-elements';
+import { SVGPresentationAttributesList } from './svg-presentation-attributes';
 
 export type CSSProperties = {
   [property: string]: string;
@@ -134,12 +135,6 @@ export function getStyles(): Styles {
         'background-color': 'rgba(247, 209, 84, 0.5)',
         'color': '#000000'
       }
-    },
-    '@stylesheet-image-dimming': {
-      img: {
-        'filter': 'brightness(70%)',
-        '-webkit-filter': 'brightness(70%)'
-      }
     }
   };
 
@@ -153,7 +148,7 @@ export function getStyles(): Styles {
       SVGPresentationAttributes[selector] = {};
     }
 
-    for (const attribute of ['fill', 'stroke', 'color']) {
+    for (const attribute of SVGPresentationAttributesList) {
       const value = element.getAttribute(attribute);
 
       if (value != null && value.trim() !== '') {
@@ -284,6 +279,7 @@ export function getStyles(): Styles {
     for (const sheet of document.styleSheets) {
       try {
         if (!sheet.cssRules) continue;
+        if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
         const sheetObj = {};
         processRules(sheet.cssRules, sheetObj);
         const identifier = sheet.ownerNode?.id || generateIdentifier();
@@ -291,6 +287,7 @@ export function getStyles(): Styles {
         const sheetName = `@stylesheet-${name}-${identifier}`;
         stylesCollection[sheetName] = sheetObj;
       } catch (e) {
+        console.log(e);
         // Skipped due to access restrictions
       }
     }
