@@ -12,7 +12,7 @@ async function getMimetypeFromHeaders(url: string): Promise<string> {
         const mimeTypeRegex = /([a-z]+\/[a-z\+]+)/i;
         const mimeTypeMatches = contentType.match(mimeTypeRegex);
         if (mimeTypeMatches) {
-          resolve(mimeTypeMatches[1]);
+          resolve(mimeTypeMatches[1].trim());
         } else {
           reject(new Error(`Cannot find mimetype from ${url}`));
         }

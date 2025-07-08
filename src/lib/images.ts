@@ -170,7 +170,7 @@ export function generateCSSFromImageItem(imageItem: ImageItem): StyleSheetCSSIte
   }
   const css = `@media (prefers-color-scheme:dark){${rules}}`;
   const identifier = generateIdentifier();
-  const sheet = `@image-${identifier}`;
+  const sheet = `@image-${imageItem.contentType}-${identifier}`;
 
   return {
     name: sheet,
