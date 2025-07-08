@@ -149,7 +149,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
 
       // convert to string
       const serializer = new XMLSerializer();
-      const string = serializer.serializeToString(doc.querySelector('svg'));
+      const string = serializer.serializeToString(doc.body.firstElementChild);
       imageItem.source = `data:image/svg+xml,${encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')}`;
       return imageItem;
     }
