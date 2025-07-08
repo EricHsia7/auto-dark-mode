@@ -7,6 +7,7 @@ on:
       - main
       - dev-invert-svg-image
       - dev-invert-svg-image-parallel
+      - dev-invert-svg-image-dynamic-update-2
 
 jobs:
   build:

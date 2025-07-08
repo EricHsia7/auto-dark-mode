@@ -1,11 +1,13 @@
 import { colorToString, invertColor, parseColor } from './color';
 import { generateElementSelector } from './generate-element-selector';
+import { generateIdentifier } from './generate-identifier';
 import { getContentType } from './get-content-type';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
 import { getSVGContent } from './get-svg-content';
 import { invertPropertyValuePairs } from './invert-property-value-pairs';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { StyleSheetCSSItem } from './styles';
 import { svgElementsQuerySelectorString } from './svg-elements';
 
 export type ImageItemContentType = 'image/svg+xml';
@@ -67,7 +69,7 @@ export async function getImageItem(element: HTMLImageElement | HTMLSourceElement
   }
 }
 
-export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem> {
+export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem | false> {
   switch (imageItem.contentType) {
     case 'image/svg+xml': {
       // get content
@@ -152,19 +154,26 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem> 
       break;
     }
     default:
-      return imageItem;
+      return false;
       break;
   }
 }
 
-export function generateCSSFromImageItem(imageItem: ImageItem): string {
+export function generateCSSFromImageItem(imageItem: ImageItem): StyleSheetCSSItem {
   let rules = '';
   const selector = imageItem.selector;
-  const css = `${selector}{content:url('${imageItem.source}');}`;
+  const rule = `${selector}{content:url('${imageItem.source}');}`;
   if (imageItem.type === 'img') {
-    rules = css;
+    rules = rule;
   } else if (imageItem.type === 'source') {
-    rules = `@media ${imageItem.mediaQueryConditionText}{${css}}`;
+    rules = `@media ${imageItem.mediaQueryConditionText}{${rule}}`;
   }
-  return `@media (prefers-color-scheme:dark){${rules}}`;
+  const css = `@media (prefers-color-scheme:dark){${rules}}`;
+  const identifier = generateIdentifier();
+  const sheet = `@image-${identifier}`;
+
+  return {
+    name: sheet,
+    css: css
+  };
 }
