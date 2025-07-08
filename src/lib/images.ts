@@ -152,11 +152,9 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
       const string = serializer.serializeToString(doc.querySelector('svg'));
       imageItem.source = `data:image/svg+xml,${encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')}`;
       return imageItem;
-      break;
     }
     default:
       return false;
-      break;
   }
 }
 

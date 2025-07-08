@@ -47,7 +47,7 @@ export async function initialize() {
     getImageItem(imageElement).then((imageItem) => {
       if (typeof imageItem !== 'boolean') {
         invertImageItem(imageItem).then((invertImageItem) => {
-          if (typeof imageItem !== 'boolean') {
+          if (typeof invertImageItem !== 'boolean') {
             // Generate css
             const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
 
@@ -67,7 +67,7 @@ export async function initialize() {
           getImageItem(mutation.target).then((imageItem) => {
             if (typeof imageItem !== 'boolean') {
               invertImageItem(imageItem).then((invertImageItem) => {
-                if (typeof imageItem !== 'boolean') {
+                if (typeof invertImageItem !== 'boolean') {
                   // Generate css
                   const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
 
@@ -85,7 +85,7 @@ export async function initialize() {
             getImageItem(addedNode).then((imageItem) => {
               if (typeof imageItem !== 'boolean') {
                 invertImageItem(imageItem).then((invertImageItem) => {
-                  if (typeof imageItem !== 'boolean') {
+                  if (typeof invertImageItem !== 'boolean') {
                     // Generate css
                     const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
 
