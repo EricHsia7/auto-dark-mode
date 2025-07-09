@@ -425,7 +425,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
   if (originalTheme === 'light') {
     return newStyles;
   } else {
-    return object;
+    return {};
   }
 }
 
