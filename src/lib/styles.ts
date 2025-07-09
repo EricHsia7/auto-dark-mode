@@ -61,7 +61,7 @@ export function getStyles(): Styles {
         'background-color': 'rgba(0, 0, 0, 0)',
         'color': '#000000'
       },
-      'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"]': {
+      'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"], input:not([type])': {
         'background-color': 'rgba(0, 0, 0, 0)',
         'border-color': '#000000',
         'border-style': 'solid',
