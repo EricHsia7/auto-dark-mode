@@ -53,7 +53,7 @@ export function getStyles(): Styles {
         'background-color': 'rgba(0, 0, 0, 0)',
         'color': '#000000'
       },
-      'pre, code, p': {
+      'pre, code, p, div': {
         'background-color': 'rgba(0, 0, 0, 0)',
         'color': '#000000'
       },
