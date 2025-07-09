@@ -81,15 +81,14 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
       const parser = new DOMParser();
       const doc = parser.parseFromString(content, 'text/html');
 
-      // invert inline styles
-      const styleTagElements = doc.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
-      for (const styleTagElement of styleTagElements) {
-        const cssSourceCode = styleTagElement.textContent;
-        const invertedCssSourceCode = invertPropertyValuePairs(cssSourceCode);
-        styleTagElement.textContent = invertedCssSourceCode;
+      // insert default styles
+      const defaultStyleTag = doc.createElement('style');
+      defaultStyleTag.textContent = `circle,ellipse,path,polygon,rect{fill:#000000;color:#000000;stroke:#000000;stroke-width:0}line,polyline{stroke:#000000;stroke-width:0}text,tspan{color:#000000}`;
+      if (doc.firstElementChild instanceof SVGElement) {
+        doc.firstElementChild.appendChild(defaultStyleTag);
       }
 
-      // cascade presentation attributes
+      // extract presentation attributes
       const svgElements = doc.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
       const SVGPresentationAttributes = {};
       for (const element of svgElements) {
@@ -103,16 +102,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
           const value = element.getAttribute(attribute);
           // Attribute explicitly set on this element
           if (value !== null && typeof value === 'string') {
-            if (value.trim().toLowerCase() === 'currentcolor') {
-              // Try to inherit from ancestor in presentationAttributes
-              const inherited = getInheritedPresentationAttribute(element, 'color', SVGPresentationAttributes);
-              if (inherited === undefined) {
-                SVGPresentationAttributes[selector][attribute] = '#000000';
-              } else {
-                SVGPresentationAttributes[selector][attribute] = inherited;
-              }
-              continue;
-            } else if (value.trim() !== '') {
+            if (value.trim() !== '') {
               SVGPresentationAttributes[selector][attribute] = value;
               continue;
             }
@@ -125,6 +115,14 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
             continue;
           }
         }
+      }
+
+      // invert inline styles
+      const styleTagElements = doc.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
+      for (const styleTagElement of styleTagElements) {
+        const cssSourceCode = styleTagElement.textContent;
+        const invertedCssSourceCode = invertPropertyValuePairs(cssSourceCode);
+        styleTagElement.textContent = invertedCssSourceCode;
       }
 
       // invert presentation attributes
