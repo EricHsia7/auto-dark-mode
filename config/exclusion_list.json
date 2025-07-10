@@ -54,6 +54,11 @@
       "description": "",
       "name": "ChatGPT",
       "pattern": "*://chatgpt.com/*"
+    },
+    {
+      "description": "",
+      "name": "Perplexity",
+      "pattern": "*://*.perplexity.ai/*"
     }
   ]
 }
