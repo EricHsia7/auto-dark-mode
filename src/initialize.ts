@@ -21,8 +21,11 @@ export async function initialize() {
   const styleTags = document.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
   for (const styleTag of styleTags) {
     const cssText = styleTag.textContent;
-    const transformedCSS = transformLayerCSS(cssText);
-    styleTag.textContent = transformedCSS;
+    if (cssText && cssText.length > 0) {
+      const transformedCSS = transformLayerCSS(cssText);
+      styleTag.textContent = transformedCSS;
+    }
+    // TODO: prevent overwriting rules dynamically inserted by JavaScript
   }
 
   // Inline external/foreign CSS
