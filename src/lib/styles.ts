@@ -1,4 +1,5 @@
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
+import { deepAssign } from './deep-assign';
 import { evaluateTheme } from './evaluate-theme';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
@@ -38,109 +39,214 @@ export interface StyleSheetCSSItem {
 
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
-export function getStyles(): Styles {
-  const cssVariableReferenceMap: CSSVariableReferenceMap = {};
-  const stylesCollection: StylesCollection = {
-    '@stylesheet-default': {
-      'html, body': {
-        'background-color': '#ffffff',
-        'color': '#000000'
-      },
-      'section, header, main, footer, article': {
-        color: '#000000'
-      },
-      'h1, h2, h3, h4, h5, h6, span, time, a, a:hover': {
-        'background-color': 'rgba(0, 0, 0, 0)',
-        'color': '#000000'
-      },
-      'pre, code, p, div': {
-        'background-color': 'rgba(0, 0, 0, 0)',
-        'color': '#000000'
-      },
-      'math, mi, mn, mo, mtext, ms, mspace, mglyph, mrow, mfenced, mfrac, msqrt, mroot, mstyle, merror, mpadded, mphantom, menclose, semantics, msub, msup, msubsup, munder, mover, munderover, mmultiscripts, mprescripts, mtable, mtr, mtd, mlabeledtr': {
-        'background-color': 'rgba(0, 0, 0, 0)',
-        'color': '#000000'
-      },
-      'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"], input:not([type])': {
-        'background-color': 'rgba(0, 0, 0, 0)',
-        'border-color': '#000000',
-        'border-style': 'solid',
-        'border-width': '1px',
-        'color': '#000000'
-      },
-      'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
-        color: '#bdbdbd'
-      },
-      'th, td': {
-        'border-color': '#e5e7eb',
-        'border-style': 'solid',
-        'border-width': '1px'
-      },
-      'th': {
-        color: '#000000'
-      },
-      'tr': {
-        'border-bottom-color': '#e5e7eb',
-        'border-bottom-style': 'solid',
-        'border-bottom-width': '1px'
-      },
-      'thead': {
-        'border-bottom-color': '#e5e7eb',
-        'border-bottom-style': 'solid',
-        'border-bottom-width': '2px'
-      },
-      'tfoot': {
-        'border-top-color': '#e5e7eb',
-        'border-top-style': 'solid',
-        'border-top-width': '2px'
-      },
-      'colgroup': {
-        border: 'none'
-      },
-      'blockquote': {
-        'border-left-color': '#e5e7eb',
-        'color': '#000000'
-      },
-      'hr': {
-        'border': 'none',
-        'background-color': '#e5e7eb'
-      },
-      'figcaption, caption': {
-        color: '#000000'
-      },
-      'details': {
-        'border-color': '#e5e7eb',
-        'border-style': 'solid',
-        'border-width': '1px'
-      },
-      'summary': {
-        color: '#000000'
-      },
-      'small': {
-        color: '#000000'
-      },
-      'strong': {
-        color: '#000000'
-      },
-      'em': {
-        color: '#000000'
-      },
-      'ul, ol': {
-        color: '#000000'
-      },
-      'li': {
-        color: '#000000'
-      },
-      'mark': {
-        'background-color': 'rgba(247, 209, 84, 0.5)',
-        'color': '#000000'
+export let cssVariableReferenceMap: CSSVariableReferenceMap = {};
+export let currentStylesCollection: StylesCollection = {
+  '@stylesheet-default': {
+    'html, body': {
+      'background-color': '#ffffff',
+      'color': '#000000'
+    },
+    'section, header, main, footer, article': {
+      color: '#000000'
+    },
+    'h1, h2, h3, h4, h5, h6, span, time, a, a:hover': {
+      'background-color': 'rgba(0, 0, 0, 0)',
+      'color': '#000000'
+    },
+    'pre, code, p, div': {
+      'background-color': 'rgba(0, 0, 0, 0)',
+      'color': '#000000'
+    },
+    'math, mi, mn, mo, mtext, ms, mspace, mglyph, mrow, mfenced, mfrac, msqrt, mroot, mstyle, merror, mpadded, mphantom, menclose, semantics, msub, msup, msubsup, munder, mover, munderover, mmultiscripts, mprescripts, mtable, mtr, mtd, mlabeledtr': {
+      'background-color': 'rgba(0, 0, 0, 0)',
+      'color': '#000000'
+    },
+    'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"], input:not([type])': {
+      'background-color': 'rgba(0, 0, 0, 0)',
+      'border-color': '#000000',
+      'border-style': 'solid',
+      'border-width': '1px',
+      'color': '#000000'
+    },
+    'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
+      color: '#bdbdbd'
+    },
+    'th, td': {
+      'border-color': '#e5e7eb',
+      'border-style': 'solid',
+      'border-width': '1px'
+    },
+    'th': {
+      color: '#000000'
+    },
+    'tr': {
+      'border-bottom-color': '#e5e7eb',
+      'border-bottom-style': 'solid',
+      'border-bottom-width': '1px'
+    },
+    'thead': {
+      'border-bottom-color': '#e5e7eb',
+      'border-bottom-style': 'solid',
+      'border-bottom-width': '2px'
+    },
+    'tfoot': {
+      'border-top-color': '#e5e7eb',
+      'border-top-style': 'solid',
+      'border-top-width': '2px'
+    },
+    'colgroup': {
+      border: 'none'
+    },
+    'blockquote': {
+      'border-left-color': '#e5e7eb',
+      'color': '#000000'
+    },
+    'hr': {
+      'border': 'none',
+      'background-color': '#e5e7eb'
+    },
+    'figcaption, caption': {
+      color: '#000000'
+    },
+    'details': {
+      'border-color': '#e5e7eb',
+      'border-style': 'solid',
+      'border-width': '1px'
+    },
+    'summary': {
+      color: '#000000'
+    },
+    'small': {
+      color: '#000000'
+    },
+    'strong': {
+      color: '#000000'
+    },
+    'em': {
+      color: '#000000'
+    },
+    'ul, ol': {
+      color: '#000000'
+    },
+    'li': {
+      color: '#000000'
+    },
+    'mark': {
+      'background-color': 'rgba(247, 209, 84, 0.5)',
+      'color': '#000000'
+    }
+  }
+};
+
+function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, cssVariableReferenceMap: CSSVariableReferenceMap) {
+  for (const rule of rules) {
+    switch (rule.type) {
+      case CSSRule.STYLE_RULE: {
+        const styleRule = rule as CSSStyleRule;
+        const selectorText = styleRule.selectorText;
+        if (!container.hasOwnProperty(selectorText)) {
+          container[selectorText] = {};
+        }
+        const extendedRuleStyle = Array.from(styleRule.style).concat(['background', 'border']);
+        for (const prop of extendedRuleStyle) {
+          const value = styleRule.style.getPropertyValue(prop).trim();
+          if (value !== '') {
+            container[selectorText][prop] = value;
+            // Check if value refers to a CSS variable
+            const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
+            if (cssVarMatch !== null) {
+              const cssVariableKey = cssVarMatch[1];
+              if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
+                cssVariableReferenceMap[cssVariableKey] = [0, 0];
+              }
+              if (prop === 'background' || prop === 'background-color') {
+                cssVariableReferenceMap[cssVariableKey][0] += 1;
+              }
+              if (prop === 'color') {
+                cssVariableReferenceMap[cssVariableKey][1] += 1;
+              }
+            }
+          }
+        }
+        break;
+      }
+
+      case CSSRule.MEDIA_RULE: {
+        const mediaRule = rule as CSSMediaRule;
+        const media = `@media ${mediaRule.conditionText}`;
+        if (!container.hasOwnProperty(media)) {
+          container[media] = {};
+        }
+        processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceMap);
+        break;
+      }
+
+      case CSSRule.IMPORT_RULE: {
+        const importRule = rule as CSSImportRule;
+        if (importRule.styleSheet) {
+          // Import rules with nested stylesheets
+          try {
+            processCSSRules(importRule.styleSheet.cssRules, container, cssVariableReferenceMap);
+          } catch (e) {
+            // Skipped due to CORS/security
+          }
+        }
+        break;
+      }
+
+      case CSSRule.CHARSET_RULE: {
+        break;
+      }
+
+      case CSSRule.COUNTER_STYLE_RULE: {
+        break;
+      }
+
+      case CSSRule.FONT_FACE_RULE: {
+        break;
+      }
+
+      case CSSRule.FONT_FEATURE_VALUES_RULE: {
+        break;
+      }
+
+      case CSSRule.KEYFRAMES_RULE: {
+        break;
+      }
+
+      case CSSRule.KEYFRAME_RULE: {
+        break;
+      }
+
+      case CSSRule.NAMESPACE_RULE: {
+        break;
+      }
+
+      case CSSRule.PAGE_RULE: {
+        break;
+      }
+
+      case CSSRule.SUPPORTS_RULE: {
+        const supportsRule = rule as CSSSupportsRule;
+        const supports = `@supports ${supportsRule.conditionText}`;
+        if (!container.hasOwnProperty(supports)) {
+          container[supports] = {};
+        }
+        processCSSRules(supportsRule.cssRules, container[supports], cssVariableReferenceMap);
+        break;
+      }
+
+      default: {
+        // container[`@unknown-${rule.type}`] = rule.cssText;
+        break;
       }
     }
-  };
+  }
+}
 
+export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, svgElements: NodeListOf<HTMLElement>, styleSheets: StyleSheetList): void {
   // Extract svg presentation attributes
   const SVGPresentationAttributes: StyleSheet = {};
-  const svgElements = document.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
 
   for (const element of svgElements) {
     const selector = generateElementSelector(element);
@@ -166,136 +272,26 @@ export function getStyles(): Styles {
     }
   }
 
-  stylesCollection['@stylesheet-svg-presentation-attributes'] = SVGPresentationAttributes;
+  currentStylesCollection['@stylesheet-svg-presentation-attributes'] = deepAssign(currentStylesCollection['@stylesheet-svg-presentation-attributes'] || {}, SVGPresentationAttributes);
 
-  // Extract external/internal styles
-  function processRules(rules: CSSRuleList, container: { [key: string]: any }) {
-    for (const rule of rules) {
-      switch (rule.type) {
-        case CSSRule.STYLE_RULE: {
-          const styleRule = rule as CSSStyleRule;
-          const selectorText = styleRule.selectorText;
-          if (!container.hasOwnProperty(selectorText)) {
-            container[selectorText] = {};
-          }
-          const extendedRuleStyle = Array.from(styleRule.style).concat(['background' /*, 'border' */]);
-          for (const prop of extendedRuleStyle) {
-            const value = styleRule.style.getPropertyValue(prop).trim();
-            if (value !== '') {
-              container[selectorText][prop] = value;
-              // Check if value refers to a CSS variable
-              const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
-              if (cssVarMatch !== null) {
-                const cssVariableKey = cssVarMatch[1];
-                if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
-                  cssVariableReferenceMap[cssVariableKey] = [0, 0];
-                }
-                if (prop === 'background' || prop === 'background-color') {
-                  cssVariableReferenceMap[cssVariableKey][0] += 1;
-                }
-                if (prop === 'color') {
-                  cssVariableReferenceMap[cssVariableKey][1] += 1;
-                }
-              }
-            }
-          }
-          break;
-        }
-
-        case CSSRule.MEDIA_RULE: {
-          const mediaRule = rule as CSSMediaRule;
-          const media = `@media ${mediaRule.conditionText}`;
-          if (!container.hasOwnProperty(media)) {
-            container[media] = {};
-          }
-          processRules(mediaRule.cssRules, container[media]);
-          break;
-        }
-
-        case CSSRule.IMPORT_RULE: {
-          const importRule = rule as CSSImportRule;
-          if (importRule.styleSheet) {
-            // Import rules with nested stylesheets
-            try {
-              processRules(importRule.styleSheet.cssRules, container);
-            } catch (e) {
-              // Skipped due to CORS/security
-            }
-          }
-          break;
-        }
-
-        case CSSRule.CHARSET_RULE: {
-          break;
-        }
-
-        case CSSRule.COUNTER_STYLE_RULE: {
-          break;
-        }
-
-        case CSSRule.FONT_FACE_RULE: {
-          break;
-        }
-
-        case CSSRule.FONT_FEATURE_VALUES_RULE: {
-          break;
-        }
-
-        case CSSRule.KEYFRAMES_RULE: {
-          break;
-        }
-
-        case CSSRule.KEYFRAME_RULE: {
-          break;
-        }
-
-        case CSSRule.NAMESPACE_RULE: {
-          break;
-        }
-
-        case CSSRule.PAGE_RULE: {
-          break;
-        }
-
-        case CSSRule.SUPPORTS_RULE: {
-          const supportsRule = rule as CSSSupportsRule;
-          const supports = `@supports ${supportsRule.conditionText}`;
-          if (!container.hasOwnProperty(supports)) {
-            container[supports] = {};
-          }
-          processRules(supportsRule.cssRules, container[supports]);
-          break;
-        }
-
-        default: {
-          // container[`@unknown-${rule.type}`] = rule.cssText;
-          break;
-        }
-      }
-    }
-  }
-
-  if ('styleSheets' in document) {
-    for (const sheet of document.styleSheets) {
-      try {
-        if (!sheet.cssRules) continue;
-        if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
-        const sheetObj = {};
-        processRules(sheet.cssRules, sheetObj);
-        const identifier = sheet.ownerNode?.id || generateIdentifier();
-        const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
-        const sheetName = `@stylesheet-${name}-${identifier}`;
-        stylesCollection[sheetName] = sheetObj;
-      } catch (e) {
-        console.log(e);
-        // Skipped due to access restrictions
-      }
+  // Extract external/internal stylesheets
+  for (const sheet of styleSheets) {
+    try {
+      if (!sheet.cssRules) continue;
+      if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
+      const sheetObj = {};
+      processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceMap);
+      const identifier = sheet.ownerNode?.id || generateIdentifier();
+      const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
+      const sheetName = `@stylesheet-${name}-${identifier}`;
+      currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
+    } catch (e) {
+      // Skipped due to access restrictions
     }
   }
 
   // Capture all inline stylesCollection (lambda stylesCollection)
   const lambdaStyles: StyleSheet = {};
-  const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
   for (const element of elementsWithInlineStyle) {
     if (element.style.length > 0) {
       const selector = generateElementSelector(element);
@@ -313,14 +309,7 @@ export function getStyles(): Styles {
     }
   }
 
-  stylesCollection['@stylesheet-lambda'] = lambdaStyles;
-
-  const results = {
-    stylesCollection: stylesCollection,
-    referenceMap: cssVariableReferenceMap
-  };
-
-  return results;
+  currentStylesCollection['@stylesheet-lambda'] = deepAssign(currentStylesCollection['@stylesheet-lambda'] || {}, lambdaStyles);
 }
 
 export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {

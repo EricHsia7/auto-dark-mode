@@ -1,12 +1,17 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
+import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
-import { generateCssFromStyles, getStyles, invertStyles, StylesCollection, StyleSheetCSSArray } from './lib/styles';
+import { cssVariableReferenceMap, currentStylesCollection, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
+import { isSVGElement, svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
 let currentStylesheets: StyleSheetCSSArray = [];
+let imageStylesheets: StyleSheetCSSArray = [];
+
+const processingElements = new Set();
 
 export async function initialize() {
   if (!isFramed()) {
@@ -29,20 +34,105 @@ export async function initialize() {
   }
 
   // Inline external/foreign CSS
-  await inlineCSS();
+  const linkElements = document.querySelectorAll('link[rel="stylesheet"][href]') as NodeListOf<HTMLLinkElement>;
+  await inlineCSS(linkElements);
 
-  // Extract styles
-  const styles = getStyles();
+  // Update styles
+  const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
+  const svgElements = document.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
+  updateStyles(elementsWithInlineStyle, svgElements, document.styleSheets);
 
   // Invert styles
-  const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
+  const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
 
   // Generate inverted css
-  const stylesheets = generateCssFromStyles(invertedStyles, false);
-  currentStylesheets = stylesheets;
+  currentStylesheets = generateCssFromStyles(invertedStyles, false);
 
   // Update stylesheets
-  updateStylesheets(stylesheets);
+  updateStylesheets(currentStylesheets.concat(imageStylesheets));
+
+  const stylesheetsObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'childList') {
+        for (const node of mutation.addedNodes) {
+          if (processingElements.has(node)) {
+            continue;
+          }
+          if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
+            inlineCSS([node]);
+          } else if (node instanceof HTMLStyleElement) {
+            processingElements.add(node);
+            const cssText = node.textContent;
+            if (cssText && cssText.length > 0) {
+              const transformedCSS = transformLayerCSS(cssText);
+              node.textContent = transformedCSS;
+            }
+            const sheet = findStyleSheetByNode(node);
+            if (sheet) {
+              // Update styles
+              updateStyles([], [], [sheet]);
+
+              // Invert styles
+              const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
+
+              // Generate css
+              currentStylesheets = generateCssFromStyles(invertedStyles, false);
+
+              // Update stylesheets
+              updateStylesheets(currentStylesheets.concat(imageStylesheets));
+            }
+            processingElements.delete(node);
+          }
+        }
+      }
+    }
+  });
+
+  stylesheetsObserver.observe(document.head, {
+    childList: true,
+    subtree: true
+  });
+
+  const elementsObserver = new MutationObserver((mutations) => {
+    const elementsWithInlineStyleToUpdate = [];
+    const svgElementsToUpdate = [];
+
+    for (const mutation of mutations) {
+      if (mutation.type === 'childList' /* || mutation.type === 'attributes' */) {
+        for (const node of mutation.addedNodes) {
+          if (!(node instanceof Element)) continue;
+          // Traverse the subtree of added nodes
+          const allElements = Array.from(node.querySelectorAll('*')).concat(node);
+          for (const element of allElements) {
+            if (element.hasAttribute('style')) {
+              elementsWithInlineStyleToUpdate.push(element);
+            }
+            if (isSVGElement(element?.nodeName || element?.tagName || '')) {
+              svgElementsToUpdate.push(element);
+            }
+          }
+        }
+      }
+    }
+
+    // Update styles
+    updateStyles(elementsWithInlineStyleToUpdate, svgElementsToUpdate, []);
+
+    // Invert styles
+    const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
+
+    // Generate inverted css
+    currentStylesheets = generateCssFromStyles(invertedStyles, false);
+
+    // Update stylesheets
+    updateStylesheets(currentStylesheets.concat(imageStylesheets));
+  });
+
+  elementsObserver.observe(document.body, {
+    subtree: true,
+    // attributes: true,
+    childList: true
+  });
 
   // Invert images
   const imageElements = document.querySelectorAll('img, picture source');
@@ -55,15 +145,16 @@ export async function initialize() {
             const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
 
             // Update stylesheet
-            currentStylesheets.push(invertImageItemCSS);
-            updateStylesheets(currentStylesheets);
+            imageStylesheets.push(invertImageItemCSS);
+
+            updateStylesheets(currentStylesheets.concat(imageStylesheets));
           }
         });
       }
     });
   }
 
-  const observer = new MutationObserver((mutations) => {
+  const imageObserver = new MutationObserver((mutations) => {
     const imageElementsToUpdate = [];
 
     for (const mutation of mutations) {
@@ -89,8 +180,9 @@ export async function initialize() {
               const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
 
               // Update stylesheet
-              currentStylesheets.push(invertImageItemCSS);
-              updateStylesheets(currentStylesheets);
+              imageStylesheets.push(invertImageItemCSS);
+
+              updateStylesheets(currentStylesheets.concat(imageStylesheets));
             }
           });
         }
@@ -98,7 +190,7 @@ export async function initialize() {
     }
   });
 
-  observer.observe(document.documentElement, {
+  imageObserver.observe(document.documentElement, {
     subtree: true,
     attributes: true,
     attributeFilter: ['src', 'srcset'],

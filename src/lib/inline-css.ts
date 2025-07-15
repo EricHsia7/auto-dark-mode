@@ -1,7 +1,6 @@
 import { resolveRelativeURLs } from './resolve-relative-urls';
 import { transformLayerCSS } from './transform-layer-css';
 
-// Promisified GM_xmlhttpRequest
 function fetchCSS(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
@@ -21,8 +20,7 @@ function fetchCSS(url: string): Promise<string> {
   });
 }
 
-export async function inlineCSS(): Promise<true> {
-  const linkElements = document.querySelectorAll('link[rel="stylesheet"][href]') as NodeListOf<HTMLLinkElement>;
+export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>): Promise<true> {
   const fragment = new DocumentFragment();
   const linksToRemove = [];
   for (const link of linkElements) {

@@ -14,6 +14,8 @@ const svgElements = {
   stop: true
 };
 
+// export type SvgElements = NodeListOf<SVGElement | SVGPathElement | SVGRectElement | SVGCircleElement | SVGEllipseElement | SVGPolygonElement | SVGLineElement | SVGPolylineElement | SVGGElement | SVGTextElement | SVGTSpanElement | SVGTextPathElement | SVGStopElement>;
+
 export function isSVGElement(tag: string): boolean {
   if (svgElements.hasOwnProperty(tag.toLowerCase())) {
     return true;
