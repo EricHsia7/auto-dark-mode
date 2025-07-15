@@ -58,10 +58,7 @@ export async function initialize() {
             continue;
           }
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
-            processingElements.add(node);
-            inlineCSS([node]).then(() => {
-              processingElements.delete(node);
-            });
+            inlineCSS([node]);
           } else if (node instanceof HTMLStyleElement) {
             processingElements.add(node);
             const cssText = node.textContent;
