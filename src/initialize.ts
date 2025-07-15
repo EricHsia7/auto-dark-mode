@@ -1,11 +1,9 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
-import { addToSet } from './lib/add-to-set';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
-import { deleteFromSet } from './lib/set';
 import { cssVariableReferenceMap, currentStylesCollection, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
 import { isSVGElement, svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
