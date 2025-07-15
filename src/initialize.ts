@@ -53,27 +53,29 @@ export async function initialize() {
       if (mutation.type === 'childList') {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
-            node.addEventListener(
-              'load',
-              () => {
-                const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
-                if (sheet) {
-                  // Update styles
-                  updateStyles([], [], [sheet]);
+            ((node) => {
+              node.addEventListener(
+                'load',
+                () => {
+                  const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
+                  if (sheet) {
+                    // Update styles
+                    updateStyles([], [], [sheet]);
 
-                  // Invert styles
-                  const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
+                    // Invert styles
+                    const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
 
-                  // Generate inverted css
-                  const stylesheets = generateCssFromStyles(invertedStyles, false);
-                  currentStylesheets = stylesheets;
+                    // Generate inverted css
+                    const stylesheets = generateCssFromStyles(invertedStyles, false);
+                    currentStylesheets = stylesheets;
 
-                  // Update stylesheets
-                  updateStylesheets(stylesheets);
-                }
-              },
-              { once: true }
-            );
+                    // Update stylesheets
+                    updateStylesheets(stylesheets);
+                  }
+                },
+                { once: true }
+              );
+            })(node);
           }
 
           if (node instanceof HTMLStyleElement) {
