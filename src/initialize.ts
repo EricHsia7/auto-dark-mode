@@ -82,7 +82,7 @@ export async function initialize() {
       Array.from(stylesToUpdate.values()).filter((e) => e !== false)
     );
 
-    console.log(stylesToUpdate.values())
+    console.log(stylesToUpdate.values());
 
     // Invert styles
     const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
@@ -97,6 +97,42 @@ export async function initialize() {
 
   stylesheetsObserver.observe(document.documentElement, {
     subtree: false,
+    childList: true
+  });
+
+  const elementsWithInlineStyleObserver = new MutationObserver((mutations) => {
+    const elementsToUpdate = [];
+
+    for (const mutation of mutations) {
+      if (mutation.type === 'childList' || mutation.type === 'attributes') {
+        if (mutation.target instanceof HTMLElement) {
+          if (mutation.target.hasAttribute('style')) {
+            elementsToUpdate.push(mutation.target);
+          }
+        }
+      }
+    }
+
+    // Update styles
+    updateStyles(elementsToUpdate, [], []);
+
+    console.log(elementsToUpdate);
+
+    // Invert styles
+    const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
+
+    // Generate inverted css
+    const stylesheets = generateCssFromStyles(invertedStyles, false);
+    currentStylesheets = stylesheets;
+
+    // Update stylesheets
+    updateStylesheets(stylesheets);
+  });
+
+  elementsWithInlineStyleObserver.observe(document.documentElement, {
+    subtree: false,
+    attributes: true,
+    attributeFilter: ['style'],
     childList: true
   });
 
