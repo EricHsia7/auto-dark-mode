@@ -111,12 +111,12 @@ export async function initialize() {
 
     for (const mutation of mutations) {
       if (mutation.type === 'childList' || mutation.type === 'attributes') {
-        if (mutation.target instanceof HTMLElement) {
-          if (mutation.target.hasAttribute('style')) {
-            elementsWithInlineStyleToUpdate.push(mutation.target);
+        for (const node of mutation.addedNodes) {
+          if (node.hasAttribute('style')) {
+            elementsWithInlineStyleToUpdate.push(node);
           }
-          if (isSVGElement(mutation.target.tagName)) {
-            svgElementsToUpdate.push(mutation.target);
+          if (isSVGElement(node.tagName)) {
+            svgElementsToUpdate.push(node);
           }
         }
       }
@@ -137,7 +137,7 @@ export async function initialize() {
   });
 
   elementsObserver.observe(document.body, {
-    subtree: false,
+    subtree: true,
     attributes: true,
     attributeFilter: ['style'],
     childList: true
