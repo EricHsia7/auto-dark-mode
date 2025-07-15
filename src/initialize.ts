@@ -92,8 +92,8 @@ export async function initialize() {
         for (const node of mutation.addedNodes) {
           if (!(node instanceof Element)) continue;
           // Traverse the subtree of added nodes
-          const allElements = Array.from(node.querySelectorAll('*'));
-          for (const element of allElements.concat(node)) {
+          const allElements = Array.from(node.querySelectorAll('*')).concat(node);
+          for (const element of allElements) {
             if (element.hasAttribute('style')) {
               elementsWithInlineStyleToUpdate.push(element);
             }
