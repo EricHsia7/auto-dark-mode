@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         auto-dark-mode
-// @version      0.27.9
+// @version      0.28.0
 // @description  Darken Any Website
 // @author       erichsia7
 // @inject-into  content
