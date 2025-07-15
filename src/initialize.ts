@@ -90,11 +90,17 @@ export async function initialize() {
     for (const mutation of mutations) {
       if (mutation.type === 'childList' || mutation.type === 'attributes') {
         for (const node of mutation.addedNodes) {
-          if (node.hasAttribute('style')) {
-            elementsWithInlineStyleToUpdate.push(node);
-          }
-          if (isSVGElement(node.nodeName)) {
-            svgElementsToUpdate.push(node);
+          if (!(node instanceof Element)) continue;
+
+          // Traverse the subtree of added nodes
+          const allElements = Array.from(node.querySelectorAll('*'));
+          for (const element of allElements.concat(node)) {
+            if (element.hasAttribute('style')) {
+              elementsWithInlineStyleToUpdate.push(element);
+            }
+            if (isSVGElement(element)) {
+              svgElementsToUpdate.push(element);
+            }
           }
         }
       }
@@ -117,7 +123,6 @@ export async function initialize() {
   elementsObserver.observe(document.body, {
     subtree: true,
     attributes: true,
-    // attributeFilter: ['style'],
     childList: true
   });
 
