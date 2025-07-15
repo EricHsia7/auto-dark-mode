@@ -76,7 +76,11 @@ export async function initialize() {
     }
 
     // Update styles
-    updateStyles([], [], stylesheetsToUpdate.values().filter());
+    updateStyles(
+      [],
+      [],
+      Array.from(stylesheetsToUpdate.values()).filter((e) => e !== false)
+    );
 
     // Invert styles
     const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
