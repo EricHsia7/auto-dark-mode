@@ -49,17 +49,17 @@ export async function initialize() {
   updateStylesheets(stylesheets);
 
   const stylesheetsObserver = new MutationObserver((mutations) => {
-    const stylesheetsToUpdate = new Map();
+    const stylesToUpdate = new Map();
 
     for (const mutation of mutations) {
       if (mutation.type === 'childList') {
         if (mutation.target instanceof HTMLLinkElement) {
           if (mutation.target.rel === 'stylesheet') {
-            stylesheetsToUpdate.set(mutation.target, false);
+            stylesToUpdate.set(mutation.target, false);
           }
         }
         if (mutation.target instanceof HTMLStyleElement) {
-          stylesheetsToUpdate.set(mutation.target, false);
+          stylesToUpdate.set(mutation.target, false);
         }
       }
     }
@@ -69,9 +69,9 @@ export async function initialize() {
       documentStyleSheets.set(stylesheet.ownerNode, stylesheet);
     }
 
-    for (const key of stylesheetsToUpdate.keys()) {
+    for (const key of stylesToUpdate.keys()) {
       if (documentStyleSheets.has(key)) {
-        stylesheetsToUpdate.set(key, documentStyleSheets.get(key));
+        stylesToUpdate.set(key, documentStyleSheets.get(key));
       }
     }
 
@@ -79,8 +79,10 @@ export async function initialize() {
     updateStyles(
       [],
       [],
-      Array.from(stylesheetsToUpdate.values()).filter((e) => e !== false)
+      Array.from(stylesToUpdate.values()).filter((e) => e !== false)
     );
+
+    console.log(stylesToUpdate.values())
 
     // Invert styles
     const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
