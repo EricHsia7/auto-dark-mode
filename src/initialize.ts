@@ -1,12 +1,12 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
+import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
 import { cssVariableReferenceMap, currentStylesCollection, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
-import { svgElementsQuerySelectorString } from './lib/svg-elements';
+import { isSVGElement, svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
-import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 
 let currentStylesheets: StyleSheetCSSArray = [];
 
@@ -58,7 +58,7 @@ export async function initialize() {
               node1.addEventListener(
                 'load',
                 () => {
-                  const sheet = findStyleSheetByNode(node1); // Array.from(document.styleSheets).find((s) => s.ownerNode === node1);
+                  const sheet = findStyleSheetByNode(node1);
                   if (sheet) {
                     // Update styles
                     updateStyles([], [], [sheet]);
@@ -79,7 +79,7 @@ export async function initialize() {
             })(node);
           } else if (node instanceof HTMLStyleElement) {
             // Inline styles are synchronous
-            const sheet = findStyleSheetByNode(node); // Array.from(document.styleSheets).find((s) => s.ownerNode === node);
+            const sheet = findStyleSheetByNode(node);
             if (sheet) {
               // Update styles
               updateStyles([], [], [sheet]);
@@ -105,23 +105,25 @@ export async function initialize() {
     subtree: true
   });
 
-  const elementsWithInlineStyleObserver = new MutationObserver((mutations) => {
-    const elementsToUpdate = [];
+  const elementsObserver = new MutationObserver((mutations) => {
+    const elementsWithInlineStyleToUpdate = [];
+    const svgElementsToUpdate = [];
 
     for (const mutation of mutations) {
       if (mutation.type === 'childList' || mutation.type === 'attributes') {
         if (mutation.target instanceof HTMLElement) {
           if (mutation.target.hasAttribute('style')) {
-            elementsToUpdate.push(mutation.target);
+            elementsWithInlineStyleToUpdate.push(mutation.target);
+          }
+          if (isSVGElement(mutation.target.tagName)) {
+            svgElementsToUpdate.push(mutation.target);
           }
         }
       }
     }
 
     // Update styles
-    updateStyles(elementsToUpdate, [], []);
-
-    console.log(1, elementsToUpdate);
+    updateStyles(elementsWithInlineStyleToUpdate, svgElementsToUpdate, []);
 
     // Invert styles
     const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
@@ -134,7 +136,7 @@ export async function initialize() {
     updateStylesheets(stylesheets);
   });
 
-  elementsWithInlineStyleObserver.observe(document.body, {
+  elementsObserver.observe(document.body, {
     subtree: false,
     attributes: true,
     attributeFilter: ['style'],
