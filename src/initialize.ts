@@ -49,49 +49,54 @@ export async function initialize() {
   updateStylesheets(stylesheets);
 
   const stylesheetsObserver = new MutationObserver((mutations) => {
-    const stylesToUpdate = [];
-
     for (const mutation of mutations) {
       if (mutation.type === 'childList') {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
-            ((node) => {
-              node.addEventListener(
-                'load',
-                () => {
-                  const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
-                  stylesToUpdate.push(sheet);
-                },
-                { once: true }
-              );
-            })(node);
+            node.addEventListener(
+              'load',
+              () => {
+                const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
+                if (sheet) {
+                  // Update styles
+                  updateStyles([], [], [sheet]);
+
+                  // Invert styles
+                  const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
+
+                  // Generate inverted css
+                  const stylesheets = generateCssFromStyles(invertedStyles, false);
+                  currentStylesheets = stylesheets;
+
+                  // Update stylesheets
+                  updateStylesheets(stylesheets);
+                }
+              },
+              { once: true }
+            );
           }
 
           if (node instanceof HTMLStyleElement) {
             // Inline styles are synchronous
             const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
             if (sheet) {
-              stylesToUpdate.push(sheet);
+              // Update styles
+              updateStyles([], [], [sheet]);
+
+              // Invert styles
+              const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
+
+              // Generate inverted css
+              const stylesheets = generateCssFromStyles(invertedStyles, false);
+              currentStylesheets = stylesheets;
+
+              // Update stylesheets
+              updateStylesheets(stylesheets);
             }
           }
         }
       }
     }
-
-    // Update styles
-    updateStyles([], [], stylesToUpdate);
-
-    console.log(0, stylesToUpdate);
-
-    // Invert styles
-    const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
-
-    // Generate inverted css
-    const stylesheets = generateCssFromStyles(invertedStyles, false);
-    currentStylesheets = stylesheets;
-
-    // Update stylesheets
-    updateStylesheets(stylesheets);
   });
 
   stylesheetsObserver.observe(document.head, {
