@@ -3,7 +3,8 @@ import { initializePanel, updateStylesheets } from './interface/panel/index';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
-import { generateCssFromStyles, getStyles, invertStyles, StylesCollection, StyleSheetCSSArray } from './lib/styles';
+import { cssVariableReferenceMap, currentStylesCollection, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
+import { svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
 let currentStylesheets: StyleSheetCSSArray = [];
@@ -32,10 +33,12 @@ export async function initialize() {
   await inlineCSS();
 
   // Extract styles
-  const styles = getStyles();
+  const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
+  const svgElements = document.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
+  updateStyles(elementsWithInlineStyle, svgElements, document.styleSheets);
 
   // Invert styles
-  const invertedStyles = invertStyles(styles.stylesCollection, styles.referenceMap) as StylesCollection;
+  const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
 
   // Generate inverted css
   const stylesheets = generateCssFromStyles(invertedStyles, false);
@@ -43,6 +46,49 @@ export async function initialize() {
 
   // Update stylesheets
   updateStylesheets(stylesheets);
+
+  const stylesheetsObserver = new MutationObserver((mutations) => {
+    const stylesheetsToUpdate = new Map();
+
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes') {
+        if (mutation.target instanceof HTMLLinkElement) {
+          if (mutation.target.rel === 'stylesheet') {
+            stylesheetsToUpdate.set(mutation.target, true);
+          }
+        }
+      } else if (mutation.type === 'childList') {
+        if (mutation.target instanceof HTMLLinkElement) {
+          if (mutation.target.rel === 'stylesheet') {
+            stylesheetsToUpdate.set(mutation.target, true);
+          }
+        }
+        if (mutation.target instanceof HTMLStyleElement) {
+          stylesheetsToUpdate.set(mutation.target, true);
+        }
+      }
+    }
+
+    const documentStyleSheets = new Map();
+    for (const stylesheet of document.styleSheets) {
+      documentStyleSheets.set(stylesheet.ownerNode, stylesheet);
+    }
+
+    for (const key of stylesheetsToUpdate.keys()) {
+      if (documentStyleSheets.has(key)) {
+        stylesheetsToUpdate.set(key, documentStyleSheets.get(key));
+      }
+    }
+
+    updateStyles([], [], stylesheetsToUpdate.values())
+  });
+
+  stylesheetsObserver.observe(document.documentElement, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['href'],
+    childList: true
+  });
 
   // Invert images
   const imageElements = document.querySelectorAll('img, picture source');
@@ -63,7 +109,7 @@ export async function initialize() {
     });
   }
 
-  const observer = new MutationObserver((mutations) => {
+  const imageObserver = new MutationObserver((mutations) => {
     const imageElementsToUpdate = [];
 
     for (const mutation of mutations) {
@@ -98,7 +144,7 @@ export async function initialize() {
     }
   });
 
-  observer.observe(document.documentElement, {
+  imageObserver.observe(document.documentElement, {
     subtree: true,
     attributes: true,
     attributeFilter: ['src', 'srcset'],

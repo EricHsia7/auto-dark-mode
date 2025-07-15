@@ -1,4 +1,3 @@
-import { addToSet } from './add-to-set';
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { deepAssign } from './deep-assign';
 import { evaluateTheme } from './evaluate-theme';
@@ -40,8 +39,8 @@ export interface StyleSheetCSSItem {
 
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
-const cssVariableReferenceMap: CSSVariableReferenceMap = {};
-const currentStylesCollection: StylesCollection = {
+export const cssVariableReferenceMap: CSSVariableReferenceMap = {};
+export const currentStylesCollection: StylesCollection = {
   '@stylesheet-default': {
     'html, body': {
       'background-color': '#ffffff',
@@ -138,9 +137,6 @@ const currentStylesCollection: StylesCollection = {
     }
   }
 };
-
-const processedElements = new Set();
-const processedStyles = new Set();
 
 function processRules(rules: CSSRuleList, container: { [key: string]: any }, cssVariableReferenceMap: CSSVariableReferenceMap) {
   for (const rule of rules) {
@@ -314,12 +310,6 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
   }
 
   currentStylesCollection['@stylesheet-lambda'] = deepAssign(currentStylesCollection['@stylesheet-lambda'] || {}, lambdaStyles);
-
-  addToSet(processedElements, elementsWithInlineStyle);
-  addToSet(processedElements, svgElements);
-  addToSet(processedStyles, styleSheets, function (item) {
-    return item.ownerNode;
-  });
 }
 
 export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
