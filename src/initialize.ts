@@ -49,40 +49,31 @@ export async function initialize() {
   updateStylesheets(stylesheets);
 
   const stylesheetsObserver = new MutationObserver((mutations) => {
-    const stylesToUpdate = new Map();
+    const stylesToUpdate = [];
 
     for (const mutation of mutations) {
       if (mutation.type === 'childList') {
-        if (mutation.target instanceof HTMLLinkElement) {
-          if (mutation.target.rel === 'stylesheet') {
-            stylesToUpdate.set(mutation.target, false);
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
+            node.addEventListener('load', () => {
+              const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
+              stylesToUpdate.push(sheet);
+            });
+          }
+
+          if (node instanceof HTMLStyleElement) {
+            // Inline styles are synchronous
+            const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
+            if (sheet) {
+              stylesToUpdate.push(sheet);
+            }
           }
         }
-        if (mutation.target instanceof HTMLStyleElement) {
-          stylesToUpdate.set(mutation.target, false);
-        }
-      }
-    }
-
-    const documentStyleSheets = new Map();
-    for (const stylesheet of document.styleSheets) {
-      documentStyleSheets.set(stylesheet.ownerNode, stylesheet);
-    }
-
-    for (const key of stylesToUpdate.keys()) {
-      if (documentStyleSheets.has(key)) {
-        stylesToUpdate.set(key, documentStyleSheets.get(key));
       }
     }
 
     // Update styles
-    updateStyles(
-      [],
-      [],
-      Array.from(stylesToUpdate.values()).filter((e) => e !== false)
-    );
-
-    console.log(stylesToUpdate.values());
+    updateStyles([], [], stylesToUpdate);
 
     // Invert styles
     const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
@@ -96,8 +87,8 @@ export async function initialize() {
   });
 
   stylesheetsObserver.observe(document.head, {
-    subtree: false,
-    childList: true
+    childList: true,
+    subtree: true
   });
 
   const elementsWithInlineStyleObserver = new MutationObserver((mutations) => {
