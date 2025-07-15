@@ -12,6 +12,8 @@ import './interface/panel/head.css';
 import './interface/panel/body.css';
 import './interface/panel/stylesheets.css';
 
+import './interface/frame/index.css';
+
 var autoDarkMode = {
   initialize
 };
