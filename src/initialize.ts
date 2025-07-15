@@ -53,11 +53,11 @@ export async function initialize() {
       if (mutation.type === 'childList') {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
-            ((node) => {
-              node.addEventListener(
+            ((node1) => {
+              node1.addEventListener(
                 'load',
                 () => {
-                  const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
+                  const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node1);
                   if (sheet) {
                     // Update styles
                     updateStyles([], [], [sheet]);
@@ -76,9 +76,7 @@ export async function initialize() {
                 { once: true }
               );
             })(node);
-          }
-
-          if (node instanceof HTMLStyleElement) {
+          } else if (node instanceof HTMLStyleElement) {
             // Inline styles are synchronous
             const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
             if (sheet) {

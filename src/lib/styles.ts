@@ -39,8 +39,8 @@ export interface StyleSheetCSSItem {
 
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
-export const cssVariableReferenceMap: CSSVariableReferenceMap = {};
-export const currentStylesCollection: StylesCollection = {
+export let cssVariableReferenceMap: CSSVariableReferenceMap = {};
+export let currentStylesCollection: StylesCollection = {
   '@stylesheet-default': {
     'html, body': {
       'background-color': '#ffffff',
