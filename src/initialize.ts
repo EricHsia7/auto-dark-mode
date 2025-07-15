@@ -30,9 +30,10 @@ export async function initialize() {
   }
 
   // Inline external/foreign CSS
-  await inlineCSS();
+  const linkElements = document.querySelectorAll('link[rel="stylesheet"][href]') as NodeListOf<HTMLLinkElement>;
+  await inlineCSS(linkElements);
 
-  // Extract styles
+  // Update styles
   const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
   const svgElements = document.querySelectorAll(svgElementsQuerySelectorString) as NodeListOf<HTMLElement>;
   updateStyles(elementsWithInlineStyle, svgElements, document.styleSheets);
@@ -51,13 +52,7 @@ export async function initialize() {
     const stylesheetsToUpdate = new Map();
 
     for (const mutation of mutations) {
-      if (mutation.type === 'attributes') {
-        if (mutation.target instanceof HTMLLinkElement) {
-          if (mutation.target.rel === 'stylesheet') {
-            stylesheetsToUpdate.set(mutation.target, true);
-          }
-        }
-      } else if (mutation.type === 'childList') {
+      if (mutation.type === 'childList') {
         if (mutation.target instanceof HTMLLinkElement) {
           if (mutation.target.rel === 'stylesheet') {
             stylesheetsToUpdate.set(mutation.target, true);
@@ -80,13 +75,22 @@ export async function initialize() {
       }
     }
 
-    updateStyles([], [], stylesheetsToUpdate.values())
+    // Update styles
+    updateStyles([], [], stylesheetsToUpdate.values());
+
+    // Invert styles
+    const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
+
+    // Generate inverted css
+    const stylesheets = generateCssFromStyles(invertedStyles, false);
+    currentStylesheets = stylesheets;
+
+    // Update stylesheets
+    updateStylesheets(stylesheets);
   });
 
   stylesheetsObserver.observe(document.documentElement, {
-    subtree: true,
-    attributes: true,
-    attributeFilter: ['href'],
+    subtree: false,
     childList: true
   });
 
