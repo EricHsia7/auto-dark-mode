@@ -93,7 +93,7 @@ export async function initialize() {
           if (node.hasAttribute('style')) {
             elementsWithInlineStyleToUpdate.push(node);
           }
-          if (isSVGElement(node.tagName)) {
+          if (isSVGElement(node.nodeName)) {
             svgElementsToUpdate.push(node);
           }
         }
