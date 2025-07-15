@@ -6,6 +6,7 @@ import { isFramed } from './lib/is-framed';
 import { cssVariableReferenceMap, currentStylesCollection, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
 import { svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
+import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 
 let currentStylesheets: StyleSheetCSSArray = [];
 
@@ -53,12 +54,11 @@ export async function initialize() {
       if (mutation.type === 'childList') {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
-            
             ((node1) => {
               node1.addEventListener(
                 'load',
                 () => {
-                  const sheet = false; // Array.from(document.styleSheets).find((s) => s.ownerNode === node1);
+                  const sheet = findStyleSheetByNode(node1); // Array.from(document.styleSheets).find((s) => s.ownerNode === node1);
                   if (sheet) {
                     // Update styles
                     updateStyles([], [], [sheet]);
@@ -77,10 +77,9 @@ export async function initialize() {
                 { once: true }
               );
             })(node);
-
           } else if (node instanceof HTMLStyleElement) {
             // Inline styles are synchronous
-            const sheet = false; // Array.from(document.styleSheets).find((s) => s.ownerNode === node);
+            const sheet = findStyleSheetByNode(node); // Array.from(document.styleSheets).find((s) => s.ownerNode === node);
             if (sheet) {
               // Update styles
               updateStyles([], [], [sheet]);
