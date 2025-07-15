@@ -91,14 +91,13 @@ export async function initialize() {
       if (mutation.type === 'childList' || mutation.type === 'attributes') {
         for (const node of mutation.addedNodes) {
           if (!(node instanceof Element)) continue;
-
           // Traverse the subtree of added nodes
           const allElements = Array.from(node.querySelectorAll('*'));
           for (const element of allElements.concat(node)) {
             if (element.hasAttribute('style')) {
               elementsWithInlineStyleToUpdate.push(element);
             }
-            if (isSVGElement(element)) {
+            if (isSVGElement(element?.nodeName || element?.tagName || '')) {
               svgElementsToUpdate.push(element);
             }
           }
