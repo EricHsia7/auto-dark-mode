@@ -55,11 +55,11 @@ export async function initialize() {
       if (mutation.type === 'childList') {
         if (mutation.target instanceof HTMLLinkElement) {
           if (mutation.target.rel === 'stylesheet') {
-            stylesheetsToUpdate.set(mutation.target, true);
+            stylesheetsToUpdate.set(mutation.target, false);
           }
         }
         if (mutation.target instanceof HTMLStyleElement) {
-          stylesheetsToUpdate.set(mutation.target, true);
+          stylesheetsToUpdate.set(mutation.target, false);
         }
       }
     }
@@ -76,7 +76,7 @@ export async function initialize() {
     }
 
     // Update styles
-    updateStyles([], [], stylesheetsToUpdate.values());
+    updateStyles([], [], stylesheetsToUpdate.values().filter());
 
     // Invert styles
     const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
