@@ -55,31 +55,6 @@ export async function initialize() {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
             inlineCSS([node]);
-            /*
-            ((node1) => {
-              node1.addEventListener(
-                'load',
-                () => {
-                  const sheet = findStyleSheetByNode(node1);
-                  if (sheet) {
-                    // Update styles
-                    updateStyles([], [], [sheet]);
-
-                    // Invert styles
-                    const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
-
-                    // Generate inverted css
-                    const stylesheets = generateCssFromStyles(invertedStyles, false);
-                    currentStylesheets = stylesheets;
-
-                    // Update stylesheets
-                    updateStylesheets(stylesheets);
-                  }
-                },
-                { once: true }
-              );
-            })(node);
-            */
           } else if (node instanceof HTMLStyleElement) {
             // Inline styles are synchronous
             const sheet = findStyleSheetByNode(node);
@@ -142,7 +117,7 @@ export async function initialize() {
   elementsObserver.observe(document.body, {
     subtree: true,
     attributes: true,
-    attributeFilter: ['style'],
+    // attributeFilter: ['style'],
     childList: true
   });
 
