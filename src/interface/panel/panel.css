@@ -30,6 +30,10 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
+
+  .auto_dark_mode_panel::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .auto_dark_mode_panel[displayed="true"] {
