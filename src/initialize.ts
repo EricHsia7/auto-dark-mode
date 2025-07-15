@@ -1,14 +1,17 @@
 import { initializeButton } from './interface/button/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
+import { addToSet } from './lib/add-to-set';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
 import { isFramed } from './lib/is-framed';
+import { deleteFromSet } from './lib/set';
 import { cssVariableReferenceMap, currentStylesCollection, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
 import { isSVGElement, svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
 let currentStylesheets: StyleSheetCSSArray = [];
+const processingElements = new Set();
 
 export async function initialize() {
   if (!isFramed()) {
@@ -53,10 +56,21 @@ export async function initialize() {
     for (const mutation of mutations) {
       if (mutation.type === 'childList') {
         for (const node of mutation.addedNodes) {
+          if (processingElements.has(node)) {
+            continue;
+          }
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
-            inlineCSS([node]);
+            processingElements.add(node);
+            inlineCSS([node]).then(() => {
+              processingElements.delete(node);
+            });
           } else if (node instanceof HTMLStyleElement) {
-            // Inline styles are synchronous
+            processingElements.add(node);
+            const cssText = node.textContent;
+            if (cssText && cssText.length > 0) {
+              const transformedCSS = transformLayerCSS(cssText);
+              node.textContent = transformedCSS;
+            }
             const sheet = findStyleSheetByNode(node);
             if (sheet) {
               // Update styles
@@ -72,6 +86,7 @@ export async function initialize() {
               // Update stylesheets
               updateStylesheets(stylesheets);
             }
+            processingElements.delete(node);
           }
         }
       }
@@ -88,7 +103,7 @@ export async function initialize() {
     const svgElementsToUpdate = [];
 
     for (const mutation of mutations) {
-      if (mutation.type === 'childList' || mutation.type === 'attributes') {
+      if (mutation.type === 'childList' /* || mutation.type === 'attributes' */) {
         for (const node of mutation.addedNodes) {
           if (!(node instanceof Element)) continue;
           // Traverse the subtree of added nodes
@@ -121,7 +136,7 @@ export async function initialize() {
 
   elementsObserver.observe(document.body, {
     subtree: true,
-    attributes: true,
+    // attributes: true,
     childList: true
   });
 
