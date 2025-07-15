@@ -55,10 +55,16 @@ export async function initialize() {
       if (mutation.type === 'childList') {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
-            node.addEventListener('load', () => {
-              const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
-              stylesToUpdate.push(sheet);
-            });
+            ((node) => {
+              node.addEventListener(
+                'load',
+                () => {
+                  const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
+                  stylesToUpdate.push(sheet);
+                },
+                { once: true }
+              );
+            })(node);
           }
 
           if (node instanceof HTMLStyleElement) {
