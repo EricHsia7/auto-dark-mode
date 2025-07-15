@@ -95,7 +95,7 @@ export async function initialize() {
     updateStylesheets(stylesheets);
   });
 
-  stylesheetsObserver.observe(document.documentElement, {
+  stylesheetsObserver.observe(document.head, {
     subtree: false,
     childList: true
   });
@@ -129,7 +129,7 @@ export async function initialize() {
     updateStylesheets(stylesheets);
   });
 
-  elementsWithInlineStyleObserver.observe(document.documentElement, {
+  elementsWithInlineStyleObserver.observe(document.body, {
     subtree: false,
     attributes: true,
     attributeFilter: ['style'],
