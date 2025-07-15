@@ -75,6 +75,8 @@ export async function initialize() {
     // Update styles
     updateStyles([], [], stylesToUpdate);
 
+    console.log(0, stylesToUpdate);
+
     // Invert styles
     const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
 
@@ -107,7 +109,7 @@ export async function initialize() {
     // Update styles
     updateStyles(elementsToUpdate, [], []);
 
-    console.log(elementsToUpdate);
+    console.log(1, elementsToUpdate);
 
     // Invert styles
     const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceMap) as StylesCollection;
