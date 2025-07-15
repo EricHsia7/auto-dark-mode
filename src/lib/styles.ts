@@ -138,7 +138,7 @@ export let currentStylesCollection: StylesCollection = {
   }
 };
 
-function processRules(rules: CSSRuleList, container: { [key: string]: any }, cssVariableReferenceMap: CSSVariableReferenceMap) {
+function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, cssVariableReferenceMap: CSSVariableReferenceMap) {
   for (const rule of rules) {
     switch (rule.type) {
       case CSSRule.STYLE_RULE: {
@@ -177,7 +177,7 @@ function processRules(rules: CSSRuleList, container: { [key: string]: any }, css
         if (!container.hasOwnProperty(media)) {
           container[media] = {};
         }
-        processRules(mediaRule.cssRules, container[media], cssVariableReferenceMap);
+        processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceMap);
         break;
       }
 
@@ -186,7 +186,7 @@ function processRules(rules: CSSRuleList, container: { [key: string]: any }, css
         if (importRule.styleSheet) {
           // Import rules with nested stylesheets
           try {
-            processRules(importRule.styleSheet.cssRules, container, cssVariableReferenceMap);
+            processCSSRules(importRule.styleSheet.cssRules, container, cssVariableReferenceMap);
           } catch (e) {
             // Skipped due to CORS/security
           }
@@ -232,7 +232,7 @@ function processRules(rules: CSSRuleList, container: { [key: string]: any }, css
         if (!container.hasOwnProperty(supports)) {
           container[supports] = {};
         }
-        processRules(supportsRule.cssRules, container[supports], cssVariableReferenceMap);
+        processCSSRules(supportsRule.cssRules, container[supports], cssVariableReferenceMap);
         break;
       }
 
@@ -280,7 +280,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
       if (!sheet.cssRules) continue;
       if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
       const sheetObj = {};
-      processRules(sheet.cssRules, sheetObj, cssVariableReferenceMap);
+      processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceMap);
       const identifier = sheet.ownerNode?.id || generateIdentifier();
       const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
       const sheetName = `@stylesheet-${name}-${identifier}`;
