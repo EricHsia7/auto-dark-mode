@@ -63,7 +63,7 @@ export let currentStylesCollection: StylesCollection = {
     },
     'input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select, button, input[type="submit"], input[type="button"], input:not([type])': {
       'background-color': 'rgba(0, 0, 0, 0)',
-      'border-color': '#000000',
+      'border-color': '#747576',
       'border-style': 'solid',
       'border-width': '1px',
       'color': '#000000'
