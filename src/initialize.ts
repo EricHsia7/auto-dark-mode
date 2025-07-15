@@ -3,7 +3,6 @@ import { initializePanel, updateStylesheets } from './interface/panel/index';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
-import { isFramed } from './lib/is-framed';
 import { cssVariableReferenceMap, currentStylesCollection, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
 import { isSVGElement, svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
@@ -14,13 +13,11 @@ let imageStylesheets: StyleSheetCSSArray = [];
 const processingElements = new Set();
 
 export async function initialize() {
-  if (!isFramed()) {
-    // Prepare button
-    initializeButton();
+  // Prepare button
+  initializeButton();
 
-    // Prepare control panel
-    initializePanel();
-  }
+  // Prepare control panel
+  initializePanel();
 
   // Transform layers in style tags
   const styleTags = document.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
