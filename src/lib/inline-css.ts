@@ -1,7 +1,6 @@
 import { resolveRelativeURLs } from './resolve-relative-urls';
 import { transformLayerCSS } from './transform-layer-css';
 
-// Promisified GM_xmlhttpRequest
 function fetchCSS(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
