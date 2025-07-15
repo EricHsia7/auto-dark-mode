@@ -53,6 +53,7 @@ export async function initialize() {
       if (mutation.type === 'childList') {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
+            /*
             ((node1) => {
               node1.addEventListener(
                 'load',
@@ -76,6 +77,7 @@ export async function initialize() {
                 { once: true }
               );
             })(node);
+*/
           } else if (node instanceof HTMLStyleElement) {
             // Inline styles are synchronous
             const sheet = Array.from(document.styleSheets).find((s) => s.ownerNode === node);
