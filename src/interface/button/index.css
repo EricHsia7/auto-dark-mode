@@ -41,6 +41,9 @@
   height: 32px;
   border-radius: 0px 8px 0px 0px;
   color: var(--auto-dark-mode-ffffff);
+  font-family: sans-serif;
+  font-weight: 400;
+  font-size: 16px;
   word-break: keep-all;
   white-space: nowrap;
 }
