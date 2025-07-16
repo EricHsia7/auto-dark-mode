@@ -39,6 +39,7 @@
   bottom: 0px;
   width: 72px;
   height: 32px;
+  border-radius: 0px 8px 0px 0px;
   color: var(--auto-dark-mode-ffffff);
   word-break: keep-all;
   white-space: nowrap;
