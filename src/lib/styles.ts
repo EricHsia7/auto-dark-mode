@@ -8,7 +8,6 @@ import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
 import { joinByDelimiters } from './join-by-delimiters';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
-import { svgElementsQuerySelectorString } from './svg-elements';
 import { SVGPresentationAttributesList } from './svg-presentation-attributes';
 
 export type CSSProperties = {
@@ -359,7 +358,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
                 g = (parsedColor.rgb[1] / 255) * weight;
                 b = (parsedColor.rgb[2] / 255) * weight;
               }
-              if (key === 'background-color' || key === 'background' || key === 'border-color' || key === 'border-top-color' || key === 'border-left-color' || key === 'border-bottom-color' || key === 'border-right-color') {
+              if (key === 'background-color' || key === 'background') {
                 backgroundColorRed += r;
                 backgroundColorGreen += g;
                 backgroundColorBlue += b;
