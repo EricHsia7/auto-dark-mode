@@ -1,17 +1,17 @@
-let isFramed = false;
-let isFramedCached = false;
+let framed = false;
+let cached = false;
 
 export function isFramed(): boolean {
-  if (isFramedCached) {
-    return isFramed;
+  if (cached) {
+    return framed;
   } else {
     try {
-      isFramed = window.self !== window.top;
+      framed = window.self !== window.top;
     } catch (e) {
       // If accessing window.top throws an error, assume it's in an iframe
-      isFramed = true;
+      framed = true;
     }
-    isFramedCached = true;
-    return isFramed;
+    cached = true;
+    return framed;
   }
 }
