@@ -6,6 +6,7 @@ export function generateElementSelector(element: HTMLElement): string {
     element.id = `_${generateIdentifier()}`;
   }
   const id = element.id ? `#${element.id}` : '';
-  const classes = element.classList.length > 0 ? `.${Array.from(element.classList).join('.')}` : '';
-  return `${tag}${id}${classes}`;
+  // const classes = element.classList.length > 0 ? `.${Array.from(element.classList).join('.')}` : '';
+  // return `${tag}${id}${classes}`;
+  return `${tag}${id}`;
 }
