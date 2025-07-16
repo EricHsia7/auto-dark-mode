@@ -9,8 +9,8 @@ function looksLikeColorValue(value: string): boolean {
   }
 
   // other formats
-  if (/^(rgb|rgba|hsl|hsla|linear-gradient|-webkit-linear-gradient|radial-gradient|-webkit-radial-gradient|conic-gradient|-webkit-conic-gradient)\(/i.test(value)) {
-    if (!/var\(--.*\)/i.test(value) && !/calc\(.*\)/i.test(value) && !/clamp\(.*\)/i.test(value)) {
+  if (/^(rgb|rgba|hsl|hsla|linear-gradient|-webkit-linear-gradient|radial-gradient|-webkit-radial-gradient|conic-gradient|-webkit-conic-gradient|var)\(/i.test(value)) {
+    if (!/calc\(.*\)/i.test(value) && !/clamp\(.*\)/i.test(value)) {
       return true;
     }
   }
