@@ -70,6 +70,9 @@ export let currentStylesCollection: StylesCollection = {
     'input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder, textarea::placeholder': {
       color: '#bdbdbd'
     },
+    'select option' : {
+      color: '#000000'
+    },
     'th, td': {
       'border-color': '#e5e7eb',
       'border-style': 'solid',
