@@ -1,10 +1,5 @@
 .auto_dark_mode_button {
   position: fixed;
-  left: 20px;
-  bottom: calc(var(--auto-dark-mode-safe-area-bottom) + 20px);
-  width: 48px;
-  height: 48px;
-  border-radius: 24px;
   /* box-shadow: 0px 0px 15px -12px rgba(0, 0, 0, 0.1); */
   box-sizing: border-box;
   background-color: var(--auto-dark-mode-accent-color);
@@ -20,11 +15,34 @@
   z-index: 99998;
 }
 
-.auto_dark_mode_button svg {
+/* framed: false */
+.auto_dark_mode_button[framed="false"] {
+  left: 20px;
+  bottom: calc(var(--auto-dark-mode-safe-area-bottom) + 20px);
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+}
+
+.auto_dark_mode_button[framed="false"] svg {
   width: 24px;
   height: 24px;
 }
 
-.auto_dark_mode_button svg path {
+.auto_dark_mode_button[framed="false"] svg path {
   fill: var(--auto-dark-mode-ffffff);
+}
+
+/* framed: true */
+.auto_dark_mode_button[framed="true"] {
+  left: 0px;
+  bottom: 0px;
+  width: 72px;
+  height: 32px;
+  color: var(--auto-dark-mode-ffffff);
+  font-family: sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  word-break: keep-all;
+  white-space: nowrap;
 }

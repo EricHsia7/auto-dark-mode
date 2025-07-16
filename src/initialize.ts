@@ -1,4 +1,5 @@
 import { initializeButton } from './interface/button/index';
+import { initializeFrame } from './interface/frame/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
@@ -18,6 +19,9 @@ export async function initialize() {
 
   // Prepare control panel
   initializePanel();
+
+  // Prepare frame
+  initializeFrame();
 
   // Transform layers in style tags
   const styleTags = document.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
