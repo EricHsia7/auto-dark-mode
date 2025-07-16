@@ -35,9 +35,11 @@
 
 /* framed: true */
 .auto_dark_mode_button[framed="true"] {
-  top: 0px;
-  right: 0px;
+  left: 0px;
+  bottom: 0px;
   width: 72px;
   height: 32px;
   color: var(--auto-dark-mode-ffffff);
+  word-break: keep-all;
+  white-space: nowrap;
 }
