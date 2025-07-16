@@ -54,6 +54,7 @@ const colorRelatedCSSProperties = {
   'border-top-color': true,
   'border-bottom-color': true,
   'box-decoration-break': true,
+  'box-shadow': true,
   'caret-color': true,
   'color-scheme': true,
   'color': true,
