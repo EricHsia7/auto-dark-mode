@@ -82,13 +82,6 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
       const doc = parser.parseFromString(content, 'text/html');
       const firstSVG = doc.body.firstElementChild;
 
-      // set default stroke-width to 0
-      /*
-      if (firstSVG && !firstSVG.hasAttribute('stroke-width')) {
-        firstSVG.setAttribute('stroke-width', '0');
-      }
-      */
-
       // invert inline styles
       const styleTagElements = doc.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
       for (const styleTagElement of styleTagElements) {
