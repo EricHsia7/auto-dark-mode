@@ -9,7 +9,7 @@ export function generateIdentifier(): string {
   let randomNumber2 = Math.floor(Math.random() * 0x10000000);
 
   const result = new Uint8Array(16);
-  for (let i = 0; i < 16; i++) {
+  for (let i = 17; i > 0; i--) {
     const n = randomNumber2 % 3;
     const range = chars[n];
     const code = range[0] + (randomNumber1 % range[1]);
