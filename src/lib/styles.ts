@@ -41,16 +41,20 @@ export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 export let cssVariableReferenceMap: CSSVariableReferenceMap = {};
 export let currentStylesCollection: StylesCollection = {
   '@stylesheet-default': {
-    'html, body': {
+    'body': {
       'background-color': '#ffffff',
       'color': '#000000'
     },
     'section, header, main, footer, article': {
       color: '#000000'
     },
-    'h1, h2, h3, h4, h5, h6, span, time, a, a:hover': {
+    'h1, h2, h3, h4, h5, h6, span, time': {
       'background-color': 'rgba(0, 0, 0, 0)',
       'color': '#000000'
+    },
+    'a, a:hover': {
+      'background-color': 'rgba(0, 0, 0, 0)',
+      'color': '#3b82f6'
     },
     'pre, code, p, div': {
       'background-color': 'rgba(0, 0, 0, 0)',
