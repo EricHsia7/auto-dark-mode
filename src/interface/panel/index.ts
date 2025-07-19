@@ -53,16 +53,20 @@ export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
   function updateStylesheet(stylesheetElement: HTMLElement, styleTagElement: HTMLStyleElement, stylesheet: StyleSheetCSSItem, state: string): void {
     function updateName(stylesheetElement: HTMLElement, stylesheet: StyleSheetCSSItem): void {
       const thisNameElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_name') as HTMLElement;
-      thisNameElement.innerText = stylesheet.name;
       const thisToggleElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_toggle') as HTMLElement;
-      thisToggleElement.setAttribute('name', stylesheet.name);
+      if (thisNameElement.innerText !== stylesheet.name || thisToggleElement.getAttribute('name') !== stylesheet.name) {
+        thisNameElement.innerText = stylesheet.name;
+        thisToggleElement.setAttribute('name', stylesheet.name);
+      }
     }
 
     function updateStyleTag(stylesheetElement: HTMLElement, styleTagElement: HTMLStyleElement, stylesheet: StyleSheetCSSItem, state: string): void {
       const thisToggleElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_toggle') as HTMLElement;
       const thisState = thisToggleElement.getAttribute('state');
       styleTagElement.setAttribute('auto-dark-mode-stylesheet-name', stylesheet.name);
-      styleTagElement.textContent = stylesheet.css;
+      if (styleTagElement.textContent !== stylesheet.css) {
+        styleTagElement.textContent = stylesheet.css;
+      }
       const newDisabled = thisState === 'on' && state === 'on' ? false : true;
       if (newDisabled !== styleTagElement.disabled) {
         styleTagElement.disabled = newDisabled;
