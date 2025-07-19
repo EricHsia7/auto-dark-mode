@@ -120,9 +120,10 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
 
           // Try to inherit from ancestor in presentationAttributes
           const inherited = getInheritedPresentationAttribute(element, attribute, SVGPresentationAttributes);
-          if (inherited !== undefined) {
+          if (inherited === undefined) {
+            SVGPresentationAttributes[selector][attribute] = '#000000';
+          } else {
             SVGPresentationAttributes[selector][attribute] = inherited;
-            continue;
           }
         }
       }
