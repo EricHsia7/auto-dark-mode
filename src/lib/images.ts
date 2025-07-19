@@ -83,9 +83,11 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
       const firstSVG = doc.body.firstElementChild;
 
       // set default stroke-width to 0
+      /*
       if (firstSVG && !firstSVG.hasAttribute('stroke-width')) {
         firstSVG.setAttribute('stroke-width', '0');
       }
+      */
 
       // invert inline styles
       const styleTagElements = doc.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
@@ -126,9 +128,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
 
           // Try to inherit from ancestor in presentationAttributes
           const inherited = getInheritedPresentationAttribute(element, attribute, SVGPresentationAttributes);
-          if (inherited === undefined) {
-            SVGPresentationAttributes[selector][attribute] = '#000000';
-          } else {
+          if (inherited !== undefined) {
             SVGPresentationAttributes[selector][attribute] = inherited;
           }
         }
