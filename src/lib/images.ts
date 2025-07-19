@@ -80,6 +80,12 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
       // parse svg
       const parser = new DOMParser();
       const doc = parser.parseFromString(content, 'text/html');
+      const firstSVG = doc.body.firstElementChild;
+
+      // set default stroke-width to 0
+      if (firstSVG && !firstSVG.hasAttribute('stroke-width')) {
+        firstSVG.setAttribute('stroke-width', '0');
+      }
 
       // invert inline styles
       const styleTagElements = doc.querySelectorAll('style') as NodeListOf<HTMLStyleElement>;
@@ -151,7 +157,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
 
       // convert to string
       const serializer = new XMLSerializer();
-      const string = serializer.serializeToString(doc.body.firstElementChild);
+      const string = serializer.serializeToString(firstSVG);
       imageItem.source = `data:image/svg+xml,${encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')}`;
       return imageItem;
     }
