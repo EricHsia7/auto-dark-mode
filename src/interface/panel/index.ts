@@ -63,7 +63,10 @@ export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
       const thisState = thisToggleElement.getAttribute('state');
       styleTagElement.setAttribute('auto-dark-mode-stylesheet-name', stylesheet.name);
       styleTagElement.textContent = stylesheet.css;
-      styleTagElement.disabled = thisState === 'on' && state === 'on' ? false : true;
+      const newDisabled = thisState === 'on' && state === 'on' ? false : true;
+      if (newDisabled !== styleTagElement.disabled) {
+        styleTagElement.disabled = newDisabled;
+      }
     }
 
     updateName(stylesheetElement, stylesheet);
@@ -162,12 +165,17 @@ export function initializePanel(): void {
       }
       if (disabled) {
         for (const styleTagElement of styleTagElements) {
-          styleTagElement.disabled = true;
+          if (styleTagElement.disabled !== true) {
+            styleTagElement.disabled = true;
+          }
         }
       } else {
         for (let i = stylesheetsQuantity - 1; i >= 0; i--) {
           const state = stylesheetToggleElements[i].getAttribute('state');
-          styleTagElements[i].disabled = state === 'off' ? true : false;
+          const newDisabled = state === 'off' ? true : false;
+          if (newDisabled !== styleTagElements[i].disabled) {
+            styleTagElements[i].disabled = newDisabled;
+          }
         }
       }
       newToggleElement1.setAttribute('state', newState);
