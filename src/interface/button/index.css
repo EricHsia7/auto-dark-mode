@@ -45,8 +45,8 @@
   .auto_dark_mode_button[framed="true"] {
     left: 0px;
     bottom: 0px;
-    width: 72px;
-    height: 32px;
+    width: 48px;
+    height: 24px;
     color: var(--auto-dark-mode-ffffff);
     font-family: sans-serif;
     font-weight: 400;

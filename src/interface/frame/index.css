@@ -7,21 +7,10 @@
   background-color: transparent;
   box-sizing: border-box;
   border-color: var(--auto-dark-mode-accent-color);
-  border-style: solid;
+  border-style: dotted;
+  border-width: 1px;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
   z-index: 100010;
-}
-
-@media (max-height: 64px) {
-  .auto_dark_mode_frame {
-    border-width: 0.5px;
-  }
-}
-
-@media (min-height: 65px) {
-  .auto_dark_mode_frame {
-    border-width: 2px;
-  }
 }
