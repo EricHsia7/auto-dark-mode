@@ -9,6 +9,7 @@
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   user-select: none;
   -webkit-user-select: none;
+  cursor: default;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -38,6 +38,7 @@
   line-height: 48px;
   font-family: sans-serif;
   font-weight: normal;
+  cursor: default;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -53,6 +54,7 @@
   height: 24px;
   background-color: var(--auto-dark-mode-cccccc);
   border-radius: 12px;
+  cursor: default;
   appearance: none;
   -webkit-appearance: none;
   outline: none;
@@ -76,6 +78,7 @@
   height: 16px;
   border-radius: 8px;
   background-color: var(--auto-dark-mode-ffffff);
+  cursor: default;
   transform: translateX(0px);
   transition: transform 0.3s;
 }
