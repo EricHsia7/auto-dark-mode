@@ -136,23 +136,39 @@ export async function initialize() {
   });
 
   // Invert images
-  const imageElements = document.querySelectorAll('img, picture source');
-  for (const imageElement of imageElements) {
-    getImageItem(imageElement).then((imageItem) => {
-      if (typeof imageItem !== 'boolean') {
-        invertImageItem(imageItem).then((invertImageItem) => {
-          if (typeof invertImageItem !== 'boolean') {
-            // Generate css
-            const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
+  const imageElements = Array.from(document.querySelectorAll('img, picture source'));
+  const maxConcurrent = 4;
+  let activeCount = 0;
 
-            // Update stylesheet
-            imageStylesheets.push(invertImageItemCSS);
+  function processNext(): void {
+    if (activeCount >= maxConcurrent) return;
 
-            updateStylesheets(currentStylesheets.concat(imageStylesheets));
-          }
-        });
-      }
-    });
+    const imageElement = imageElements.shift();
+    if (imageElement === undefined) return;
+
+    activeCount++;
+    getImageItem(imageElement)
+      .then((imageItem) => {
+        if (typeof imageItem !== 'boolean') {
+          invertImageItem(imageItem).then((invertedImageItem) => {
+            if (typeof invertedImageItem !== 'boolean') {
+              const invertedImageItemCSS = generateCssFromImageItem(invertedImageItem);
+              imageStylesheets.push(invertedImageItemCSS);
+              updateStylesheets(currentStylesheets.concat(imageStylesheets));
+            }
+          });
+        }
+      })
+      .catch((e) => {})
+      .finally(() => {
+        activeCount--;
+        processNext(); // start next task
+      });
+  }
+
+  // Start initial 4 workers
+  for (let i = 0; i < maxConcurrent; i++) {
+    processNext();
   }
 
   const imageObserver = new MutationObserver((mutations) => {
@@ -175,13 +191,13 @@ export async function initialize() {
     for (const imageElement of imageElementsToUpdate) {
       getImageItem(imageElement).then((imageItem) => {
         if (typeof imageItem !== 'boolean') {
-          invertImageItem(imageItem).then((invertImageItem) => {
-            if (typeof invertImageItem !== 'boolean') {
+          invertImageItem(imageItem).then((invertedImageItem) => {
+            if (typeof invertedImageItem !== 'boolean') {
               // Generate css
-              const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
+              const invertedImageItemCSS = generateCssFromImageItem(invertedImageItem);
 
               // Update stylesheet
-              imageStylesheets.push(invertImageItemCSS);
+              imageStylesheets.push(invertedImageItemCSS);
 
               updateStylesheets(currentStylesheets.concat(imageStylesheets));
             }
