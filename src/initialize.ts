@@ -136,23 +136,42 @@ export async function initialize() {
   });
 
   // Invert images
-  const imageElements = document.querySelectorAll('img, picture source');
-  for (const imageElement of imageElements) {
-    getImageItem(imageElement).then((imageItem) => {
-      if (typeof imageItem !== 'boolean') {
-        invertImageItem(imageItem).then((invertImageItem) => {
-          if (typeof invertImageItem !== 'boolean') {
-            // Generate css
-            const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
+  const imageElements = Array.from(document.querySelectorAll('img, picture source'));
+  const maxConcurrent = 4;
 
-            // Update stylesheet
-            imageStylesheets.push(invertImageItemCSS);
+  let index = 0;
+  let activeCount = 0;
 
-            updateStylesheets(currentStylesheets.concat(imageStylesheets));
-          }
-        });
-      }
-    });
+  const imageStylesheets = [];
+
+  function processNext(): void {
+    if (index >= imageElements.length) return;
+    if (activeCount >= maxConcurrent) return;
+
+    const imageElement = imageElements[index++];
+    activeCount++;
+
+    getImageItem(imageElement)
+      .then((imageItem) => {
+        return invertImageItem(imageItem);
+      })
+      .then((invertImageItem) => {
+        if (typeof invertImageItem !== 'boolean') {
+          const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
+          imageStylesheets.push(invertImageItemCSS);
+          updateStylesheets(currentStylesheets.concat(imageStylesheets));
+        }
+      })
+      .catch((e) => {})
+      .finally(() => {
+        activeCount--;
+        processNext(); // start next task
+      });
+  }
+
+  // Start initial 4 workers
+  for (let i = 0; i < maxConcurrent; i++) {
+    processNext();
   }
 
   const imageObserver = new MutationObserver((mutations) => {
