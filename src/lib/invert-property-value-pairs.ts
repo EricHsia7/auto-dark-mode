@@ -47,7 +47,7 @@ export function invertPropertyValuePairs(cssText: string): string {
       const color = colors.result[i];
       const parsedColor = parseColor(color);
       if (parsedColor) {
-        const invertedColor = invertColor(parsedColor);
+        const invertedColor = invertColor(parsedColor, false);
         colors.result.splice(i, 1, colorToString(invertedColor));
       }
     }
