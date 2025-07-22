@@ -1,6 +1,4 @@
-type ParseContentSecurityPolicyFunction = (policy: string) => Map<string, string[]>;
-
-const parseContentSecurityPolicy: ParseContentSecurityPolicyFunction = require('content-security-policy-parser');
+import parseContentSecurityPolicy from 'content-security-policy-parser';
 
 async function getContentSecurityPolicyFromHeaders(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
