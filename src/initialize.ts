@@ -1,7 +1,7 @@
 import { initializeButton } from './interface/button/index';
 import { initializeFrame } from './interface/frame/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
-import { allowUnlistedStyles } from './lib/content-security-policy';
+import { allowUnlistedStyles } from './lib/allow-unlisted-styles';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';

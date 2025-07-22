@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-// const fs = require('fs');
 const { execSync } = require('child_process');
 const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
