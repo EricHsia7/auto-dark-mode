@@ -197,13 +197,13 @@ export async function initialize() {
     for (const imageElement of imageElementsToUpdate) {
       getImageItem(imageElement).then((imageItem) => {
         if (typeof imageItem !== 'boolean') {
-          invertImageItem(imageItem).then((invertImageItem) => {
-            if (typeof invertImageItem !== 'boolean') {
+          invertImageItem(imageItem).then((invertedImageItem) => {
+            if (typeof invertedImageItem !== 'boolean') {
               // Generate css
-              const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
+              const invertedImageItemCSS = generateCssFromImageItem(invertedImageItem);
 
               // Update stylesheet
-              imageStylesheets.push(invertImageItemCSS);
+              imageStylesheets.push(invertedImageItemCSS);
 
               updateStylesheets(currentStylesheets.concat(imageStylesheets));
             }
