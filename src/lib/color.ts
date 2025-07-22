@@ -622,7 +622,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
       const max = Math.max(r, g, b);
       const min = Math.min(r, g, b);
 
-      const minimumValue = 4 / 85;
+      const minimumValue = 6 / 85;
       const saturation = (max - min) / max;
 
       const equalizerBase = Math.sqrt(saturation);

@@ -10,9 +10,9 @@
   :root {
     --auto-dark-mode-accent-color: #3b82f6;
     --auto-dark-mode-ffffff: #0c0d0f;
-    --auto-dark-mode-e2e8f0: #1a1b1c;
-    --auto-dark-mode-cccccc: #3d3e3f;
-    --auto-dark-mode-333333: #ffffff;
+    --auto-dark-mode-e2e8f0: #1f2021;
+    --auto-dark-mode-cccccc: #414243;
+    --auto-dark-mode-333333: #d0d0d0;
   }
 }
 
