@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const fs = require('fs');
+// const fs = require('fs');
 const { execSync } = require('child_process');
 const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
@@ -19,7 +19,9 @@ function getCurrentBranch() {
 module.exports = (env, argv) => {
   const isDevelopment = getCurrentBranch().startsWith('dev-') ? true : false;
   if (isDevelopment) {
+    const now = new Date();
     userscriptHeader.name = `${userscriptHeader.name}-test`;
+    userscriptHeader.version = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${(now.getDate() + 1).toString().padStart(2, '0')}.${now.getHours()}.${now.getMinutes()}`;
   }
   return {
     plugins: [

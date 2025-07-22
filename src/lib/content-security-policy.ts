@@ -45,7 +45,6 @@ export async function allowUnlistedStyles(url: string): boolean {
     }
     return false;
   } catch (e) {
-    console.log(e);
     // Assume it allows unlisted styles as no content security policy is found
     return true;
   }
