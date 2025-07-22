@@ -635,9 +635,10 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
 
       const equalizedValue = Math.max(R, G, B) / 255;
       const newValue = minimumValue + (1 - minimumValue) * (1 - equalizedValue);
-      if (darkened && newValue > equalizedValue) return color;
-      const scaler = newValue / equalizedValue;
 
+      if (darkened && newValue > equalizedValue) return color;
+
+      const scaler = newValue / equalizedValue;
       const red = clamp(0, Math.round(R * scaler), 255);
       const green = clamp(0, Math.round(G * scaler), 255);
       const blue = clamp(0, Math.round(B * scaler), 255);
