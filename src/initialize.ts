@@ -154,18 +154,13 @@ export async function initialize() {
     getImageItem(imageElement)
       .then((imageItem) => {
         if (typeof imageItem !== 'boolean') {
-          return invertImageItem(imageItem);
-        } else {
-          return false;
-        }
-      })
-      .then((invertImageItem) => {
-        if (typeof invertImageItem !== 'boolean') {
-          const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
-          imageStylesheets.push(invertImageItemCSS);
-          updateStylesheets(currentStylesheets.concat(imageStylesheets));
-        } else {
-          return false;
+          invertImageItem(imageItem).then((invertedImageItem) => {
+            if (typeof invertedImageItem !== 'boolean') {
+              const invertedImageItemCSS = generateCssFromImageItem(invertedImageItem);
+              imageStylesheets.push(invertedImageItemCSS);
+              updateStylesheets(currentStylesheets.concat(imageStylesheets));
+            }
+          });
         }
       })
       .catch((e) => {})
