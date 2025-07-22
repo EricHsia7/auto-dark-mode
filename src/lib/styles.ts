@@ -4,6 +4,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
+import { isDarkened } from './is-darkened';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
 import { joinByDelimiters } from './join-by-delimiters';
@@ -345,7 +346,8 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           const color = colors.result[i];
           const parsedColor = parseColor(color);
           if (parsedColor) {
-            const invertedColor = invertColor(parsedColor, key === 'box-shadow');
+            const darkened = isDarkened(key);
+            const invertedColor = invertColor(parsedColor, darkened);
             colors.result.splice(i, 1, colorToString(invertedColor));
 
             if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
