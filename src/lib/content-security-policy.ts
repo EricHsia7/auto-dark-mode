@@ -39,8 +39,12 @@ export async function allowUnlistedStyles(url: string): boolean {
     }
 
     const unlistedIndicators = ["'unsafe-inline'", '*', 'data:'];
-
-    return styleSources.some((src) => unlistedIndicators.includes(src) || src.startsWith("'nonce-") || src.startsWith("'sha"));
+    for (const styleSource of styleSources) {
+      if (unlistedIndicators.indexOf(styleSource) > -1) {
+        return true;
+      }
+    }
+    return false;
   } catch (e) {
     // Assume it allows unlisted styles as no content security policy is found
     return true;
