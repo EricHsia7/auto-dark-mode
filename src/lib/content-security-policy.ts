@@ -8,15 +8,15 @@ async function getContentSecurityPolicyFromHeaders(url: string): Promise<string>
       method: 'HEAD',
       url: url,
       onload: function (response) {
-        const contentType = response.responseHeaders
+        const contentSecurityPolicy = response.responseHeaders
           .split('\r\n')
           .find((header) => header.toLowerCase().startsWith('content-security-policy:'))
           ?.split(':')
           ?.slice(1)
           ?.join(':')
           ?.trim();
-        if (contentType) {
-          resolve(contentType);
+        if (contentSecurityPolicy) {
+          resolve(contentSecurityPolicy);
         } else {
           reject(new Error(`Cannot find content security policy from ${url}`));
         }
@@ -41,11 +41,13 @@ export async function allowUnlistedStyles(url: string): boolean {
     const unlistedIndicators = ["'unsafe-inline'", '*', 'data:'];
     for (const styleSource of styleSources) {
       if (unlistedIndicators.indexOf(styleSource) > -1) {
+        console.log(unlistedIndicators);
         return true;
       }
     }
     return false;
   } catch (e) {
+    console.log(e);
     // Assume it allows unlisted styles as no content security policy is found
     return true;
   }
