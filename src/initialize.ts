@@ -139,18 +139,17 @@ export async function initialize() {
   const imageElements = Array.from(document.querySelectorAll('img, picture source'));
   const maxConcurrent = 4;
 
-  let index = 0;
   let activeCount = 0;
 
   const imageStylesheets = [];
 
   function processNext(): void {
-    if (index >= imageElements.length) return;
     if (activeCount >= maxConcurrent) return;
 
-    const imageElement = imageElements[index++];
-    activeCount++;
+    const imageElement = imageElements.shift();
+    if (imageElement === undefined) return;
 
+    activeCount++;
     getImageItem(imageElement)
       .then((imageItem) => {
         if (typeof imageItem !== 'boolean') {
