@@ -138,10 +138,7 @@ export async function initialize() {
   // Invert images
   const imageElements = Array.from(document.querySelectorAll('img, picture source'));
   const maxConcurrent = 4;
-
   let activeCount = 0;
-
-  const imageStylesheets = [];
 
   function processNext(): void {
     if (activeCount >= maxConcurrent) return;
