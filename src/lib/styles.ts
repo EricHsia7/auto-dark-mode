@@ -345,7 +345,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           const color = colors.result[i];
           const parsedColor = parseColor(color);
           if (parsedColor) {
-            const invertedColor = invertColor(parsedColor);
+            const invertedColor = invertColor(parsedColor, key === 'box-shadow');
             colors.result.splice(i, 1, colorToString(invertedColor));
 
             if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {

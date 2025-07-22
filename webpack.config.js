@@ -1,14 +1,26 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
+const { execSync } = require('child_process');
 const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const userscriptHeader = require('./config/header.json');
 const userscriptExclusionList = require('./config/exclusion_list.json');
 
+function getCurrentBranch() {
+  try {
+    return execSync('git branch --show-current').toString().trim();
+  } catch (err) {
+    return '';
+  }
+}
+
 module.exports = (env, argv) => {
-  const isProduction = argv.mode === 'production';
+  const isDevelopment = getCurrentBranch().startsWith('dev-') ? true : false;
+  if (isDevelopment) {
+    userscriptHeader.name = `${userscriptHeader.name}-test`;
+  }
   return {
     plugins: [
       new webpack.BannerPlugin({
@@ -24,6 +36,9 @@ module.exports = (env, argv) => {
           }
           const padding = maxLength + 2;
           for (const key in userscriptHeader) {
+            if (key === 'updateURL' || key === 'downloadURL') {
+              if (isDevelopment) continue;
+            }
             lines.push(`@${String(key).padEnd(padding, ' ')}${userscriptHeader[key]}`);
           }
           for (const website of userscriptExclusionList.exclusion_list) {
@@ -46,7 +61,7 @@ module.exports = (env, argv) => {
     mode: 'production', // Set the mode to 'production' or 'development'
     entry: './src/index.ts', // Entry point of your application
     output: {
-      filename: isProduction ? 'auto-dark-mode.user.js' : 'auto-dark-mode.dev.js', // Output bundle filename
+      filename: `${userscriptHeader.name}.user.js`, // Output bundle filename
       path: path.resolve(__dirname, 'dist'), // Output directory for bundled files
       publicPath: './',
       library: {

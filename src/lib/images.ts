@@ -146,7 +146,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
               const color = colors.result[i];
               const parsedColor = parseColor(color);
               if (parsedColor) {
-                const invertedColor = invertColor(parsedColor);
+                const invertedColor = invertColor(parsedColor, false);
                 colors.result.splice(i, 1, colorToString(invertedColor));
               }
             }
