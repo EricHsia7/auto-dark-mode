@@ -153,13 +153,19 @@ export async function initialize() {
 
     getImageItem(imageElement)
       .then((imageItem) => {
-        return invertImageItem(imageItem);
+        if (typeof imageItem !== false) {
+          return invertImageItem(imageItem);
+        } else {
+          return false;
+        }
       })
       .then((invertImageItem) => {
         if (typeof invertImageItem !== 'boolean') {
           const invertImageItemCSS = generateCssFromImageItem(invertImageItem);
           imageStylesheets.push(invertImageItemCSS);
           updateStylesheets(currentStylesheets.concat(imageStylesheets));
+        } else {
+          return false;
         }
       })
       .catch((e) => {})
