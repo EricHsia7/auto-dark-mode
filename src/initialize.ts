@@ -150,12 +150,9 @@ export async function initialize() {
     getImageItem(imageElement)
       .then((imageItem) => {
         if (typeof imageItem !== 'boolean') {
-          console.log(0, imageItem);
           invertImageItem(imageItem).then((invertedImageItem) => {
             if (typeof invertedImageItem !== 'boolean') {
-              console.log(1, invertedImageItem);
               const invertedImageItemCSS = generateCssFromImageItem(invertedImageItem);
-              console.log(2, invertedImageItemCSS);
               imageStylesheets.push(invertedImageItemCSS);
               updateStylesheets(currentStylesheets.concat(imageStylesheets));
             }
