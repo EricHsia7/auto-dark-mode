@@ -17,7 +17,10 @@ const processingElements = new Set();
 export async function initialize() {
   // Check environment
   const areUnlistedStylesAllowed = await allowUnlistedStyles(location.href);
-  if (!areUnlistedStylesAllowed) return;
+  if (!areUnlistedStylesAllowed) {
+    alert('Auto Dark Mode cannot darken this page due to security limitations.');
+    return;
+  }
 
   // Prepare button
   initializeButton();

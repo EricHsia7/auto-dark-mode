@@ -39,7 +39,6 @@ export async function allowUnlistedStyles(url: string): boolean {
     const unlistedIndicators = ["'unsafe-inline'", '*', 'data:'];
     for (const styleSource of styleSources) {
       if (unlistedIndicators.indexOf(styleSource) > -1) {
-        console.log(unlistedIndicators);
         return true;
       }
     }
