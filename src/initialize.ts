@@ -1,6 +1,7 @@
 import { initializeButton } from './interface/button/index';
 import { initializeFrame } from './interface/frame/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
+import { allowUnlistedStyles } from './lib/allow-unlisted-styles';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
@@ -14,6 +15,13 @@ let imageStylesheets: StyleSheetCSSArray = [];
 const processingElements = new Set();
 
 export async function initialize() {
+  // Check environment
+  const areUnlistedStylesAllowed = await allowUnlistedStyles(location.href);
+  if (!areUnlistedStylesAllowed) {
+    alert('Auto Dark Mode cannot darken this page due to security limitations.');
+    return;
+  }
+
   // Prepare button
   initializeButton();
 
