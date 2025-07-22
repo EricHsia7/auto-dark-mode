@@ -153,7 +153,7 @@ export async function initialize() {
 
     getImageItem(imageElement)
       .then((imageItem) => {
-        if (typeof imageItem !== false) {
+        if (typeof imageItem !== 'boolean') {
           return invertImageItem(imageItem);
         } else {
           return false;
