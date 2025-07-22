@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - dev-lower-brightness
+      - dev-darkened
 
 jobs:
   build:

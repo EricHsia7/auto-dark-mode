@@ -577,13 +577,13 @@ export function parseColor(value: string): Color {
   return unknownString;
 }
 
-function invertStops(colorStops: ColorStopArray, lowerBrightness: boolean = false): ColorStopArray {
+function invertStops(colorStops: ColorStopArray, darkened: boolean = false): ColorStopArray {
   const colorStopsLength = colorStops.length;
   const invertedStops: ColorStopArray = [];
   for (let i = colorStopsLength - 1; i >= 0; i--) {
     const stop = colorStops[i];
     if (stop.type === 'stop') {
-      const invertedColor = invertColor(stop.color, lowerBrightness) as ColorStop['color'];
+      const invertedColor = invertColor(stop.color, darkened) as ColorStop['color'];
       const invertedColorStop: ColorStop = {
         type: 'stop',
         color: invertedColor,
@@ -594,8 +594,14 @@ function invertStops(colorStops: ColorStopArray, lowerBrightness: boolean = fals
   }
   return invertedStops;
 }
+/**
+ *
+ * @param color input color
+ * @param darkened if set to true, the returned color will be same or darker than the input
+ * @returns
+ */
 
-export function invertColor(color: Color, lowerBrightness: boolean = false): Color {
+export function invertColor(color: Color, darkened: boolean = false): Color {
   switch (color.type) {
     case 'rgb': {
       if (isColorVibrant(color) > 0) {
@@ -605,7 +611,7 @@ export function invertColor(color: Color, lowerBrightness: boolean = false): Col
       const [r, g, b] = color.rgb;
 
       if (r === 0 && g === 0 && b === 0) {
-        if (lowerBrightness) return color;
+        if (darkened) return color;
         const result: ColorRGB = {
           type: 'rgb',
           rgb: [255, 255, 255]
@@ -629,7 +635,7 @@ export function invertColor(color: Color, lowerBrightness: boolean = false): Col
 
       const equalizedValue = Math.max(R, G, B) / 255;
       const newValue = minimumValue + (1 - minimumValue) * (1 - equalizedValue);
-      if (lowerBrightness && newValue > equalizedValue) return color;
+      if (darkened && newValue > equalizedValue) return color;
       const scaler = newValue / equalizedValue;
 
       const red = clamp(0, Math.round(R * scaler), 255);
@@ -669,7 +675,7 @@ export function invertColor(color: Color, lowerBrightness: boolean = false): Col
         type: 'rgb',
         rgb: [R, G, B]
       };
-      const invertedRGB = invertColor(RGB, lowerBrightness) as ColorRGB;
+      const invertedRGB = invertColor(RGB, darkened) as ColorRGB;
       const [r, g, b] = invertedRGB.rgb;
       const result: ColorRGBA = {
         type: 'rgba',
@@ -686,7 +692,7 @@ export function invertColor(color: Color, lowerBrightness: boolean = false): Col
           type: 'rgb',
           rgb: [R, G, B]
         };
-        const invertedRGB = invertColor(RGB, lowerBrightness) as ColorRGB;
+        const invertedRGB = invertColor(RGB, darkened) as ColorRGB;
         const [r, g, b] = invertedRGB.rgb;
         const result: ColorRGBA_Variable = {
           type: 'rgba-v',
@@ -711,7 +717,7 @@ export function invertColor(color: Color, lowerBrightness: boolean = false): Col
 
     case 'variable': {
       for (let i = color.args.length - 1; i >= 0; i--) {
-        color.args.splice(i, 1, invertColor(color.args[i], lowerBrightness));
+        color.args.splice(i, 1, invertColor(color.args[i], darkened));
       }
       return color;
       break;
@@ -723,7 +729,7 @@ export function invertColor(color: Color, lowerBrightness: boolean = false): Col
     }
 
     case 'linear-gradient': {
-      const invertedColors = invertStops(color.colorStops, lowerBrightness);
+      const invertedColors = invertStops(color.colorStops, darkened);
       const result: LinearGradient = {
         type: 'linear-gradient',
         direction: color.direction,
@@ -734,7 +740,7 @@ export function invertColor(color: Color, lowerBrightness: boolean = false): Col
     }
 
     case 'radial-gradient': {
-      const invertedColors = invertStops(color.colorStops, lowerBrightness);
+      const invertedColors = invertStops(color.colorStops, darkened);
       const result: RdialGradient = {
         type: 'radial-gradient',
         position: color.position,
@@ -747,7 +753,7 @@ export function invertColor(color: Color, lowerBrightness: boolean = false): Col
     }
 
     case 'conic-gradient': {
-      const invertedColors = invertStops(color.colorStops, lowerBrightness);
+      const invertedColors = invertStops(color.colorStops, darkened);
       const result: ConicGradient = {
         type: 'conic-gradient',
         angle: color.angle,
