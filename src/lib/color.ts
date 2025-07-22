@@ -605,11 +605,12 @@ export function invertColor(color: Color, lowerBrightness: boolean = false): Col
       const [r, g, b] = color.rgb;
 
       if (r === 0 && g === 0 && b === 0) {
-        const result0: ColorRGB = {
+        if (lowerBrightness) return color;
+        const result: ColorRGB = {
           type: 'rgb',
           rgb: [255, 255, 255]
         };
-        return result0;
+        return result;
       }
 
       const max = Math.max(r, g, b);
