@@ -181,11 +181,13 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
 
       case CSSRule.MEDIA_RULE: {
         const mediaRule = rule as CSSMediaRule;
-        const media = `@media ${mediaRule.conditionText}`;
-        if (!container.hasOwnProperty(media)) {
-          container[media] = {};
+        if (!/prefers-color-scheme:[\s]*dark/i.test(mediaRule.conditionText)) {
+          const media = `@media ${mediaRule.conditionText}`;
+          if (!container.hasOwnProperty(media)) {
+            container[media] = {};
+          }
+          processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceMap);
         }
-        processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceMap);
         break;
       }
 
