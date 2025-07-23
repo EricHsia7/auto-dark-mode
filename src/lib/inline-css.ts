@@ -34,7 +34,7 @@ export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>): Prom
         const conditionText = link.getAttribute('media');
         if (conditionText === 'all') {
           css = transformedCssSourceCode;
-        } else {
+        } else if (conditionText !== '') {
           css = `@media ${conditionText}{${transformedCssSourceCode}}`;
         }
       } else {
