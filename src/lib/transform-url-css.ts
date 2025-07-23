@@ -1,6 +1,6 @@
 import { resolveRelativeURL } from './resolve-relative-url';
 
-export function resolveRelativeURLs(cssText: string, cssHref: string): string {
+export function transformURLCSS(cssText: string, cssHref: string): string {
   cssText = cssText.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g, (match, quote, urlPath) => {
     if (/^(data:|https?:|\/\/:)/.test(urlPath)) {
       // Absolute URL or data URI — do not touch

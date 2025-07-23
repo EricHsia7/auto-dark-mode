@@ -1,5 +1,6 @@
-import { resolveRelativeURLs } from './resolve-relative-urls';
+import { transformImportCSS } from './transform-import-css';
 import { transformLayerCSS } from './transform-layer-css';
+import { transformURLCSS } from './transform-url-css';
 
 function fetchCSS(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -27,8 +28,7 @@ export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>): Prom
     try {
       const href = link.href;
       const cssSourceCode = await fetchCSS(href);
-      const resolvedCssSourceCode = resolveRelativeURLs(cssSourceCode, href);
-      const transformedCssSourceCode = transformLayerCSS(resolvedCssSourceCode);
+      const transformedCssSourceCode = transformLayerCSS(transformURLCSS(transformImportCSS(cssSourceCode)));
       let css = '';
       if (link.hasAttribute('media')) {
         const conditionText = link.getAttribute('media');

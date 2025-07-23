@@ -1,7 +1,12 @@
+import { joinByDelimiters } from './join-by-delimiters';
+import { resolveRelativeURL } from './resolve-relative-url';
+import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+
 export function transformImportCSS(cssText: string, cssHref: string): string {
   if (!/@import|"[^"]*"|'[^']*'|url\(\s*(['"]?)([^'")]+)\1\s*\)/gim.test(cssText)) {
     return cssText; // keep it as-is if no urls to transform
   }
+
   const cssTextLen = cssText.length;
 
   // Extract import statements
@@ -53,6 +58,7 @@ export function transformImportCSS(cssText: string, cssHref: string): string {
               const urlPath = matches[5] || matches[2];
               const resolved = resolveRelativeURL(urlPath, cssHref);
               values.result.splice(k, 1, value.replace(urlPath, resolved));
+              break;
             }
           }
           const resolvedValues = joinByDelimiters(values.result, values.delimiters);
@@ -79,5 +85,3 @@ export function transformImportCSS(cssText: string, cssHref: string): string {
 
   return result;
 }
-
-console.log(transformURLCSS(css, base));
