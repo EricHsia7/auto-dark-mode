@@ -55,7 +55,7 @@
 
 @media (max-width: 768px) {
   .auto_dark_mode_panel_overlay.auto_dark_mode_panel_overlay_faded_in {
-    --auto-dark-mode-overlay-mask-percentage: 70%;
+    --auto-dark-mode-overlay-mask-percentage: 60%;
     opacity: 1;
   }
 }
