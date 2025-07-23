@@ -42,8 +42,10 @@ export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>): Prom
       } else {
         css = transformedCssSourceCode;
       }
+      const disabled = link.disabled;
       const style = document.createElement('style');
       style.textContent = css;
+      style.disabled = disabled;
       fragment.appendChild(style);
       linksToRemove.push(link);
     } catch (error) {

@@ -4,7 +4,6 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
-import { isDarkModeMediaQuery } from './is-dark-mode-media-query';
 import { isDarkened } from './is-darkened';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
@@ -289,12 +288,16 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
     try {
       if (!sheet.cssRules) continue;
       if (Array.from(sheet.ownerNode?.attributes || []).some((attr) => attr.name === 'auto-dark-mode-stylesheet-name')) continue;
-      const sheetObj = {};
-      processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceMap);
       const identifier = sheet.ownerNode?.id || generateIdentifier();
       const name = sheet.ownerNode?.nodeName.toString().toLowerCase();
       const sheetName = `@stylesheet-${name}-${identifier}`;
-      currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
+      if (sheet.disabled) {
+        currentStylesCollection[sheetName] = {};
+      } else {
+        const sheetObj = {};
+        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceMap);
+        currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
+      }
     } catch (e) {
       // Skipped due to access restrictions
     }
