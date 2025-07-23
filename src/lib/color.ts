@@ -119,7 +119,7 @@ export interface UnknownString {
   value: string;
 }
 
-export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | VariableName | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
+export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | ColorLAB_Variable | ColorLABA_Variable | Variable | VariableName | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
 
 function parseColorStops(components: Array<string>): ColorStopArray {
   const colorStops: ColorStopArray = [];
@@ -425,6 +425,58 @@ export function parseColor(value: string): Color {
         rgba: [red, green, blue, alpha]
       };
       return result;
+    }
+  }
+
+  // handle lab
+  if (value.startsWith('lab')) {
+    let containVariables = false;
+    let relative = false;
+    let pivotColor: ColorRGB | ColorRGBA = fallbackColor;
+    const parameters = [];
+    const matches = value.match(/lab\(.*\)/i);
+    if (matches) {
+      const content = matches[1];
+      const components = splitByTopLevelDelimiter(content);
+      for (let i = 0, l = components.result.length; i < l; i++) {
+        const component = components.result[i];
+        if (component === 'from') {
+          relative = true;
+        } else if (relative) {
+          const parsedPivotColor = parseColor(component);
+          if (parsedPivotColor.type === 'rgb' || parsedPivotColor.type === 'rgba') {
+            pivotColor = parsedPivotColor;
+          }
+        } else if (component.startsWith('var')) {
+          containVariables = true;
+          const variable = parseColor(component) as Variable;
+          parameters.push(variable);
+        } else if (/^\d+$/.test(component)) {
+          const integer: number = parseInt(component, 10);
+          parameters.push(integer);
+        } else if (/^[\d\.]+$/.test(component)) {
+          const float: number = parseFloat(component);
+          parameters.push(float);
+        } else if (/^\d+%$/.test(component)) {
+          const number = parseInt(component, 10);
+          const unit = '%';
+          const numberWithUnit: UnitedNumber = {
+            type: 'number-u',
+            number: number,
+            unit: unit
+          };
+          parameters.push(numberWithUnit);
+        } else if (/^[\d\.]+%$/.test(component)) {
+          const number = parseFloat(component);
+          const unit = '%';
+          const numberWithUnit: UnitedNumber = {
+            type: 'number-u',
+            number: number,
+            unit: unit
+          };
+          parameters.push(numberWithUnit);
+        }
+      }
     }
   }
 
