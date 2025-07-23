@@ -43,6 +43,20 @@ export interface ColorHSLA_Variable {
   parameters: ColorHSLParameterArray;
 }
 
+export type ColorLABParameter = Variable | number | UnitedNumber;
+
+export type ColorLABParameterArray = Array<ColorLABParameter>;
+
+export interface ColorLAB_Variable {
+  type: 'lab-v';
+  parameters: ColorLABParameterArray;
+}
+
+export interface ColorLABA_Variable {
+  type: 'laba-v';
+  parameters: ColorLABParameterArray;
+}
+
 export interface Variable {
   type: 'variable';
   ref: string; // var(--name)
