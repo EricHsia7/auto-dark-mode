@@ -36,6 +36,8 @@ export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>): Prom
           css = transformedCssSourceCode;
         } else if (conditionText !== '') {
           css = `@media ${conditionText}{${transformedCssSourceCode}}`;
+        } else {
+          css = transformedCssSourceCode;
         }
       } else {
         css = transformedCssSourceCode;
