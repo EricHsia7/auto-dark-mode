@@ -4,6 +4,7 @@ import { evaluateTheme } from './evaluate-theme';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
+import { isDarkModeMediaQuery } from './is-dark-mode-media-query';
 import { isDarkened } from './is-darkened';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
@@ -181,12 +182,10 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
       case CSSRule.MEDIA_RULE: {
         const mediaRule = rule as CSSMediaRule;
         const media = `@media ${mediaRule.conditionText}`;
-        if (!/prefers-color-scheme:[\s]*dark/i.test(mediaRule.conditionText)) {
-          if (!container.hasOwnProperty(media)) {
-            container[media] = {};
-          }
-          processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceMap);
+        if (!container.hasOwnProperty(media)) {
+          container[media] = {};
         }
+        processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceMap);
         break;
       }
 
