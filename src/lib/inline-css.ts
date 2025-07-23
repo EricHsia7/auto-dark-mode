@@ -28,7 +28,7 @@ export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>): Prom
     try {
       const href = link.href;
       const cssSourceCode = await fetchCSS(href);
-      const transformedCssSourceCode = transformLayerCSS(transformURLCSS(transformImportCSS(cssSourceCode)));
+      const transformedCssSourceCode = transformLayerCSS(transformURLCSS(transformImportCSS(cssSourceCode, href), href));
       let css = '';
       if (link.hasAttribute('media')) {
         const conditionText = link.getAttribute('media');
