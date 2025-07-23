@@ -24,9 +24,11 @@ function fetchCSS(url: string): Promise<string> {
 export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>): Promise<true> {
   const fragment = new DocumentFragment();
   const linksToRemove = [];
+  const styleTagsToDisable = [];
   for (const link of linkElements) {
     try {
       const href = link.href;
+      const disabled = link.disabled;
       const cssSourceCode = await fetchCSS(href);
       const transformedCssSourceCode = transformLayerCSS(transformURLCSS(transformImportCSS(cssSourceCode, href), href));
       let css = '';
@@ -42,19 +44,27 @@ export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>): Prom
       } else {
         css = transformedCssSourceCode;
       }
-      const disabled = link.disabled;
       const style = document.createElement('style');
       style.textContent = css;
-      style.disabled = disabled;
       fragment.appendChild(style);
       linksToRemove.push(link);
+      if (disabled) {
+        styleTagsToDisable.push(style);
+      }
     } catch (error) {
       // skip inlining due to error
     }
-    document.head.append(fragment);
-    for (const link of linksToRemove) {
-      link.remove();
-    }
   }
+
+  document.head.append(fragment);
+
+  for (const styleTagToDisable of styleTagsToDisable) {
+    styleTagToDisable.disabled = true;
+  }
+
+  for (const link of linksToRemove) {
+    link.remove();
+  }
+
   return true;
 }
