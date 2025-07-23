@@ -53,11 +53,12 @@ export function transformImportCSS(cssText: string, cssHref: string): string {
           const values = splitByTopLevelDelimiter(content);
           for (let k = values.result.length - 1; k >= 0; k--) {
             const value = values.result[k];
-            const matches = value.match(/^("([^"]*)"|'([^']*)'|url\(\s*(['"]?)([^'")]+)\4\s*\))/i);
+            const matches = value.match(/^((")([^"]*)\2|(')([^']*)\4|url\(\s*(['"]?)([^'")]+)\6\s*\))/i);
             if (matches) {
-              const urlPath = matches[5] || matches[2];
+              const urlPath = matches[7] || matches[3];
+              const quote = matches[6] || matches[2] || '';
               const resolved = resolveRelativeURL(urlPath, cssHref);
-              values.result.splice(k, 1, value.replace(urlPath, resolved));
+              values.result.splice(k, 1, `url(${quote}${resolved}${quote})`);
               break;
             }
           }
