@@ -434,7 +434,7 @@ export function parseColor(value: string): Color {
     let relative = false;
     let pivotColor: ColorRGB | ColorRGBA = fallbackColor;
     const parameters = [];
-    const matches = value.match(/lab\(.*\)/i);
+    const matches = value.match(/lab\((.*)\)/i);
     if (matches) {
       const content = matches[1];
       const components = splitByTopLevelDelimiter(content);
