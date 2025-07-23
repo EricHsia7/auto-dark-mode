@@ -432,7 +432,7 @@ export function parseColor(value: string): Color {
   if (value.startsWith('lab')) {
     let containVariables = false;
     let relative = false;
-    let pivotColor: ColorRGB | ColorRGBA = fallbackColor;
+    let pivotColor = fallbackColor;
     const parameters = [];
     const matches = value.match(/lab\((.*)\)/i);
     if (matches) {
@@ -444,37 +444,46 @@ export function parseColor(value: string): Color {
           relative = true;
         } else if (relative) {
           const parsedPivotColor = parseColor(component);
+          pivotColor = parsedPivotColor;
           if (parsedPivotColor.type === 'rgb' || parsedPivotColor.type === 'rgba') {
-            pivotColor = parsedPivotColor;
+            // TODO: convert to rgb(a)
           }
         } else if (component.startsWith('var')) {
           containVariables = true;
-          const variable = parseColor(component) as Variable;
+          const variable = parseColor(component);
           parameters.push(variable);
-        } else if (/^\d+$/.test(component)) {
-          const integer: number = parseInt(component, 10);
+        } else if (/^[-\+]?\d+$/.test(component)) {
+          const integer = parseInt(component, 10);
           parameters.push(integer);
-        } else if (/^[\d\.]+$/.test(component)) {
-          const float: number = parseFloat(component);
+        } else if (/^[-\+]?[\d\.]+$/.test(component)) {
+          const float = parseFloat(component);
           parameters.push(float);
-        } else if (/^\d+%$/.test(component)) {
+        } else if (/^[-\+]?\d+%$/.test(component)) {
           const number = parseInt(component, 10);
           const unit = '%';
-          const numberWithUnit: UnitedNumber = {
+          const numberWithUnit = {
             type: 'number-u',
             number: number,
             unit: unit
           };
           parameters.push(numberWithUnit);
-        } else if (/^[\d\.]+%$/.test(component)) {
+        } else if (/^[-\+]?[\d\.]+%$/.test(component)) {
           const number = parseFloat(component);
           const unit = '%';
-          const numberWithUnit: UnitedNumber = {
+          const numberWithUnit = {
             type: 'number-u',
             number: number,
             unit: unit
           };
           parameters.push(numberWithUnit);
+        } else if (component === 'l') {
+          parameters.push(component);
+        } else if (component === 'a') {
+          parameters.push(component);
+        } else if (component === 'b') {
+          parameters.push(component);
+        } else if (component.startsWith('calc')) {
+          parameters.push(component);
         }
       }
     }
