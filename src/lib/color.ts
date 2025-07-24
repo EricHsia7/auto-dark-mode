@@ -100,12 +100,22 @@ export interface FunctionalKeyword {
   // "none" my not mean "transparent," so keep it as-is
 }
 
+export interface ArgumentListRGB {
+  type: 'arg-rgb';
+  args: [red: Variable | number, green: Variable | number, blue: Variable | number];
+}
+
+export interface ArgumentListRGBA {
+  type: 'arg-rgba';
+  args: [red: Variable | number, green: Variable | number, blue: Variable | number, alpha: Variable | number];
+}
+
 export interface UnknownString {
   type: 'unknown';
   value: string;
 }
 
-export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | VariableName | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
+export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | VariableName | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | ArgumentListRGB | ArgumentListRGBA | UnknownString;
 
 function parseColorStops(components: Array<string>): ColorStopArray {
   const colorStops: ColorStopArray = [];
@@ -567,6 +577,66 @@ export function parseColor(value: string): Color {
       rgb: foundSystemColor
     };
     return result;
+  }
+
+  const argumentListRegex = /(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}(([\d\.]+|var\([^)]*\))[\s\,\/]*){0,1}/i;
+  if (argumentListRegex.test(value)) {
+    const parameters: ColorRGBParameterArray = [];
+    let containVariables = false;
+    let matches;
+    while ((matches = argumentListRegex.exec(value)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (matches.index === argumentListRegex.lastIndex) {
+        argumentListRegex.lastIndex++;
+      }
+
+      matches.forEach((match, groupIndex) => {
+        if (groupIndex > 0 && groupIndex % 2 === 0 && match) {
+          const parameter = match.trim();
+          if (parameter.startsWith('var')) {
+            containVariables = true;
+            const variable = parseColor(parameter) as Variable;
+            parameters.push(variable);
+          } else if (/^\d+$/.test(parameter)) {
+            const integer: number = parseInt(parameter, 10);
+            parameters.push(integer);
+          } else if (/^[\d\.]+$/.test(parameter)) {
+            const float: number = parseFloat(parameter);
+            parameters.push(float);
+          }
+        }
+      });
+    }
+
+    if (containVariables) {
+      if (value.startsWith('rgba') || parameters[3] !== undefined) {
+        const result: ColorRGBA_Variable = {
+          type: 'rgba-v',
+          parameters: parameters
+        };
+        return result;
+      } else {
+        const result: ColorRGB_Variable = {
+          type: 'rgb-v',
+          parameters: parameters
+        };
+        return result;
+      }
+    } else {
+      if (typeof parameters[3] === 'number' && parameters[3] !== 1) {
+        const result: ColorRGBA = {
+          type: 'rgba',
+          rgba: [parameters[0] as number, parameters[1] as number, parameters[2] as number, parameters[3] as number]
+        };
+        return result;
+      } else {
+        const result: ColorRGB = {
+          type: 'rgb',
+          rgb: [parameters[0] as number, parameters[1] as number, parameters[2] as number]
+        };
+        return result;
+      }
+    }
   }
 
   const unknownString: UnknownString = {
