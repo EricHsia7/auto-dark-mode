@@ -3,6 +3,7 @@ import { isFunctionalKeyword } from './is-functional-keyword';
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
+import { stripTopLevelFunction } from './strip-top-level-function';
 import { systemColors } from './system-colors';
 
 export interface ColorRGB {
@@ -151,11 +152,9 @@ export function parseColor(value: string): Color {
 
   // handle variable
   if (value.startsWith('var(')) {
-    const trimmed = value.trim();
-    const variableRegex = /^var\((.*)\)$/i;
-    const variableMatches = trimmed.match(variableRegex);
-    if (variableMatches) {
-      const args: Array<any> = splitByTopLevelDelimiter(variableMatches[1]).result;
+    if (/var\((.*)\)/i.test(value)) {
+      const stripped = stripTopLevelFunction(value);
+      const args: Array<any> = splitByTopLevelDelimiter(stripped).result;
       for (let i = args.length - 1; i >= 0; i--) {
         const arg = args[i];
         if (arg !== '') {
