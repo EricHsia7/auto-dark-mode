@@ -15,8 +15,10 @@ let imageStylesheets: StyleSheetCSSArray = [];
 const processingElements = new Set();
 
 export async function initialize() {
+  const htmlHref = location.href;
+
   // Check environment
-  const areUnlistedStylesAllowed = await allowUnlistedStyles(location.href);
+  const areUnlistedStylesAllowed = await allowUnlistedStyles(htmlHref);
   if (!areUnlistedStylesAllowed) {
     alert('Auto Dark Mode cannot darken this page due to security limitations.');
     return;
@@ -46,7 +48,7 @@ export async function initialize() {
 
   // Inline external/foreign CSS
   const linkElements = document.querySelectorAll('link[rel="stylesheet"][href]') as NodeListOf<HTMLLinkElement>;
-  await inlineCSS(linkElements);
+  await inlineCSS(linkElements, htmlHref);
 
   // Update styles
   const elementsWithInlineStyle = document.querySelectorAll('[style]') as NodeListOf<HTMLElement>;
@@ -70,7 +72,7 @@ export async function initialize() {
             continue;
           }
           if (node instanceof HTMLLinkElement && node.rel === 'stylesheet') {
-            inlineCSS([node]);
+            inlineCSS([node], htmlHref);
           } else if (node instanceof HTMLStyleElement) {
             processingElements.add(node);
             const cssText = node.textContent;
@@ -157,7 +159,7 @@ export async function initialize() {
     if (imageElement === undefined) return;
 
     activeCount++;
-    getImageItem(imageElement)
+    getImageItem(imageElement, htmlHref)
       .then((imageItem) => {
         if (typeof imageItem !== 'boolean') {
           invertImageItem(imageItem).then((invertedImageItem) => {
@@ -199,7 +201,7 @@ export async function initialize() {
     }
 
     for (const imageElement of imageElementsToUpdate) {
-      getImageItem(imageElement).then((imageItem) => {
+      getImageItem(imageElement, htmlHref).then((imageItem) => {
         if (typeof imageItem !== 'boolean') {
           invertImageItem(imageItem).then((invertedImageItem) => {
             if (typeof invertedImageItem !== 'boolean') {

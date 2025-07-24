@@ -1,3 +1,4 @@
+import { resolveRelativeURL } from './resolve-relative-url';
 import { transformImportCSS } from './transform-import-css';
 import { transformLayerCSS } from './transform-layer-css';
 import { transformURLCSS } from './transform-url-css';
@@ -21,13 +22,13 @@ function fetchCSS(url: string): Promise<string> {
   });
 }
 
-export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>): Promise<true> {
+export async function inlineCSS(linkElements: NodeListOf<HTMLLinkElement>, htmlHref: string): Promise<true> {
   const fragment = new DocumentFragment();
   const linksToRemove = [];
   const styleTagsToDisable = [];
   for (const link of linkElements) {
     try {
-      const href = link.href;
+      const href = resolveRelativeURL(link.href, htmlHref);
       const disabled = link.disabled;
       const cssSourceCode = await fetchCSS(href);
       const transformedCssSourceCode = transformLayerCSS(transformURLCSS(transformImportCSS(cssSourceCode, href), href));

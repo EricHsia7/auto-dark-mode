@@ -6,6 +6,7 @@ import { getMimetype } from './get-mimetype';
 import { getSVGContent } from './get-svg-content';
 import { invertPropertyValuePairs } from './invert-property-value-pairs';
 import { joinByDelimiters } from './join-by-delimiters';
+import { resolveRelativeURL } from './resolve-relative-url';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { StyleSheetCSSItem } from './styles';
 import { svgElementsQuerySelectorString } from './svg-elements';
@@ -32,17 +33,18 @@ export type ImageItem = ImageItemImg | ImageItemPictureSource;
 
 export type ImageItemArray = Array<ImageItem>;
 
-export async function getImageItem(element: HTMLImageElement | HTMLSourceElement): Promise<ImageItem | false> {
+export async function getImageItem(element: HTMLImageElement | HTMLSourceElement, htmlHref: string): Promise<ImageItem | false> {
   const selector = generateElementSelector(element);
   const tagName = element.tagName.toLowerCase();
   switch (tagName) {
     case 'img': {
       const source = element.getAttribute('src');
       if (source) {
-        const mimetype = await getMimetype(source);
+        const resolvedSource = resolveRelativeURL(source, htmlHref);
+        const mimetype = await getMimetype(resolvedSource);
         const item: ImageItemImg = {
           type: 'img',
-          source: source,
+          source: resolvedSource,
           mimetype: mimetype,
           selector: selector
         };
@@ -53,11 +55,12 @@ export async function getImageItem(element: HTMLImageElement | HTMLSourceElement
     case 'source': {
       const source = element.getAttribute('srcset');
       if (source) {
+        const resolvedSource = resolveRelativeURL(source, htmlHref);
+        const mimetype = await getMimetype(resolvedSource);
         const media = element.getAttribute('media');
-        const mimetype = await getMimetype(source);
         const item: ImageItemPictureSource = {
           type: 'source',
-          source: source,
+          source: resolvedSource,
           mimetype: mimetype,
           mediaQueryConditionText: media,
           selector: selector
