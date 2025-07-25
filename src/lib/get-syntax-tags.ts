@@ -1,11 +1,17 @@
 import { _Object } from './build-object';
 import { functionalKeywords } from './functional-keywords';
 import { namedColors } from './named-colors';
+import { FloatObject } from './parse-float';
+import { FloatWithUnitObject } from './parse-float-with-unit';
+import { IntegerObject } from './parse-integer';
+import { IntegerWithUnitObject } from './parse-integer-with-unit';
 import { systemColors } from './system-colors';
 
 export type SyntaxTag = 'number' | 'integer' | 'float' | 'length' | 'font' | 'distance' | 'absolute' | 'zero' | 'viewport' | 'relative' | 'container' | 'position' | 'percentage' | 'angle' | 'hex' | 'color' | 'preposition' | 'to' | 'at' | 'from' | 'cardinal' | 'vertical' | 'horizontal' | 'center' | 'extent' | 'shape' | 'variable-name' | 'named-color' | 'system-color' | 'functional-keyword' | 'model' | 'variable' | 'gradient';
 
-export function getSyntaxTags(object: _Object | any): Set<SyntaxTag> {
+export type SyntaxTagSet = Set<SyntaxTag>;
+
+export function getSyntaxTags(object: _Object | any): SyntaxTagSet {
   const tags = new Set();
 
   if (typeof object !== 'object') return tags;
@@ -124,4 +130,28 @@ export function getSyntaxTags(object: _Object | any): Set<SyntaxTag> {
     }
   }
   return tags;
+}
+
+type TagToType = {
+  number: IntegerObject | FloatObject;
+  length: IntegerWithUnitObject | FloatWithUnitObject;
+  angle: IntegerWithUnitObject | FloatWithUnitObject;
+  percentage: IntegerWithUnitObject | FloatWithUnitObject;
+};
+
+export function hasTagAndObjectIs<T extends SyntaxTag>(obj: _Object, tags: Set<SyntaxTag>, tag: T): obj is TagToType[T] {
+  if (!tags.has(tag)) return false;
+
+  switch (tag) {
+    case 'number':
+      return obj.type === 'integer' || obj.type === 'float';
+
+    case 'length':
+    case 'angle':
+    case 'percentage':
+      return obj.type === 'integer-u' || obj.type === 'float-u';
+
+    default:
+      return false;
+  }
 }
