@@ -139,7 +139,7 @@ type TagToType = {
   percentage: IntegerWithUnitObject | FloatWithUnitObject;
 };
 
-export function hasTagAndObjectIs<T extends SyntaxTag>(obj: _Object, tags: Set<SyntaxTag>, tag: T): obj is TagToType[T] {
+export function hasSyntaxTagAndObjectIs<T extends SyntaxTag>(obj: _Object, tags: Set<SyntaxTag>, tag: T): obj is TagToType[T] {
   if (!tags.has(tag)) return false;
 
   switch (tag) {

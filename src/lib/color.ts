@@ -1,6 +1,6 @@
 import { _Object, buildObject } from './build-object';
 import { clamp } from './clamp';
-import { getSyntaxTags, hasTagAndObjectIs } from './get-syntax-tags';
+import { getSyntaxTags, hasSyntaxTagAndObjectIs } from './syntax-tags';
 import { hsl_rgb } from './hsl-to-rgb';
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
@@ -308,15 +308,15 @@ export function parseColor(object: string | _Object): Color | false {
         for (let i = 0, l = object.args.length; i < l; i++) {
           const arg = object.args[i];
           const argTags = getSyntaxTags(arg);
-          if (paramsCount === 0 && hasTagAndObjectIs(arg, argTags, 'number')) {
+          if (paramsCount === 0 && hasSyntaxTagAndObjectIs(arg, argTags, 'number')) {
             params.push(arg.value);
             paramsCount++;
           } else if (paramsCount === 1 || paramsCount === 2) {
-            if (hasTagAndObjectIs(arg, argTags, 'percentage')) {
+            if (hasSyntaxTagAndObjectIs(arg, argTags, 'percentage')) {
               params.push(arg.value / 100);
               paramsCount++;
             }
-          } else if (paramsCount === 3 && hasTagAndObjectIs(arg, argTags, 'number')) {
+          } else if (paramsCount === 3 && hasSyntaxTagAndObjectIs(arg, argTags, 'number')) {
             params.push(arg.value);
             paramsCount++;
           }
