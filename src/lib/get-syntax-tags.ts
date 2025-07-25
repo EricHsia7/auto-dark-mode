@@ -1,8 +1,9 @@
 import { _Object } from './build-object';
+import { functionalKeywords } from './functional-keywords';
 import { namedColors } from './named-colors';
 import { systemColors } from './system-colors';
 
-export type SyntaxTag = 'number' | 'integer' | 'float' | 'length' | 'font' | 'distance' | 'absolute' | 'zero' | 'viewport' | 'relative' | 'container' | 'position' | 'percentage' | 'angle' | 'hex' | 'color' | 'preposition' | 'to' | 'at' | 'from' | 'cardinal' | 'vertical' | 'horizontal' | 'center' | 'extent' | 'shape' | 'variable-name' | 'named-color' | 'system-color' | 'model' | 'variable' | 'gradient';
+export type SyntaxTag = 'number' | 'integer' | 'float' | 'length' | 'font' | 'distance' | 'absolute' | 'zero' | 'viewport' | 'relative' | 'container' | 'position' | 'percentage' | 'angle' | 'hex' | 'color' | 'preposition' | 'to' | 'at' | 'from' | 'cardinal' | 'vertical' | 'horizontal' | 'center' | 'extent' | 'shape' | 'variable-name' | 'named-color' | 'system-color' | 'functional-keyword' | 'model' | 'variable' | 'gradient';
 
 export function getSyntaxTags(object: _Object | any): Set<SyntaxTag> {
   const tags = new Set();
@@ -107,6 +108,9 @@ export function getSyntaxTags(object: _Object | any): Set<SyntaxTag> {
       tags.add('color');
     } else if (systemColors.hasOwnProperty(object.value)) {
       tags.add('system-color');
+      tags.add('color');
+    } else if (functionalKeywords.hasOwnProperty(object.value)) {
+      tags.add('functional-keyword');
       tags.add('color');
     }
   } else if (object.type === 'model') {

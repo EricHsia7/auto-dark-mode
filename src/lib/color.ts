@@ -2,7 +2,6 @@ import { _Object, buildObject } from './build-object';
 import { clamp } from './clamp';
 import { getSyntaxTags } from './get-syntax-tags';
 import { hsl_rgb } from './hsl-to-rgb';
-import { isFunctionalKeyword } from './is-functional-keyword';
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
@@ -183,6 +182,14 @@ export function parseColor(object: string | _Object): Color | false {
       const result: ColorRGB = {
         type: 'rgb',
         rgb: systemColors[object.value]
+      };
+      return result;
+    }
+
+    if (tags.has('functional-keyword')) {
+      const result: FunctionalKeyword = {
+        type: 'keyword',
+        value: object.value as FunctionalKeyword['value']
       };
       return result;
     }
