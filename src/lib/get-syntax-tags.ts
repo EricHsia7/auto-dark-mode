@@ -26,7 +26,21 @@ export function getSyntaxTags(object: _Object | any): Set<SyntaxTag> {
       tags.add('zero');
     }
   } else if (object.type === 'integer-u' || object.type === 'float-u') {
-    if (['dvh', 'dvw', 'lvh', 'lvw', 'svh', 'svw', 'vb', 'vh', 'vi', 'vmax', 'vmin', 'vw'].indexOf(object.unit) > -1) {
+    if ('%' === object.unit) {
+      tags.add('position');
+      tags.add('length');
+      tags.add('distance');
+      tags.add('font');
+      tags.add('relative');
+      tags.add('percentage');
+    } else if (['px', 'pt', 'pc', 'cm', 'in', 'mm', 'Q'].indexOf(object.unit) > -1) {
+      tags.add('length');
+      tags.add('distance');
+      tags.add('font');
+      tags.add('absolute');
+    } else if (['deg', 'rad', 'turn', 'grad'].indexOf(object.unit) > -1) {
+      tags.add('angle');
+    } else if (['dvh', 'dvw', 'lvh', 'lvw', 'svh', 'svw', 'vb', 'vh', 'vi', 'vmax', 'vmin', 'vw'].indexOf(object.unit) > -1) {
       tags.add('length');
       tags.add('viewport');
       tags.add('distance');
@@ -46,20 +60,6 @@ export function getSyntaxTags(object: _Object | any): Set<SyntaxTag> {
       tags.add('distance');
       tags.add('container');
       tags.add('relative');
-    } else if (['cm', 'in', 'mm', 'pc', 'pt', 'px', 'Q'].indexOf(object.unit) > -1) {
-      tags.add('length');
-      tags.add('distance');
-      tags.add('font');
-      tags.add('absolute');
-    } else if ('%' === object.unit) {
-      tags.add('position');
-      tags.add('length');
-      tags.add('distance');
-      tags.add('font');
-      tags.add('relative');
-      tags.add('percentage');
-    } else if (['deg', 'rad', 'turn', 'grad'].indexOf(object.unit) > -1) {
-      tags.add('angle');
     }
     if (object.type === 'integer-u') {
       tags.add('integer');
