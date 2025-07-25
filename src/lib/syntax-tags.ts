@@ -140,18 +140,19 @@ type TagToType = {
 };
 
 export function hasSyntaxTagAndObjectIs<T extends SyntaxTag>(obj: _Object, tags: Set<SyntaxTag>, tag: T): obj is TagToType[T] {
-  if (!tags.has(tag)) return false;
+  return tags.has(tag)
 
-  switch (tag) {
+  /*switch (tag) {
     case 'number':
-      return obj.type === 'integer' || obj.type === 'float';
-
+      return true;
     case 'length':
+      return true;
     case 'angle':
+      return true;
     case 'percentage':
-      return obj.type === 'integer-u' || obj.type === 'float-u';
-
+      return true;
+      return true;
     default:
       return false;
-  }
+  }*/
 }
