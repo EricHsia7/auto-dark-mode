@@ -1,40 +1,25 @@
+import { cssDelimiters } from './css-delimiters';
+import { FloatObject, parseFloatNumber } from './parse-float';
+import { FloatWithUnitObject, parseFloatWithUnit } from './parse-float-with-unit';
+import { IntegerObject, parseInteger } from './parse-integer';
+import { IntegerWithUnitObject, parseIntegerWithUnit } from './parse-integer-with-unit';
+import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { stripTopLevelFunction } from './strip-top-level-function';
 
-
-function parseFloatNumber(arg) {
-  if (/^[-+]?[0-9]*\.?[0-9]+$/.test(arg)) {
-    return {
-      type: 'float',
-      value: parseFloat(arg)
-    };
-  }
-  return undefined;
+export interface StringObject {
+  type: 'string';
+  value: string;
 }
 
-function parseIntegerWithUnit(arg) {
-  const match = arg.match(/^([-+]?[0-9]+)([a-z%]+)$/i);
-  if (match) {
-    return {
-      type: 'integer-u',
-      value: parseInt(match[1], 10),
-      unit: match[2].trim()
-    };
-  }
-  return undefined;
+export interface ModelObject {
+  type: 'model';
+  model: string;
+  args: Array<_Object>;
 }
 
-function parseFloatWithUnit(arg) {
-  const match = arg.match(/^([-+]?[0-9]*\.?[0-9]+)([a-z%]+)$/i);
-  if (match) {
-    return {
-      type: 'float-u',
-      value: parseFloat(match[1]),
-      unit: match[2].trim()
-    };
-  }
-  return undefined;
-}
+export type _Object = IntegerObject | FloatObject | IntegerWithUnitObject | FloatWithUnitObject | StringObject | ModelObject;
 
-export function buildObject(value: string) {
+export function buildObject(value: string): _Object {
   // Try primitive parsers first
   const parsed = parseInteger(value) || parseFloatNumber(value) || parseIntegerWithUnit(value) || parseFloatWithUnit(value);
 
@@ -45,7 +30,7 @@ export function buildObject(value: string) {
   // Try parsing as a top-level model/function
   if (isTopLevelFunction(value)) {
     const stripped = stripTopLevelFunction(value);
-    const legalDelimiters = delimiterMap[stripped.model] || delimiterMap['default'];
+    const legalDelimiters = cssDelimiters[stripped.model] || cssDelimiters['default'];
     const args = splitByTopLevelDelimiter(stripped.result, legalDelimiters);
 
     const parsedArgs = args.result.map((arg) => buildObject(arg)).filter((arg) => arg !== undefined);
