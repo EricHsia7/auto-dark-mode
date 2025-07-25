@@ -1,6 +1,8 @@
 import { _Object } from './build-object';
+import { namedColors } from './named-colors';
+import { systemColors } from './system-colors';
 
-export type SyntaxTag = 'number' | 'integer' | 'float' | 'length' | 'font' | 'distance' | 'absolute' | 'zero' | 'viewport' | 'relative' | 'container' | 'position' | 'percentage' | 'angle' | 'hex'  | 'color' | 'preposition' | 'to' | 'at' | 'from' | 'cardinal' | 'vertical' | 'horizontal' | 'center' | 'extent' | 'shape' | 'variable-name' | 'named-color' | 'system-color' | 'model' | 'variable' | 'gradient';
+export type SyntaxTag = 'number' | 'integer' | 'float' | 'length' | 'font' | 'distance' | 'absolute' | 'zero' | 'viewport' | 'relative' | 'container' | 'position' | 'percentage' | 'angle' | 'hex' | 'color' | 'preposition' | 'to' | 'at' | 'from' | 'cardinal' | 'vertical' | 'horizontal' | 'center' | 'extent' | 'shape' | 'variable-name' | 'named-color' | 'system-color' | 'model' | 'variable' | 'gradient';
 
 export function getSyntaxTags(object: _Object | any): Set<SyntaxTag> {
   const tags = new Set();
