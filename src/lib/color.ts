@@ -316,7 +316,7 @@ export function parseColor(object: string | _Object): Color | false {
               params.push(arg.value / 100);
               paramsCount++;
             }
-          } else if (paramsCount === 3 && argTags.has('number')) {
+          } else if (paramsCount === 3 && hasTagAndObjectIs(arg, argTags, 'number')) {
             params.push(arg.value);
             paramsCount++;
           }
