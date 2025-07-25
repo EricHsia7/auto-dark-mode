@@ -52,7 +52,7 @@ export interface Variable {
 }
 
 export interface VariableName {
-  type: 'variable-name';
+  type: 'variable_name';
   name: string;
 }
 
@@ -112,7 +112,7 @@ export function parseColor(object: string | _Object): Color | false {
 
   const tags = getSyntaxTags(object);
 
-  if (!tags.has('color') && !tags.has('gradient') && !tags.has('variable') && !tags.has('variable-name')) return false;
+  if (!tags.has('color') && !tags.has('gradient') && !tags.has('variable') && !tags.has('variable_name')) return false;
 
   if (object.type === 'string') {
     if (tags.has('hex')) {
@@ -162,15 +162,15 @@ export function parseColor(object: string | _Object): Color | false {
       }
     }
 
-    if (tags.has('variable-name')) {
+    if (tags.has('variable_name')) {
       const result: VariableName = {
-        type: 'variable-name',
+        type: 'variable_name',
         name: object.value
       };
       return result;
     }
 
-    if (tags.has('named-color')) {
+    if (tags.has('named_color')) {
       const result: ColorRGB = {
         type: 'rgb',
         rgb: namedColors[object.value]
@@ -178,7 +178,7 @@ export function parseColor(object: string | _Object): Color | false {
       return result;
     }
 
-    if (tags.has('system-color')) {
+    if (tags.has('system_color')) {
       const result: ColorRGB = {
         type: 'rgb',
         rgb: systemColors[object.value]
@@ -186,7 +186,7 @@ export function parseColor(object: string | _Object): Color | false {
       return result;
     }
 
-    if (tags.has('functional-keyword')) {
+    if (tags.has('functional_keyword')) {
       const result: FunctionalKeyword = {
         type: 'keyword',
         value: object.value as FunctionalKeyword['value']
@@ -207,13 +207,16 @@ export function parseColor(object: string | _Object): Color | false {
           const arg = object.args[i];
           const argTags = getSyntaxTags(arg);
           if (paramsCount < 4) {
-            if (argTags.has('number')) {
+            if (hasSyntaxTagAndObjectIs(arg, argTags, 'number')) {
               params.push(arg.value);
               paramsCount++;
-            } else if (argTags.has('variable')) {
-              params.push(parseColor(arg));
-              paramsCount++;
-              subModelsCount++;
+            } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
+              const parsed = parseColor(arg);
+              if (parsed !== false) {
+                params.push();
+                paramsCount++;
+                subModelsCount++;
+              }
             }
           }
         }
@@ -261,13 +264,16 @@ export function parseColor(object: string | _Object): Color | false {
           const arg = object.args[i];
           const argTags = getSyntaxTags(arg);
           if (paramsCount < 4) {
-            if (argTags.has('number')) {
+            if (hasSyntaxTagAndObjectIs(arg, argTags, 'number')) {
               params.push(arg.value);
               paramsCount++;
-            } else if (argTags.has('variable')) {
-              params.push(parseColor(arg));
-              paramsCount++;
-              subModelsCount++;
+            } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
+              const parsed = parseColor(arg);
+              if (parsed !== false) {
+                params.push();
+                paramsCount++;
+                subModelsCount++;
+              }
             }
           }
         }
@@ -320,10 +326,13 @@ export function parseColor(object: string | _Object): Color | false {
             params.push(arg.value);
             paramsCount++;
           }
-          if (argTags.has('variable')) {
-            params.push(parseColor(arg));
-            paramsCount++;
-            subModelsCount++;
+          if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
+            const parsed = parseColor(arg);
+            if (parsed !== false) {
+              params.push();
+              paramsCount++;
+              subModelsCount++;
+            }
           }
         }
 
@@ -379,22 +388,25 @@ export function parseColor(object: string | _Object): Color | false {
         for (let i = 0, l = object.args.length; i < l; i++) {
           const arg = object.args[i];
           const argTags = getSyntaxTags(arg);
-          if (paramsCount === 0 && argTags.has('number')) {
+          if (paramsCount === 0 && hasSyntaxTagAndObjectIs(arg, argTags, 'number')) {
             params.push(arg.value);
             paramsCount++;
           } else if (paramsCount === 1 || paramsCount === 2) {
-            if (argTags.has('percentage')) {
+            if (hasSyntaxTagAndObjectIs(arg, argTags, 'percentage')) {
               params.push(arg.value / 100);
               paramsCount++;
             }
-          } else if (paramsCount === 3 && argTags.has('number')) {
+          } else if (paramsCount === 3 && hasSyntaxTagAndObjectIs(arg, argTags, 'number')) {
             params.push(arg.value);
             paramsCount++;
           }
-          if (argTags.has('variable')) {
-            params.push(parseColor(arg));
-            paramsCount++;
-            subModelsCount++;
+          if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
+            const parsed = parseColor(arg);
+            if (parsed !== false) {
+              params.push(parsed);
+              paramsCount++;
+              subModelsCount++;
+            }
           }
         }
 
@@ -443,7 +455,7 @@ export function parseColor(object: string | _Object): Color | false {
       }
 
       case 'var': {
-        const args = object.args;
+        const args: Array<any> = object.args;
         for (let i = args.length - 1; i >= 0; i--) {
           args.splice(i, 1, parseColor(args[i]));
         }
@@ -464,7 +476,7 @@ export function parseColor(object: string | _Object): Color | false {
           const arg = args[i];
           const argTags = getSyntaxTags(arg);
           if (arg.type === 'string') {
-            const splitArgs = splitByTopLevelDelimiter(arg.value, [' ']).result;
+            const splitArgs: Array<any> = splitByTopLevelDelimiter(arg.value, [' ']).result;
             const splitArgsTags = [];
             const splitArgsLen = splitArgs.length;
             for (let j = splitArgsLen - 1; j >= 0; j--) {
@@ -494,10 +506,10 @@ export function parseColor(object: string | _Object): Color | false {
                 }
               }
             }
-          } else if (argTags.has('length') || argTags.has('angle')) {
+          } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'length') || hasSyntaxTagAndObjectIs(arg, argTags, 'angle')) {
             parameters.push(`${arg.value.toString()}${arg?.unit || ''}`);
             parametersCount++;
-          } else if (argTags.has('variable') || argTags.has('color')) {
+          } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable') || hasSyntaxTagAndObjectIs(arg, argTags, 'color')) {
             parameters.push({
               type: 'color-stop',
               parameters: []
@@ -569,10 +581,10 @@ export function parseColor(object: string | _Object): Color | false {
                 }
               }
             }
-          } else if (argTags.has('length') || argTags.has('angle')) {
+          } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'length') || hasSyntaxTagAndObjectIs(arg, argTags, 'angle')) {
             parameters.push(`${arg.value.toString()}${arg?.unit || ''}`);
             parametersCount++;
-          } else if (argTags.has('variable')) {
+          } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
             const parsedArg = parseColor(arg);
             if (parsedArg !== false) {
               parameters.push({
@@ -641,10 +653,10 @@ export function parseColor(object: string | _Object): Color | false {
                 }
               }
             }
-          } else if (argTags.has('angle')) {
+          } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'angle')) {
             parameters.push(`${arg.value.toString()}${arg?.unit || ''}`);
             parametersCount++;
-          } else if (argTags.has('variable')) {
+          } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
             const parsedArg = parseColor(arg);
             if (parsedArg !== false) {
               parameters.push({
@@ -828,7 +840,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
       break;
     }
 
-    case 'variable-name': {
+    case 'variable_name': {
       return color; // Variable references are not inverted
       break;
     }
@@ -960,7 +972,7 @@ export function colorToString(color: Color): string {
       return `var(${arr.flat(8).join(',')})`;
     }
 
-    case 'variable-name': {
+    case 'variable_name': {
       return color.name;
     }
 

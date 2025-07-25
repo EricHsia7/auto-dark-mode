@@ -7,7 +7,7 @@ import { IntegerObject } from './parse-integer';
 import { IntegerWithUnitObject } from './parse-integer-with-unit';
 import { systemColors } from './system-colors';
 
-export type SyntaxTag = 'number' | 'integer' | 'float' | 'length' | 'font' | 'distance' | 'absolute' | 'zero' | 'viewport' | 'relative' | 'container' | 'position' | 'percentage' | 'angle' | 'hex' | 'color' | 'preposition' | 'to' | 'at' | 'from' | 'cardinal' | 'vertical' | 'horizontal' | 'center' | 'extent' | 'shape' | 'variable-name' | 'named-color' | 'system-color' | 'functional-keyword' | 'model' | 'variable' | 'gradient';
+export type SyntaxTag = 'number' | 'integer' | 'float' | 'length' | 'font' | 'distance' | 'absolute' | 'zero' | 'viewport' | 'relative' | 'container' | 'position' | 'percentage' | 'angle' | 'hex' | 'color' | 'preposition' | 'to' | 'at' | 'from' | 'cardinal' | 'vertical' | 'horizontal' | 'center' | 'extent' | 'shape' | 'variable_name' | 'named_color' | 'system_color' | 'functional_keyword' | 'model' | 'variable' | 'gradient';
 
 export type SyntaxTagSet = Set<SyntaxTag>;
 
@@ -108,15 +108,15 @@ export function getSyntaxTags(obj: _Object | any): SyntaxTagSet {
     } else if (['circle', 'ellipse'].indexOf(obj.value) > -1) {
       tags.add('shape');
     } else if (/^--[a-z0-9_\-]+$/i.test(obj.value)) {
-      tags.add('variable-name');
+      tags.add('variable_name');
     } else if (namedColors.hasOwnProperty(obj.value)) {
-      tags.add('named-color');
+      tags.add('named_color');
       tags.add('color');
     } else if (systemColors.hasOwnProperty(obj.value)) {
-      tags.add('system-color');
+      tags.add('system_color');
       tags.add('color');
     } else if (functionalKeywords.hasOwnProperty(obj.value)) {
-      tags.add('functional-keyword');
+      tags.add('functional_keyword');
       tags.add('color');
     }
   } else if (obj.type === 'model') {
@@ -134,10 +134,48 @@ export function getSyntaxTags(obj: _Object | any): SyntaxTagSet {
 
 type TagToType = {
   number: IntegerObject | FloatObject;
-  length: IntegerWithUnitObject | FloatWithUnitObject;
+  integer: IntegerObject | IntegerWithUnitObject;
+  float: FloatObject | FloatWithUnitObject;
+
+  length: IntegerObject | FloatObject | IntegerWithUnitObject | FloatWithUnitObject;
   angle: IntegerWithUnitObject | FloatWithUnitObject;
   percentage: IntegerWithUnitObject | FloatWithUnitObject;
+  position: StringObject | IntegerWithUnitObject | FloatWithUnitObject;
+  distance: IntegerWithUnitObject | FloatWithUnitObject;
+  font: IntegerObject | FloatObject | IntegerWithUnitObject | FloatWithUnitObject;
+
+  absolute: IntegerWithUnitObject | FloatWithUnitObject;
+  relative: IntegerWithUnitObject | FloatWithUnitObject;
+  container: IntegerWithUnitObject | FloatWithUnitObject;
+  viewport: IntegerWithUnitObject | FloatWithUnitObject;
+
+  zero: IntegerObject | FloatObject | IntegerWithUnitObject | FloatWithUnitObject;
+
+  string: StringObject;
+  hex: StringObject;
+  variable_name: StringObject;
+  named_color: StringObject;
+  system_color: StringObject;
+  functional_keyword: StringObject;
+  color: StringObject | ModelObject;
+
+  to: StringObject;
+  from: StringObject;
+  at: StringObject;
+  preposition: StringObject;
+
+  shape: StringObject;
+  extent: StringObject;
+  cardinal: StringObject;
+  vertical: StringObject;
+  horizontal: StringObject;
+  center: StringObject;
+
+  model: ModelObject;
+  variable: ModelObject;
+  gradient: ModelObject;
 };
+
 
 export function hasSyntaxTagAndObjectIs<T extends SyntaxTag>(obj: _Object, tags: Set<SyntaxTag>, tag: T): obj is TagToType[T] {
   return tags.has(tag);
