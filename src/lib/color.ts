@@ -1,4 +1,4 @@
-import { _Object, buildObject, StringObject } from './build-object';
+import { _Object, buildObject } from './build-object';
 import { clamp } from './clamp';
 import { getSyntaxTags } from './get-syntax-tags';
 import { hsl_rgb } from './hsl-to-rgb';
@@ -64,7 +64,7 @@ export interface UnitedNumber {
 }
 
 export interface GradientColorStop {
-  type: 'stop';
+  type: 'color-stop';
   parameters: Array<Color | string>;
 }
 
@@ -649,7 +649,7 @@ export function parseColor(object: string | _Object): Color | false {
             }
           }
         }
-        const result = {
+        const result: ConicGradient = {
           type: 'conic-gradient',
           parameters: parameters
         };
@@ -670,23 +670,27 @@ export function parseColor(object: string | _Object): Color | false {
   return result;
 }
 
-function invertStops(colorStops: ColorStopArray, darkened: boolean = false): ColorStopArray {
-  const colorStopsLength = colorStops.length;
-  const invertedStops: ColorStopArray = [];
-  for (let i = colorStopsLength - 1; i >= 0; i--) {
-    const stop = colorStops[i];
-    if (stop.type === 'stop') {
-      const invertedColor = invertColor(stop.color, darkened) as GradientColorStop['color'];
-      const invertedColorStop: GradientColorStop = {
-        type: 'stop',
-        color: invertedColor,
-        position: stop.position
-      };
-      invertedStops.unshift(invertedColorStop);
+function invertGradientColorStops(params: GradientParameterArray, darkened: boolean = false): GradientParameterArray {
+  const paramsLen = params.length;
+  for (let i = paramsLen - 1; i >= 0; i--) {
+    const param = params[i];
+    if (typeof param !== 'string') {
+      if (param.type === 'color-stop') {
+        const subParams = param.parameters;
+        const subParamsLen = subParams.length;
+        for (let j = subParamsLen - 1; j >= 0; j--) {
+          const subParam = subParams[j];
+          if (typeof subParam !== 'string') {
+            subParams.splice(j, 1, invertColor(subParam), darkened);
+          }
+        }
+      }
+      params.splice(i, 1, param);
     }
   }
-  return invertedStops;
+  return params;
 }
+
 /**
  *
  * @param color input color
@@ -823,7 +827,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
     }
 
     case 'linear-gradient': {
-      const invertedColors = invertStops(color.colorStops, darkened);
+      const invertedColors = invertGradientColorStops(color.parameters, darkened);
       const result: LinearGradient = {
         type: 'linear-gradient',
         direction: color.direction,
@@ -834,7 +838,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
     }
 
     case 'radial-gradient': {
-      const invertedColors = invertStops(color.colorStops, darkened);
+      const invertedColors = invertGradientColorStops(color.colorStops, darkened);
       const result: RadialGradient = {
         type: 'radial-gradient',
         position: color.position,
@@ -847,7 +851,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
     }
 
     case 'conic-gradient': {
-      const invertedColors = invertStops(color.colorStops, darkened);
+      const invertedColors = invertGradientColorStops(color.colorStops, darkened);
       const result: ConicGradient = {
         type: 'conic-gradient',
         angle: color.angle,
