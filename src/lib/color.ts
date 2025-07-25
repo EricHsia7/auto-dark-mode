@@ -53,7 +53,7 @@ export interface Variable {
 }
 
 export interface VariableName {
-  type: 'variable-n';
+  type: 'variable-name';
   name: string;
 }
 
@@ -63,32 +63,28 @@ export interface UnitedNumber {
   unit: string;
 }
 
-export interface ColorStop {
+export interface GradientColorStop {
   type: 'stop';
-  color: ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable;
-  position: string;
+  parameters: Array<Color | string>;
 }
 
-export type ColorStopArray = Array<ColorStop>;
+export type GradientParameter = GradientColorStop | string;
+
+export type GradientParameterArray = Array<GradientParameter>;
 
 export interface LinearGradient {
   type: 'linear-gradient';
-  direction: string;
-  colorStops: ColorStopArray;
+  parameters: GradientParameterArray;
 }
 
-export interface RdialGradient {
+export interface RadialGradient {
   type: 'radial-gradient';
-  shape: string;
-  size: string;
-  position: string;
-  colorStops: ColorStopArray;
+  parameters: GradientParameterArray;
 }
 
 export interface ConicGradient {
   type: 'conic-gradient';
-  angle: string;
-  colorStops: ColorStopArray;
+  parameters: GradientParameterArray;
 }
 
 export interface _URL {
@@ -108,9 +104,9 @@ export interface UnknownString {
   value: string;
 }
 
-export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | VariableName | LinearGradient | RdialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
+export type Color = ColorRGB | ColorRGB_Variable | ColorRGBA | ColorRGBA_Variable | ColorHSL_Variable | ColorHSLA_Variable | Variable | VariableName | LinearGradient | RadialGradient | ConicGradient | _URL | FunctionalKeyword | UnknownString;
 
-export function parseColor(object: string | _Object): Color {
+export function parseColor(object: string | _Object): Color | false {
   if (typeof object === 'string') {
     object = buildObject(object);
   }
@@ -119,78 +115,81 @@ export function parseColor(object: string | _Object): Color {
 
   if (!tags.has('color') && !tags.has('gradient') && !tags.has('variable') && !tags.has('variable-name')) return false;
 
-  if (tags.has('hex')) {
-    const len = object.value.length;
-    let red = 0;
-    let green = 0;
-    let blue = 0;
-    let alpha = 0;
-    switch (len) {
-      case 4:
-        // #fff
-        red = parseInt(object.value[1] + object.value[1], 16);
-        green = parseInt(object.value[2] + object.value[2], 16);
-        blue = parseInt(object.value[3] + object.value[3], 16);
-        alpha = 1;
-        break;
-      case 7:
-        // #ffffff
-        red = parseInt(object.value.slice(1, 3), 16);
-        green = parseInt(object.value.slice(3, 5), 16);
-        blue = parseInt(object.value.slice(5, 7), 16);
-        alpha = 1;
-        break;
-      case 9:
-        // #ffffffff
-        red = parseInt(object.value.slice(1, 3), 16);
-        green = parseInt(object.value.slice(3, 5), 16);
-        blue = parseInt(object.value.slice(5, 7), 16);
-        alpha = parseInt(object.value.slice(7, 9), 16) / 255;
-        break;
-      default:
-        break;
+  if (object.type === 'string') {
+    if (tags.has('hex')) {
+      const len = object.value.length;
+      let red = 0;
+      let green = 0;
+      let blue = 0;
+      let alpha = 0;
+      switch (len) {
+        case 4:
+          // #fff
+          red = parseInt(object.value[1] + object.value[1], 16);
+          green = parseInt(object.value[2] + object.value[2], 16);
+          blue = parseInt(object.value[3] + object.value[3], 16);
+          alpha = 1;
+          break;
+        case 7:
+          // #ffffff
+          red = parseInt(object.value.slice(1, 3), 16);
+          green = parseInt(object.value.slice(3, 5), 16);
+          blue = parseInt(object.value.slice(5, 7), 16);
+          alpha = 1;
+          break;
+        case 9:
+          // #ffffffff
+          red = parseInt(object.value.slice(1, 3), 16);
+          green = parseInt(object.value.slice(3, 5), 16);
+          blue = parseInt(object.value.slice(5, 7), 16);
+          alpha = parseInt(object.value.slice(7, 9), 16) / 255;
+          break;
+        default:
+          break;
+      }
+
+      if (alpha === 1) {
+        const result: ColorRGB = {
+          type: 'rgb',
+          rgb: [red, green, blue]
+        };
+        return result;
+      } else {
+        const result: ColorRGBA = {
+          type: 'rgba',
+          rgba: [red, green, blue, alpha]
+        };
+        return result;
+      }
     }
 
-    if (alpha === 1) {
-      const result = {
+    if (tags.has('variable-name')) {
+      const result: VariableName = {
+        type: 'variable-name',
+        name: object.value
+      };
+      return result;
+    }
+
+    if (tags.has('named-color')) {
+      const result: ColorRGB = {
         type: 'rgb',
-        rgb: [red, green, blue]
+        rgb: namedColors[object.value]
       };
       return result;
-    } else {
-      const result = {
-        type: 'rgba',
-        rgba: [red, green, blue, alpha]
+    }
+
+    if (tags.has('system-color')) {
+      const result: ColorRGB = {
+        type: 'rgb',
+        rgb: systemColors[object.value]
       };
       return result;
     }
   }
 
-  if (tags.has('variable-name')) {
-    const result = {
-      type: 'variable-name',
-      name: object.value
-    };
-    return result;
-  }
-
-  if (tags.has('named-color')) {
-    const result = {
-      type: 'rgb',
-      rgb: namedColors[object.value]
-    };
-    return result;
-  }
-
-  if (tags.has('system-color')) {
-    const result = {
-      type: 'rgb',
-      rgb: systemColors[object.value]
-    };
-    return result;
-  }
-
-  if (tags.has('model')) {
+  if (object.type === 'model') {
+    // tags.has('model')
     switch (object.model) {
       case 'rgb': {
         const params = [];
@@ -214,22 +213,22 @@ export function parseColor(object: string | _Object): Color {
 
         if (subModelsCount === 0) {
           if (paramsCount === 3) {
-            const result = {
+            const result: ColorRGB = {
               type: 'rgb',
-              rgb: params
+              rgb: params as [number, number, number]
             };
             return result;
           } else if (paramsCount === 4) {
             if (params[3] === 1) {
-              const result = {
+              const result: ColorRGB = {
                 type: 'rgb',
-                rgb: params
+                rgb: params as [number, number, number]
               };
               return result;
             } else {
-              const result = {
+              const result: ColorRGBA = {
                 type: 'rgba',
-                rgba: params
+                rgba: params as [number, number, number, number]
               };
               return result;
             }
@@ -237,9 +236,9 @@ export function parseColor(object: string | _Object): Color {
             break;
           }
         } else {
-          const result = {
+          const result: ColorRGB_Variable = {
             type: 'rgb-v',
-            rgb: params
+            parameters: params
           };
           return result;
         }
@@ -269,15 +268,15 @@ export function parseColor(object: string | _Object): Color {
         if (subModelsCount === 0) {
           if (paramsCount === 4) {
             if (params[3] === 1) {
-              const result = {
+              const result: ColorRGB = {
                 type: 'rgb',
-                rgb: params.slice(0, 3)
+                rgb: params.slice(0, 3) as [number, number, number]
               };
               return result;
             } else {
-              const result = {
+              const result: ColorRGBA = {
                 type: 'rgba',
-                rgba: params
+                rgba: params as [number, number, number, number]
               };
               return result;
             }
@@ -285,9 +284,9 @@ export function parseColor(object: string | _Object): Color {
             break;
           }
         } else {
-          const result = {
+          const result: ColorRGBA_Variable = {
             type: 'rgba-v',
-            rgba: params
+            parameters: params
           };
           return result;
         }
@@ -578,7 +577,7 @@ export function parseColor(object: string | _Object): Color {
             }
           }
         }
-        const result = {
+        const result: RadialGradient = {
           type: 'radial-gradient',
           parameters: parameters
         };
@@ -677,8 +676,8 @@ function invertStops(colorStops: ColorStopArray, darkened: boolean = false): Col
   for (let i = colorStopsLength - 1; i >= 0; i--) {
     const stop = colorStops[i];
     if (stop.type === 'stop') {
-      const invertedColor = invertColor(stop.color, darkened) as ColorStop['color'];
-      const invertedColorStop: ColorStop = {
+      const invertedColor = invertColor(stop.color, darkened) as GradientColorStop['color'];
+      const invertedColorStop: GradientColorStop = {
         type: 'stop',
         color: invertedColor,
         position: stop.position
@@ -818,7 +817,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
       break;
     }
 
-    case 'variable-n': {
+    case 'variable-name': {
       return color; // Variable references are not inverted
       break;
     }
@@ -836,7 +835,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
 
     case 'radial-gradient': {
       const invertedColors = invertStops(color.colorStops, darkened);
-      const result: RdialGradient = {
+      const result: RadialGradient = {
         type: 'radial-gradient',
         position: color.position,
         shape: color.shape,
@@ -950,7 +949,7 @@ export function colorToString(color: Color): string {
       return `var(${arr.flat(8).join(',')})`;
     }
 
-    case 'variable-n': {
+    case 'variable-name': {
       return color.name;
     }
 
