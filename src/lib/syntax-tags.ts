@@ -140,19 +140,5 @@ type TagToType = {
 };
 
 export function hasSyntaxTagAndObjectIs<T extends SyntaxTag>(obj: _Object, tags: Set<SyntaxTag>, tag: T): obj is TagToType[T] {
-  return tags.has(tag)
-
-  /*switch (tag) {
-    case 'number':
-      return true;
-    case 'length':
-      return true;
-    case 'angle':
-      return true;
-    case 'percentage':
-      return true;
-      return true;
-    default:
-      return false;
-  }*/
+  return tags.has(tag);
 }
