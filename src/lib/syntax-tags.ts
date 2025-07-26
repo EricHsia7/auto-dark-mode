@@ -106,16 +106,7 @@ export function getSyntaxTags(obj: _Object | any): SyntaxTagSet {
       tags.add('shape');
     } else if (/^--[a-z0-9_\-]+$/i.test(obj.value)) {
       tags.add('variable_name');
-    } else if (namedColors.hasOwnProperty(obj.value)) {
-      tags.add('named_color');
-      tags.add('color');
-    } else if (systemColors.hasOwnProperty(obj.value)) {
-      tags.add('system_color');
-      tags.add('color');
-    } else if (functionalKeywords.hasOwnProperty(obj.value)) {
-      tags.add('functional_keyword');
-      tags.add('color');
-    }
+    } 
   } else if (obj.type === 'model') {
     tags.add('model');
     if (obj.model === 'var') {

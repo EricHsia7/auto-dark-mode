@@ -1,4 +1,6 @@
 import { ParsingFailed, ModelComponent, parseComponent } from './component';
+import { namedColors } from './named-colors';
+import { systemColors } from './system-colors';
 
 export type CSSLinearGradient = 'linear-gradient';
 export type CSSRadialGradient = 'radial-gradient';
@@ -72,6 +74,7 @@ export function parseCSSModel(value: string): ModelComponent<CSSColor | CSSGradi
           alpha = parseInt(string.slice(7, 9), 16) / 255;
           break;
         default:
+          return undefined;
           break;
       }
 
@@ -99,6 +102,48 @@ export function parseCSSModel(value: string): ModelComponent<CSSColor | CSSGradi
         };
         return result;
       }
+    }
+
+    if (object.string === 'transparent') {
+      const result: ModelComponent<CSSRGBA> = {
+        type: 'model',
+        model: 'rgba',
+        components: [
+          { type: 'number', number: 0, unit: '' },
+          { type: 'number', number: 0, unit: '' },
+          { type: 'number', number: 0, unit: '' },
+          { type: 'number', number: 0, unit: '' }
+        ]
+      };
+      return result;
+    }
+
+    if (namedColors.hasOwnProperty(object.string)) {
+      const foundRGB = namedColors[object.string];
+      const result: ModelComponent<CSSRGB> = {
+        type: 'model',
+        model: 'rgb',
+        components: [
+          { type: 'number', number: foundRGB[0], unit: '' },
+          { type: 'number', number: foundRGB[1], unit: '' },
+          { type: 'number', number: foundRGB[2], unit: '' }
+        ]
+      };
+      return result;
+    }
+
+    if (systemColors.hasOwnProperty(object.string)) {
+      const foundRGB = systemColors[object.string];
+      const result: ModelComponent<CSSRGB> = {
+        type: 'model',
+        model: 'rgb',
+        components: [
+          { type: 'number', number: foundRGB[0], unit: '' },
+          { type: 'number', number: foundRGB[1], unit: '' },
+          { type: 'number', number: foundRGB[2], unit: '' }
+        ]
+      };
+      return result;
     }
   }
 
