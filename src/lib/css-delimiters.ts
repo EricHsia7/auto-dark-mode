@@ -2,9 +2,9 @@ export const cssDelimiters = {
   'linear-gradient': [','],
   'radial-gradient': [','],
   'conic-gradient': [','],
-  'rgb': [' ', ','],
+  'rgb': [' ', ',', '/'],
   'rgba': [' ', ','],
-  'hsl': [' ', ','],
+  'hsl': [' ', ',', '/'],
   'hsla': [' ', ','],
   'color-mix': [',', '/'],
   'calc': ['+', '-', '*', '/'], // handled differently

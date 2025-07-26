@@ -1,4 +1,3 @@
-import { _Object, buildObject } from './build-object';
 import { clamp } from './clamp';
 import { getSyntaxTags, hasSyntaxTagAndObjectIs } from './syntax-tags';
 import { hsl_rgb } from './hsl-to-rgb';

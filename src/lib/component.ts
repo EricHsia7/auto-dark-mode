@@ -23,9 +23,9 @@ export interface StringComponent {
 
 export type Component = NumberComponent | StringComponent | ModelComponent<string>;
 
-export type ComponentParsingFailed = undefined;
+export type ParsingFailed = undefined;
 
-export function parseNumber(value: string): NumberComponent | ComponentParsingFailed {
+export function parseNumber(value: string): NumberComponent | ParsingFailed {
   if (/^[-+]?[0-9]+$/.test(value)) {
     // integer
     return {
@@ -66,7 +66,7 @@ export function parseNumber(value: string): NumberComponent | ComponentParsingFa
   return undefined;
 }
 
-export function parseModel(value: string): Component | ComponentParsingFailed {
+export function parseModel(value: string): Component | ParsingFailed {
   const parsedNumberComponent = parseNumber(value);
   if (parsedNumberComponent !== undefined) {
     return parsedNumberComponent;
