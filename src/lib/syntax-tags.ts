@@ -176,7 +176,10 @@ type TagToType = {
   gradient: ModelObject;
 };
 
+export function hasSyntaxTagAndObjectIs<T extends SyntaxTag>(obj: _Object | any, tags: Set<SyntaxTag>, tag: T): obj is TagToType[T] {
+  if (typeof obj !== 'object') return false;
+  if (Array.isArray(obj)) return false;
+  if (!obj.hasOwnProperty('type')) return false;
 
-export function hasSyntaxTagAndObjectIs<T extends SyntaxTag>(obj: _Object, tags: Set<SyntaxTag>, tag: T): obj is TagToType[T] {
   return tags.has(tag);
 }

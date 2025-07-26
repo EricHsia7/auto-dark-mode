@@ -18,7 +18,7 @@ export type ColorRGBParameterArray = Array<ColorRGBParameter>;
 
 export interface ColorRGB_Variable {
   type: 'rgb-v';
-  parameters: ColorRGBParameterArray;
+  params: ColorRGBParameterArray;
 }
 
 export interface ColorRGBA {
@@ -28,7 +28,7 @@ export interface ColorRGBA {
 
 export interface ColorRGBA_Variable {
   type: 'rgba-v';
-  parameters: ColorRGBParameterArray;
+  params: ColorRGBParameterArray;
 }
 
 export type ColorHSLParameter = Variable | number | UnitedNumber;
@@ -37,12 +37,12 @@ export type ColorHSLParameterArray = Array<ColorHSLParameter>;
 
 export interface ColorHSL_Variable {
   type: 'hsl-v';
-  parameters: ColorHSLParameterArray;
+  params: ColorHSLParameterArray;
 }
 
 export interface ColorHSLA_Variable {
   type: 'hsla-v';
-  parameters: ColorHSLParameterArray;
+  params: ColorHSLParameterArray;
 }
 
 export interface Variable {
@@ -64,7 +64,7 @@ export interface UnitedNumber {
 
 export interface GradientColorStop {
   type: 'color-stop';
-  parameters: Array<Color | string>;
+  params: Array<Color | string>;
 }
 
 export type GradientParameter = GradientColorStop | string;
@@ -73,17 +73,17 @@ export type GradientParameterArray = Array<GradientParameter>;
 
 export interface LinearGradient {
   type: 'linear-gradient';
-  parameters: GradientParameterArray;
+  params: GradientParameterArray;
 }
 
 export interface RadialGradient {
   type: 'radial-gradient';
-  parameters: GradientParameterArray;
+  params: GradientParameterArray;
 }
 
 export interface ConicGradient {
   type: 'conic-gradient';
-  parameters: GradientParameterArray;
+  params: GradientParameterArray;
 }
 
 export interface _URL {
@@ -248,7 +248,7 @@ export function parseColor(object: string | _Object): Color | false {
         } else {
           const result: ColorRGB_Variable = {
             type: 'rgb-v',
-            parameters: params
+            params: params
           };
           return result;
         }
@@ -299,7 +299,7 @@ export function parseColor(object: string | _Object): Color | false {
         } else {
           const result: ColorRGBA_Variable = {
             type: 'rgba-v',
-            parameters: params
+            params: params
           };
           return result;
         }
@@ -367,13 +367,13 @@ export function parseColor(object: string | _Object): Color | false {
           const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
           const result: ColorRGBA_Variable = {
             type: 'rgba-v',
-            parameters: [red, green, blue, alpha]
+            params: [red, green, blue, alpha]
           };
           return result;
         } else {
           const result: ColorHSL_Variable = {
             type: 'hsl-v',
-            parameters: params
+            params: params
           };
           return result;
         }
@@ -441,13 +441,13 @@ export function parseColor(object: string | _Object): Color | false {
           const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
           const result: ColorRGBA_Variable = {
             type: 'rgba-v',
-            parameters: [red, green, blue, alpha]
+            params: [red, green, blue, alpha]
           };
           return result;
         } else {
           const result: ColorHSL_Variable = {
             type: 'hsl-v',
-            parameters: params
+            params: params
           };
           return result;
         }
@@ -469,7 +469,7 @@ export function parseColor(object: string | _Object): Color | false {
       }
 
       case 'linear-gradient': {
-        const parameters = [];
+        const params = [];
         let parametersCount = 0;
         const args = object.args;
         for (let i = 0, l = args.length; i < l; i++) {
@@ -486,55 +486,55 @@ export function parseColor(object: string | _Object): Color | false {
             }
 
             if (splitArgsLen === 2 && splitArgsTags[0].has('to') && splitArgsTags[1].has('cardinal')) {
-              parameters.push(`to ${splitArgs[1].value}`);
+              params.push(`to ${splitArgs[1].value}`);
               parametersCount++;
             } else {
-              if (splitArgsTags[0].has('variable') || splitArgsTags[0].has('color') || splitArgsTags[0].has('length')) {
-                parameters.push({
+              if (hasSyntaxTagAndObjectIs(splitArgs[0], splitArgsTags[0], 'variable') || hasSyntaxTagAndObjectIs(splitArgs[0], splitArgsTags[0], 'color') || hasSyntaxTagAndObjectIs(splitArgs[0], splitArgsTags[0], 'length')) {
+                params.push({
                   type: 'color-stop',
-                  parameters: []
+                  params: []
                 });
                 parametersCount++;
                 for (let k = 0; k < splitArgsLen; k++) {
                   const splitArgTag = splitArgsTags[k];
                   const splitArg = splitArgs[k];
-                  if (splitArgTag.has('variable') || splitArgTag.has('color')) {
-                    parameters[parametersCount - 1]?.parameters.push(parseColor(splitArg));
-                  } else if (splitArgTag.has('length')) {
-                    parameters[parametersCount - 1]?.parameters.push(`${splitArg.value.toString()}${splitArg?.unit || ''}`);
+                  if (hasSyntaxTagAndObjectIs(splitArg, splitArgTag, 'variable') || hasSyntaxTagAndObjectIs(splitArg, splitArgTag, 'color')) {
+                    params[parametersCount - 1]?.params.push(parseColor(splitArg));
+                  } else if (hasSyntaxTagAndObjectIs(splitArg, splitArgTag, 'length')) {
+                    params[parametersCount - 1]?.params.push(`${splitArg.value.toString()}${splitArg?.unit || ''}`);
                   }
                 }
               }
             }
           } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'length') || hasSyntaxTagAndObjectIs(arg, argTags, 'angle')) {
-            parameters.push(`${arg.value.toString()}${arg?.unit || ''}`);
+            params.push(`${arg.value.toString()}${arg?.unit || ''}`);
             parametersCount++;
           } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable') || hasSyntaxTagAndObjectIs(arg, argTags, 'color')) {
-            parameters.push({
+            params.push({
               type: 'color-stop',
-              parameters: []
+              params: []
             });
             parametersCount++;
-            parameters[parametersCount - 1]?.parameters.push(parseColor(arg));
+            params[parametersCount - 1]?.params.push(parseColor(arg));
           }
         }
         const result: LinearGradient = {
           type: 'linear-gradient',
-          parameters: parameters
+          params: params
         };
         return result;
         break;
       }
 
       case 'radial-gradient': {
-        const parameters = [];
+        const params = [];
         let parametersCount = 0;
         const args = object.args;
         for (let i = 0, l = args.length; i < l; i++) {
           const arg = args[i];
           const argTags = getSyntaxTags(arg);
           if (arg.type === 'string') {
-            const splitArgs = splitByTopLevelDelimiter(arg.value, [' ']).result;
+            const splitArgs: Array<any> = splitByTopLevelDelimiter(arg.value, [' ']).result;
             const splitArgsTags = [];
             const splitArgsLen = splitArgs.length;
             for (let j = splitArgsLen - 1; j >= 0; j--) {
@@ -544,68 +544,68 @@ export function parseColor(object: string | _Object): Color | false {
             }
 
             if (splitArgsLen === 1) {
-              if (splitArgsTags[0].has('extent') || splitArgsTags[0].has('shape') || splitArgsTags[0].has('center')) {
-                parameters.push(splitArgs[0].value);
+              if (hasSyntaxTagAndObjectIs(splitArgs[0], splitArgsTags[0], 'extent') || hasSyntaxTagAndObjectIs(splitArgs[0], splitArgsTags[0], 'shape') || hasSyntaxTagAndObjectIs(splitArgs[0], splitArgsTags[0], 'center')) {
+                params.push(splitArgs[0].value);
                 parametersCount++;
               }
             } else if (splitArgsLen === 2 && splitArgsTags[0].has('at') && splitArgsTags[1].has('position') && !splitArgsTags[1].has('extent')) {
-              parameters.push(`at ${splitArgs[1].value}${splitArgs[1]?.unit || ''}`);
+              params.push(`at ${splitArgs[1].value}${splitArgs[1]?.unit || ''}`);
               parametersCount++;
             } else if (splitArgsLen === 2 && splitArgsTags[0].has('at') && splitArgsTags[1].has('position') && !splitArgsTags[1].has('extent') && splitArgsTags[2].has('position') && !splitArgsTags[2].has('extent')) {
-              parameters.push(`at ${splitArgs[1].value}${splitArgs[1]?.unit || ''}`);
+              params.push(`at ${splitArgs[1].value}${splitArgs[1]?.unit || ''}`);
               parametersCount++;
             } else if (splitArgsLen === 2 && splitArgsTags[0].has('shape') && splitArgsTags[1].has('extent')) {
-              parameters.push(`${splitArgs[0].value} ${splitArgs[1].value}`);
+              params.push(`${splitArgs[0].value} ${splitArgs[1].value}`);
               parametersCount++;
             } else if (splitArgsLen === 3 && splitArgsTags[0].has('shape') && splitArgsTags[1].has('at') && splitArgsTags[2].has('position') && !splitArgsTags[2].has('extent')) {
-              parameters.push(`${splitArgs[0].value} ${splitArgs[1].value} ${splitArgs[2].value}${splitArgs[2]?.unit || ''}`);
+              params.push(`${splitArgs[0].value} ${splitArgs[1].value} ${splitArgs[2].value}${splitArgs[2]?.unit || ''}`);
               parametersCount++;
             } else if (splitArgsLen === 4 && splitArgsTags[0].has('shape') && splitArgsTags[1].has('at') && splitArgsTags[2].has('position') && !splitArgsTags[2].has('extent') && splitArgsTags[3].has('position') && !splitArgsTags[3].has('extent')) {
-              parameters.push(`${splitArgs[0].value} at ${splitArgs[2].value}${splitArgs[2]?.unit || ''} ${splitArgs[3].value}${splitArgs[3]?.unit || ''}`);
+              params.push(`${splitArgs[0].value} at ${splitArgs[2].value}${splitArgs[2]?.unit || ''} ${splitArgs[3].value}${splitArgs[3]?.unit || ''}`);
               parametersCount++;
             }
 
             if (splitArgsTags[0].has('variable') || splitArgsTags[0].has('color') || splitArgsTags[0].has('length')) {
-              parameters.push({
+              params.push({
                 type: 'color-stop',
-                parameters: []
+                params: []
               });
               parametersCount++;
               for (let k = 0; k < splitArgsLen; k++) {
                 const splitArgTag = splitArgsTags[k];
                 const splitArg = splitArgs[k];
                 if (splitArgTag.has('variable') || splitArgTag.has('color')) {
-                  parameters[parametersCount - 1]?.parameters.push(parseColor(splitArg));
+                  params[parametersCount - 1]?.params.push(parseColor(splitArg));
                 } else if (splitArgTag.has('length')) {
-                  parameters[parametersCount - 1]?.parameters.push(`${splitArg.value.toString()}${splitArg?.unit || ''}`);
+                  params[parametersCount - 1]?.params.push(`${splitArg.value.toString()}${splitArg?.unit || ''}`);
                 }
               }
             }
           } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'length') || hasSyntaxTagAndObjectIs(arg, argTags, 'angle')) {
-            parameters.push(`${arg.value.toString()}${arg?.unit || ''}`);
+            params.push(`${arg.value.toString()}${arg?.unit || ''}`);
             parametersCount++;
           } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
             const parsedArg = parseColor(arg);
             if (parsedArg !== false) {
-              parameters.push({
+              params.push({
                 type: 'color-stop',
-                parameters: []
+                params: []
               });
               parametersCount++;
-              parameters[parametersCount - 1]?.parameters.push(parsedArg);
+              params[parametersCount - 1]?.params.push(parsedArg);
             }
           }
         }
         const result: RadialGradient = {
           type: 'radial-gradient',
-          parameters: parameters
+          params: params
         };
         return result;
         break;
       }
 
       case 'conic-gradient': {
-        const parameters = [];
+        const params = [];
         let parametersCount = 0;
         const args = object.args;
         for (let i = 0, l = args.length; i < l; i++) {
@@ -622,55 +622,55 @@ export function parseColor(object: string | _Object): Color | false {
             }
 
             if (splitArgsLen === 2 && splitArgsTags[0].has('from') && splitArgsTags[1].has('angle')) {
-              parameters.push(`from ${splitArgs[1].value}${splitArgs[1]?.unit || ''}`);
+              params.push(`from ${splitArgs[1].value}${splitArgs[1]?.unit || ''}`);
               parametersCount++;
             } else if (splitArgsLen === 4 && splitArgsTags[0].has('from') && splitArgsTags[1].has('angle') && splitArgsTags[2].has('at') && splitArgsTags[3].has('position')) {
-              parameters.push(`from ${splitArgs[1].value}${splitArgs[1]?.unit || ''} at ${splitArgs[3].value}${splitArgs[3]?.unit || ''}`);
+              params.push(`from ${splitArgs[1].value}${splitArgs[1]?.unit || ''} at ${splitArgs[3].value}${splitArgs[3]?.unit || ''}`);
               parametersCount++;
             } else if (splitArgsLen === 5 && splitArgsTags[0].has('from') && splitArgsTags[1].has('angle') && splitArgsTags[2].has('at') && splitArgsTags[3].has('position') && splitArgsTags[4].has('position')) {
-              parameters.push(`from ${splitArgs[1].value}${splitArgs[1]?.unit || ''} at ${splitArgs[3].value}${splitArgs[3]?.unit || ''} ${splitArgs[4].value}${splitArgs[4]?.unit || ''}`);
+              params.push(`from ${splitArgs[1].value}${splitArgs[1]?.unit || ''} at ${splitArgs[3].value}${splitArgs[3]?.unit || ''} ${splitArgs[4].value}${splitArgs[4]?.unit || ''}`);
               parametersCount++;
             } else if (splitArgsLen === 2 && splitArgsTags[0].has('at') && splitArgsTags[1].has('position')) {
-              parameters.push(`at ${splitArgs[1].value}${splitArgs[1]?.unit || ''}`);
+              params.push(`at ${splitArgs[1].value}${splitArgs[1]?.unit || ''}`);
               parametersCount++;
             } else if (splitArgsLen === 3 && splitArgsTags[0].has('at') && splitArgsTags[1].has('position') && splitArgsTags[2].has('position')) {
-              parameters.push(`at ${splitArgs[1].value}${splitArgs[1]?.unit || ''} ${splitArgs[2].value}${splitArgs[2]?.unit || ''}`);
+              params.push(`at ${splitArgs[1].value}${splitArgs[1]?.unit || ''} ${splitArgs[2].value}${splitArgs[2]?.unit || ''}`);
               parametersCount++;
             }
             if (splitArgsTags[0].has('variable') || splitArgsTags[0].has('color') || splitArgsTags[0].has('length')) {
-              parameters.push({
+              params.push({
                 type: 'color-stop',
-                parameters: []
+                params: []
               });
               parametersCount++;
               for (let k = 0; k < splitArgsLen; k++) {
                 const splitArgTag = splitArgsTags[k];
                 const splitArg = splitArgs[k];
                 if (splitArgTag.has('variable') || splitArgTag.has('color')) {
-                  parameters[parametersCount - 1]?.parameters.push(parseColor(splitArg));
+                  params[parametersCount - 1]?.params.push(parseColor(splitArg));
                 } else if (splitArgTag.has('angle')) {
-                  parameters[parametersCount - 1]?.parameters.push(`${splitArg.value.toString()}${splitArg?.unit || ''}`);
+                  params[parametersCount - 1]?.params.push(`${splitArg.value.toString()}${splitArg?.unit || ''}`);
                 }
               }
             }
           } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'angle')) {
-            parameters.push(`${arg.value.toString()}${arg?.unit || ''}`);
+            params.push(`${arg.value.toString()}${arg?.unit || ''}`);
             parametersCount++;
           } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
             const parsedArg = parseColor(arg);
             if (parsedArg !== false) {
-              parameters.push({
+              params.push({
                 type: 'color-stop',
-                parameters: []
+                params: []
               });
               parametersCount++;
-              parameters[parametersCount - 1]?.parameters.push(parsedArg);
+              params[parametersCount - 1]?.params.push(parsedArg);
             }
           }
         }
         const result: ConicGradient = {
           type: 'conic-gradient',
-          parameters: parameters
+          params: params
         };
         return result;
         break;
@@ -695,7 +695,7 @@ function invertGradientColorStops(params: GradientParameterArray, darkened: bool
     const param = params[i];
     if (typeof param !== 'string') {
       if (param.type === 'color-stop') {
-        const subParams = param.parameters;
+        const subParams = param.params;
         const subParamsLen = subParams.length;
         for (let j = subParamsLen - 1; j >= 0; j--) {
           const subParam = subParams[j];
@@ -803,7 +803,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
     }
 
     case 'rgba-v': {
-      const [R, G, B, A] = color.parameters;
+      const [R, G, B, A] = color.params;
       if (typeof R === 'number' && typeof G === 'number' && typeof B === 'number') {
         const RGB: ColorRGB = {
           type: 'rgb',
@@ -813,7 +813,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
         const [r, g, b] = invertedRGB.rgb;
         const result: ColorRGBA_Variable = {
           type: 'rgba-v',
-          parameters: [r, g, b, A]
+          params: [r, g, b, A]
         };
         return result;
       } else {
@@ -846,7 +846,7 @@ export function invertColor(color: Color, darkened: boolean = false): Color {
     }
 
     case 'linear-gradient': {
-      const invertedColors = invertGradientColorStops(color.parameters, darkened);
+      const invertedColors = invertGradientColorStops(color.params, darkened);
       const result: LinearGradient = {
         type: 'linear-gradient',
         direction: color.direction,
@@ -911,8 +911,8 @@ export function colorToString(color: Color): string {
 
     case 'rgb-v': {
       const components = [];
-      for (const parameter of color.parameters) {
-        components.push(typeof parameter === 'number' ? parameter : parameter.ref);
+      for (const param of color.params) {
+        components.push(typeof param === 'number' ? param : param.ref);
       }
       return `rgb(${components.join(',')})`;
     }
@@ -924,23 +924,23 @@ export function colorToString(color: Color): string {
 
     case 'rgba-v': {
       const components = [];
-      for (const parameter of color.parameters) {
-        components.push(typeof parameter === 'number' ? parameter : parameter.ref);
+      for (const param of color.params) {
+        components.push(typeof param === 'number' ? param : param.ref);
       }
       return `rgba(${components.join(',')})`;
     }
 
     case 'hsl-v': {
       const components = [];
-      for (const parameter of color.parameters) {
-        if (typeof parameter === 'number') {
-          components.push(parameter);
-        } else if (typeof parameter === 'object') {
-          if (parameter.type === 'number-u') {
-            components.push(`${parameter.number.toString()}${parameter.unit}`);
+      for (const param of color.params) {
+        if (typeof param === 'number') {
+          components.push(param);
+        } else if (typeof param === 'object') {
+          if (param.type === 'number-u') {
+            components.push(`${param.number.toString()}${param.unit}`);
           }
-          if (parameter.type === 'variable') {
-            components.push(parameter.ref);
+          if (param.type === 'variable') {
+            components.push(param.ref);
           }
         }
       }
@@ -949,15 +949,15 @@ export function colorToString(color: Color): string {
 
     case 'hsla-v': {
       const components = [];
-      for (const parameter of color.parameters) {
-        if (typeof parameter === 'number') {
-          components.push(parameter);
-        } else if (typeof parameter === 'object') {
-          if (parameter.type === 'number-u') {
-            components.push(`${parameter.number.toString()}${parameter.unit}`);
+      for (const param of color.params) {
+        if (typeof param === 'number') {
+          components.push(param);
+        } else if (typeof param === 'object') {
+          if (param.type === 'number-u') {
+            components.push(`${param.number.toString()}${param.unit}`);
           }
-          if (parameter.type === 'variable') {
-            components.push(parameter.ref);
+          if (param.type === 'variable') {
+            components.push(param.ref);
           }
         }
       }
