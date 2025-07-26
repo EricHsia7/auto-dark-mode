@@ -58,7 +58,7 @@ export function parseNumber(value: string): NumberComponent | ParsingFailed {
   if (unitedFloatMatch) {
     return {
       type: 'number',
-      value: parseFloat(unitedFloatMatch[1]),
+      number: parseFloat(unitedFloatMatch[1]),
       unit: unitedFloatMatch[2].trim()
     };
   }
