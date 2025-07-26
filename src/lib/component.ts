@@ -66,24 +66,33 @@ export function parseNumber(value: string): NumberComponent | ParsingFailed {
   return undefined;
 }
 
-export function parseModel(value: string): Component | ParsingFailed {
-  const parsedNumberComponent = parseNumber(value);
-  if (parsedNumberComponent !== undefined) {
-    return parsedNumberComponent;
-  }
-
+export function parseModel(value: string): ModelComponent<string> | ParsingFailed {
   if (isTopLevelModel(value)) {
     const strippedModel = stripTopLevelModel(value);
     const legalDelimiters = cssDelimiters[strippedModel.model] || cssDelimiters['default'];
     const array = splitByTopLevelDelimiter(strippedModel.result, legalDelimiters);
 
-    const parsedComponents = array.result.map((a) => parseModel(a)).filter((b) => b !== undefined);
+    const parsedComponents = array.result.map((a) => parseComponent(a)).filter((b) => b !== undefined);
 
     return {
       type: 'model',
       model: strippedModel.model,
       components: parsedComponents
     };
+  }
+
+  return undefined;
+}
+
+export function parseComponent(value: string): Component | ParsingFailed {
+  const parsedNumberComponent = parseNumber(value);
+  if (parsedNumberComponent !== undefined) {
+    return parsedNumberComponent;
+  }
+
+  const parsedModelComponent = parseModel(value);
+  if (parsedModelComponent !== undefined) {
+    return parsedModelComponent;
   }
 
   if (value !== '') {

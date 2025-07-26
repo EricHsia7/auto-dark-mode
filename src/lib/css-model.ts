@@ -1,4 +1,4 @@
-import { ParsingFailed, ModelComponent, parseModel } from './component';
+import { ParsingFailed, ModelComponent, parseComponent } from './component';
 
 export type CSSLinearGradient = 'linear-gradient';
 export type CSSRadialGradient = 'radial-gradient';
@@ -35,7 +35,7 @@ export function isVariable(modelComponent: ModelComponent<string>): modelCompone
 }
 
 export function parseCSSModel(value: string): ModelComponent<CSSColor | CSSGradient | CSSVAR> | ParsingFailed {
-  const object = parseModel(value);
+  const object = parseComponent(value);
   if (object === undefined) {
     return undefined;
   }
