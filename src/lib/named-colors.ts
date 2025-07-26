@@ -1,6 +1,4 @@
-import { ColorRGB } from './color';
-
-export const namedColors: { [name: string]: ColorRGB['rgb'] } = {
+export const namedColors: { [name: string]: [red: number, green: number, blue: number] } = {
   aliceblue: [240, 248, 255],
   antiquewhite: [250, 235, 215],
   aqua: [0, 255, 255],
