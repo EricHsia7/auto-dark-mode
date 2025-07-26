@@ -31,7 +31,7 @@ export interface ColorRGBA_Variable {
   params: ColorRGBParameterArray;
 }
 
-export type ColorHSLParameter = Variable | number | UnitedNumber;
+export type ColorHSLParameter = Variable | number;
 
 export type ColorHSLParameterArray = Array<ColorHSLParameter>;
 
@@ -256,7 +256,7 @@ export function parseColor(object: string | _Object): Color | false {
       }
 
       case 'rgba': {
-        const params = [];
+        const params: Array<number | Variable> = [];
         let paramsCount = 0;
         let subModelsCount = 0;
 
@@ -310,38 +310,30 @@ export function parseColor(object: string | _Object): Color | false {
         const params = [];
         let paramsCount = 0;
         let subModelsCount = 0;
-
         for (let i = 0, l = object.args.length; i < l; i++) {
           const arg = object.args[i];
           const argTags = getSyntaxTags(arg);
-          if (paramsCount === 0 && hasSyntaxTagAndObjectIs(arg, argTags, 'number')) {
-            params.push(arg.value);
-            paramsCount++;
-          } else if (paramsCount === 1 || paramsCount === 2) {
-            if (hasSyntaxTagAndObjectIs(arg, argTags, 'percentage')) {
-              params.push(arg.value / 100);
+          if (paramsCount <= 3) {
+            if (hasSyntaxTagAndObjectIs(arg, argTags, 'number') || hasSyntaxTagAndObjectIs(arg, argTags, 'percentage')) {
+              params.push(arg);
               paramsCount++;
-            }
-          } else if (paramsCount === 3 && hasSyntaxTagAndObjectIs(arg, argTags, 'number')) {
-            params.push(arg.value);
-            paramsCount++;
-          }
-          if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
-            const parsed = parseColor(arg);
-            if (parsed !== false) {
-              params.push();
-              paramsCount++;
-              subModelsCount++;
+            } else if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
+              const parsed = parseColor(arg) as Variable | false;
+              if (parsed !== false) {
+                params.push(parsed);
+                paramsCount++;
+                subModelsCount++;
+              }
             }
           }
         }
 
         if (subModelsCount === 0) {
           if (paramsCount === 3 || paramsCount === 4) {
-            const hue = params[0];
-            const saturation = params[1];
-            const lightness = params[2];
-            const alpha = params[3] || 1;
+            const hue = params[0].type !== 'variable' ? params[0].value : 0;
+            const saturation = params[1].type !== 'variable' ? params[1].value / 100 : 0;
+            const lightness = params[2].type !== 'variable' ? params[2].value / 100 : 0;
+            const alpha = params[3].type !== 'variable' ? params[3].value : 1;
             const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
             if (alpha === 1) {
               const result: ColorRGB = {
@@ -359,10 +351,10 @@ export function parseColor(object: string | _Object): Color | false {
           } else {
             break;
           }
-        } else if (subModelsCount === 1 && paramsCount === 4 && params[3]?.type === 'model' && params[3]?.model === 'var') {
-          const hue = params[0];
-          const saturation = params[1];
-          const lightness = params[2];
+        } else if (subModelsCount === 1 && paramsCount === 4 && typeof params[3] !== 'number' && params[3]?.type === 'variable') {
+          const hue = params[0].type !== 'variable' ? params[0].value : 0;
+          const saturation = params[1].type !== 'variable' ? params[1].value / 100 : 0;
+          const lightness = params[2].type !== 'variable' ? params[2].value / 100 : 0;
           const alpha = params[3];
           const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
           const result: ColorRGBA_Variable = {
@@ -373,7 +365,7 @@ export function parseColor(object: string | _Object): Color | false {
         } else {
           const result: ColorHSL_Variable = {
             type: 'hsl-v',
-            params: params
+            params: params                      
           };
           return result;
         }
@@ -381,7 +373,7 @@ export function parseColor(object: string | _Object): Color | false {
       }
 
       case 'hsla': {
-        const params = [];
+        const params: Array<number | Variable> = [];
         let paramsCount = 0;
         let subModelsCount = 0;
 
@@ -401,7 +393,7 @@ export function parseColor(object: string | _Object): Color | false {
             paramsCount++;
           }
           if (hasSyntaxTagAndObjectIs(arg, argTags, 'variable')) {
-            const parsed = parseColor(arg);
+            const parsed = parseColor(arg) as Variable | false;
             if (parsed !== false) {
               params.push(parsed);
               paramsCount++;
@@ -412,10 +404,10 @@ export function parseColor(object: string | _Object): Color | false {
 
         if (subModelsCount === 0) {
           if (paramsCount === 4) {
-            const hue = params[0];
-            const saturation = params[1];
-            const lightness = params[2];
-            const alpha = params[3];
+            const hue = params[0] as number;
+            const saturation = params[1] as number;
+            const lightness = params[2] as number;
+            const alpha = params[3] as number;
             const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
             if (alpha === 1) {
               const result: ColorRGB = {
@@ -433,10 +425,10 @@ export function parseColor(object: string | _Object): Color | false {
           } else {
             break;
           }
-        } else if (subModelsCount === 1 && paramsCount === 4 && params[3]?.type === 'model' && params[3]?.model === 'var') {
-          const hue = params[0];
-          const saturation = params[1];
-          const lightness = params[2];
+        } else if (subModelsCount === 1 && paramsCount === 4 && typeof params[3] !== 'number' && params[3]?.type === 'variable') {
+          const hue = params[0] as number;
+          const saturation = params[1] as number;
+          const lightness = params[2] as number;
           const alpha = params[3];
           const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
           const result: ColorRGBA_Variable = {
@@ -485,7 +477,7 @@ export function parseColor(object: string | _Object): Color | false {
               splitArgsTags.unshift(getSyntaxTags(splitArgObject));
             }
 
-            if (splitArgsLen === 2 && splitArgsTags[0].has('to') && splitArgsTags[1].has('cardinal')) {
+            if (splitArgsLen === 2 && hasSyntaxTagAndObjectIs(splitArgs[0], splitArgsTags[0], 'to') && hasSyntaxTagAndObjectIs(splitArgs[1], splitArgsTags[1], 'cardinal')) {
               params.push(`to ${splitArgs[1].value}`);
               parametersCount++;
             } else {
@@ -548,7 +540,7 @@ export function parseColor(object: string | _Object): Color | false {
                 params.push(splitArgs[0].value);
                 parametersCount++;
               }
-            } else if (splitArgsLen === 2 && splitArgsTags[0].has('at') && splitArgsTags[1].has('position') && !splitArgsTags[1].has('extent')) {
+            } else if (splitArgsLen === 2 && hasSyntaxTagAndObjectIs(splitArgs[0], splitArgsTags[0], 'at') && hasSyntaxTagAndObjectIs(splitArgs[1], splitArgsTags[1], 'position') && !hasSyntaxTagAndObjectIs(splitArgs[1], splitArgsTags[1], 'extent')) {
               params.push(`at ${splitArgs[1].value}${splitArgs[1]?.unit || ''}`);
               parametersCount++;
             } else if (splitArgsLen === 2 && splitArgsTags[0].has('at') && splitArgsTags[1].has('position') && !splitArgsTags[1].has('extent') && splitArgsTags[2].has('position') && !splitArgsTags[2].has('extent')) {
@@ -612,7 +604,7 @@ export function parseColor(object: string | _Object): Color | false {
           const arg = args[i];
           const argTags = getSyntaxTags(arg);
           if (arg.type === 'string') {
-            const splitArgs = splitByTopLevelDelimiter(arg.value, [' ']).result;
+            const splitArgs: Array<any> = splitByTopLevelDelimiter(arg.value, [' ']).result;
             const splitArgsTags = [];
             const splitArgsLen = splitArgs.length;
             for (let j = splitArgsLen - 1; j >= 0; j--) {
@@ -681,7 +673,7 @@ export function parseColor(object: string | _Object): Color | false {
     }
   }
 
-  const result = {
+  const result: ColorRGBA = {
     type: 'rgba',
     rgba: [0, 0, 0, 0]
   };
@@ -700,7 +692,7 @@ function invertGradientColorStops(params: GradientParameterArray, darkened: bool
         for (let j = subParamsLen - 1; j >= 0; j--) {
           const subParam = subParams[j];
           if (typeof subParam !== 'string') {
-            subParams.splice(j, 1, invertColor(subParam), darkened);
+            subParams.splice(j, 1, invertColor(subParam, darkened));
           }
         }
       }
@@ -912,7 +904,7 @@ export function colorToString(color: Color): string {
     case 'rgb-v': {
       const components = [];
       for (const param of color.params) {
-        components.push(typeof param === 'number' ? param : param.ref);
+        components.push(typeof param === 'number' ? param : colorToString(param));
       }
       return `rgb(${components.join(',')})`;
     }
@@ -925,7 +917,7 @@ export function colorToString(color: Color): string {
     case 'rgba-v': {
       const components = [];
       for (const param of color.params) {
-        components.push(typeof param === 'number' ? param : param.ref);
+        components.push(typeof param === 'number' ? param : colorToString(param));
       }
       return `rgba(${components.join(',')})`;
     }
@@ -949,7 +941,8 @@ export function colorToString(color: Color): string {
 
     case 'hsla-v': {
       const components = [];
-      for (const param of color.params) {
+      for (let i = color.params.length - 1; i >= 0; i--) {
+        const param = color.params[i];
         if (typeof param === 'number') {
           components.push(param);
         } else if (typeof param === 'object') {
