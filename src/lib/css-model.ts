@@ -87,9 +87,9 @@ export function parseCSSModel(value: string): ModelComponent<CSSColor | CSSGradi
         };
         return result;
       } else {
-        const result: ModelComponent<CSSRGB> = {
+        const result: ModelComponent<CSSRGBA> = {
           type: 'model',
-          model: 'rgb',
+          model: 'rgba',
           components: [
             { type: 'number', number: red, unit: '' },
             { type: 'number', number: green, unit: '' },
@@ -102,5 +102,15 @@ export function parseCSSModel(value: string): ModelComponent<CSSColor | CSSGradi
     }
   }
 
-  return object;
+  if (object.type === 'number') {
+    return undefined;
+  }
+
+  if (object.type === 'model') {
+    if (isColor(object) || isGradient(object) || isVariable(object)) {
+      return object;
+    }
+  }
+
+  return undefined;
 }
