@@ -1,6 +1,6 @@
 import { ModelComponent } from './component';
 import { CSSRGB, CSSRGBA } from './css-model';
-import { getPerChannelDifference, mergeStats } from './stats';
+import { computeStats, getPerChannelDifference, mergeStats } from './stats';
 
 const baseColors: number[][] = [
   [255, 255, 255],
