@@ -39,6 +39,68 @@ export function parseCSSModel(value: string): ModelComponent<CSSColor | CSSGradi
   if (object === undefined) {
     return undefined;
   }
-  
+
+  if (object.type === 'string') {
+    if (/^#[a-f0-9]{3,8}/i.test(object.string)) {
+      const string = object.string;
+      const len = string.length;
+
+      let red = 0;
+      let green = 0;
+      let blue = 0;
+      let alpha = 0;
+      switch (len) {
+        case 4:
+          // #fff
+          red = parseInt(string[1] + string[1], 16);
+          green = parseInt(string[2] + string[2], 16);
+          blue = parseInt(string[3] + string[3], 16);
+          alpha = 1;
+          break;
+        case 7:
+          // #ffffff
+          red = parseInt(string.slice(1, 3), 16);
+          green = parseInt(string.slice(3, 5), 16);
+          blue = parseInt(string.slice(5, 7), 16);
+          alpha = 1;
+          break;
+        case 9:
+          // #ffffffff
+          red = parseInt(string.slice(1, 3), 16);
+          green = parseInt(string.slice(3, 5), 16);
+          blue = parseInt(string.slice(5, 7), 16);
+          alpha = parseInt(string.slice(7, 9), 16) / 255;
+          break;
+        default:
+          break;
+      }
+
+      if (alpha === 1) {
+        const result: ModelComponent<CSSRGB> = {
+          type: 'model',
+          model: 'rgb',
+          components: [
+            { type: 'number', number: red, unit: '' },
+            { type: 'number', number: green, unit: '' },
+            { type: 'number', number: blue, unit: '' }
+          ]
+        };
+        return result;
+      } else {
+        const result: ModelComponent<CSSRGB> = {
+          type: 'model',
+          model: 'rgb',
+          components: [
+            { type: 'number', number: red, unit: '' },
+            { type: 'number', number: green, unit: '' },
+            { type: 'number', number: blue, unit: '' },
+            { type: 'number', number: alpha, unit: '' }
+          ]
+        };
+        return result;
+      }
+    }
+  }
+
   return object;
 }

@@ -77,10 +77,7 @@ export function getSyntaxTags(obj: _Object | any): SyntaxTagSet {
       tags.add('zero');
     }
   } else if (obj.type === 'string') {
-    if (/^#[a-f0-9]{3,8}/i.test(obj.value)) {
-      tags.add('hex');
-      tags.add('color');
-    } else if ('to' === obj.value) {
+     if ('to' === obj.value) {
       tags.add('preposition');
       tags.add('to');
     } else if ('at' === obj.value) {

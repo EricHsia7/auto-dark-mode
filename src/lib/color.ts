@@ -114,52 +114,7 @@ export function parseColor(object: string | _Object): Color | false {
   if (!tags.has('color') && !tags.has('gradient') && !tags.has('variable') && !tags.has('variable_name')) return false;
 
   if (object.type === 'string') {
-    if (tags.has('hex')) {
-      const len = object.value.length;
-      let red = 0;
-      let green = 0;
-      let blue = 0;
-      let alpha = 0;
-      switch (len) {
-        case 4:
-          // #fff
-          red = parseInt(object.value[1] + object.value[1], 16);
-          green = parseInt(object.value[2] + object.value[2], 16);
-          blue = parseInt(object.value[3] + object.value[3], 16);
-          alpha = 1;
-          break;
-        case 7:
-          // #ffffff
-          red = parseInt(object.value.slice(1, 3), 16);
-          green = parseInt(object.value.slice(3, 5), 16);
-          blue = parseInt(object.value.slice(5, 7), 16);
-          alpha = 1;
-          break;
-        case 9:
-          // #ffffffff
-          red = parseInt(object.value.slice(1, 3), 16);
-          green = parseInt(object.value.slice(3, 5), 16);
-          blue = parseInt(object.value.slice(5, 7), 16);
-          alpha = parseInt(object.value.slice(7, 9), 16) / 255;
-          break;
-        default:
-          break;
-      }
-
-      if (alpha === 1) {
-        const result: ColorRGB = {
-          type: 'rgb',
-          rgb: [red, green, blue]
-        };
-        return result;
-      } else {
-        const result: ColorRGBA = {
-          type: 'rgba',
-          rgba: [red, green, blue, alpha]
-        };
-        return result;
-      }
-    }
+  
 
     if (tags.has('variable_name')) {
       const result: VariableName = {
