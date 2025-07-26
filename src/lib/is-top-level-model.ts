@@ -1,4 +1,4 @@
-export function isTopLevelFunction(value: string): boolean {
+export function isTopLevelModel(value: string): boolean {
   const trimmed = value.trim();
   const trimmedLen = trimmed.length;
   let leftBracket = 0;

@@ -1,6 +1,6 @@
 import { stripVendorPrefix } from './strip-vendor-prefix';
 
-export function stripTopLevelFunction(value: string): string {
+export function stripTopLevelModel(value: string): { result: string; model: string } {
   const trimmed = value.trim();
   const trimmedLen = trimmed.length;
   let start = 0;
