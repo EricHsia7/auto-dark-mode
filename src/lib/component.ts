@@ -3,9 +3,9 @@ import { isTopLevelModel } from './is-top-level-model';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { stripTopLevelModel } from './strip-top-level-model';
 
-export interface ModelComponent {
+export interface ModelComponent<T extends string> {
   type: 'model';
-  model: string;
+  model: T;
   components: Array<Component>;
 }
 
@@ -21,7 +21,7 @@ export interface StringComponent {
   string: string;
 }
 
-export type Component = NumberComponent | StringComponent | ModelComponent;
+export type Component = NumberComponent | StringComponent | ModelComponent<string>;
 
 export type ComponentParsingFailed = undefined;
 
