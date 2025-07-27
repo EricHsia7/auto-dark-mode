@@ -1,9 +1,10 @@
-import { ModelComponent } from './component';
-import { CSSColor, CSSRGB, CSSRGBA } from './css-model';
+import { ModelComponent, parseComponent, parseModel } from './component';
+import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { hslToRgb } from './hsl-to-rgb';
 import { invertColor } from './invert-color';
+import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 
-function invertCSSModel(modelComponent: ModelComponent<CSSColor>, darkened: boolean = false): ModelComponent<CSSColor> {
+function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean = false): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
   switch (modelComponent.model) {
     case 'rgb': {
       const [red, green, blue, alpha] = modelComponent.components;
@@ -149,7 +150,7 @@ function invertCSSModel(modelComponent: ModelComponent<CSSColor>, darkened: bool
       const [R, G, B] = hslToRgb(hue, saturation, lightness);
       const [R1, G1, B1] = invertColor(R, G, B, darkened);
 
-     if (alpha.type === 'number' && alpha.number === 1) {
+      if (alpha.type === 'number' && alpha.number === 1) {
         const result: ModelComponent<CSSRGB> = {
           type: 'model',
           model: 'rgb',
@@ -176,6 +177,59 @@ function invertCSSModel(modelComponent: ModelComponent<CSSColor>, darkened: bool
         return result;
       }
       break;
+    }
+
+    case 'var': {
+      const components = modelComponent.components;
+      const componentsLen = components.length;
+      for (let i = componentsLen - 1; i >= 0; i--) {
+        const component = components[i];
+        if (component.type === 'model') {
+          if (isColor(component) || isVariable(component)) {
+            const inverted = invertCSSModel(component);
+            components.splice(i, 1, inverted);
+          }
+        }
+      }
+      return modelComponent;
+    }
+
+    case 'linear-gradient': {
+      const components = modelComponent.components;
+      const componentsLen = components.length;
+
+      if (componentsLen === 0) return modelComponent;
+
+      for (let i = componentsLen - 1; i >= 0; i--) {
+        const component = components[i];
+        if (component.type === 'string') {
+          // component is a direction or a group of unparseed components considered a color stop
+
+          if (/^to\s+(top|left|right|bottom)/i.test(component.string)) continue; // keep it as-is
+
+          const splitString = splitByTopLevelDelimiter(component.string, [' ']).result;
+          const subComponents = splitString.map((e) => parseCSSModel(e) || parseComponent(e)).filter((e) => e !== undefined);
+          const subComponentsLen = subComponents.length;
+          for (let j = subComponentsLen - 1; j >= 0; j--) {
+            const subComponent = subComponents[j];
+            if (subComponent.type === 'model') {
+              if (isColor(subComponent) || isVariable(subComponent)) {
+                const inverted = invertCSSModel(subComponent);
+                subComponents.splice(j, 1, inverted);
+              }
+            }
+          }
+        } else if (component.type === 'number') {
+          // component is a direction (ex: 45deg) or position alone (might appear in color hint syntax)
+          // keep it as-is
+        } else if (component.type === 'model') {
+          // component is a color alone
+          if (isColor(component) || isVariable(component)) {
+            const inverted = invertCSSModel(component);
+            component.splice(i, 1, inverted);
+          }
+        }
+      }
     }
 
     default:
