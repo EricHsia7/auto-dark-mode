@@ -2,11 +2,23 @@ export const cssDelimiters = {
   'linear-gradient': [','],
   'radial-gradient': [','],
   'conic-gradient': [','],
-  'rgb': [' ', ','],
-  'rgba': [' ', ','],
-  'hsl': [' ', ','],
-  'hsla': [' ', ','],
+  'rgb': [',', ' ', '/'],
+  'rgba': [',', ' '],
+  'hsl': [',', ' ', '/'],
+  'hsla': [',', ' '],
   'color-mix': [',', '/'],
   'calc': ['+', '-', '*', '/'], // handled differently
-  'default': [' ', ',']
+  'default': [',', ' ']
+};
+
+export const cssPrimaryDelimiters = {
+  'linear-gradient': ',',
+  'radial-gradient': ',',
+  'conic-gradient': ',',
+  'rgb': ',',
+  'rgba': ',',
+  'hsl': ',',
+  'hsla': ',',
+  'color-mix': ',',
+  'default': ','
 };

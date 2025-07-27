@@ -1,6 +1,4 @@
-import { ColorRGB } from './color';
-
-export const systemColors: { [keyword: string]: ColorRGB['rgb'] } = {
+export const systemColors: { [keyword: string]: [red: number, green: number, blue: number] } = {
   canvas: [255, 255, 255],
   canvastext: [0, 0, 0],
   linktext: [0, 136, 255],
