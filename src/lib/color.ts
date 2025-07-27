@@ -1,6 +1,6 @@
 import { clamp } from './clamp';
 import { getSyntaxTags, hasSyntaxTagAndObjectIs } from './syntax-tags';
-import { hsl_rgb } from './hsl-to-rgb';
+import { hslToRgb } from './hsl-to-rgb';
 import { namedColors } from './named-colors';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
@@ -288,7 +288,7 @@ export function parseColor(object: string | _Object): Color | false {
             const saturation = params[1].type !== 'variable' ? params[1].value / 100 : 0;
             const lightness = params[2].type !== 'variable' ? params[2].value / 100 : 0;
             const alpha = params[3].type !== 'variable' ? params[3].value : 1;
-            const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
+            const [red, green, blue] = hslToRgb(hue, saturation, lightness);
             if (alpha === 1) {
               const result: ColorRGB = {
                 type: 'rgb',
@@ -310,7 +310,7 @@ export function parseColor(object: string | _Object): Color | false {
           const saturation = params[1].type !== 'variable' ? params[1].value / 100 : 0;
           const lightness = params[2].type !== 'variable' ? params[2].value / 100 : 0;
           const alpha = params[3];
-          const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
+          const [red, green, blue] = hslToRgb(hue, saturation, lightness);
           const result: ColorRGBA_Variable = {
             type: 'rgba-v',
             params: [red, green, blue, alpha]
@@ -362,7 +362,7 @@ export function parseColor(object: string | _Object): Color | false {
             const saturation = params[1] as number;
             const lightness = params[2] as number;
             const alpha = params[3] as number;
-            const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
+            const [red, green, blue] = hslToRgb(hue, saturation, lightness);
             if (alpha === 1) {
               const result: ColorRGB = {
                 type: 'rgb',
@@ -384,7 +384,7 @@ export function parseColor(object: string | _Object): Color | false {
           const saturation = params[1] as number;
           const lightness = params[2] as number;
           const alpha = params[3];
-          const [red, green, blue] = hsl_rgb(hue, saturation, lightness);
+          const [red, green, blue] = hslToRgb(hue, saturation, lightness);
           const result: ColorRGBA_Variable = {
             type: 'rgba-v',
             params: [red, green, blue, alpha]
@@ -663,7 +663,7 @@ function invertGradientColorStops(params: GradientParameterArray, darkened: bool
  * @returns
  */
 
-export function invertColor(color: Color, darkened: boolean = false): Color {
+ function invertColor(color: Color, darkened: boolean = false): Color {
   switch (color.type) {
     case 'rgb': {
       if (isColorVibrant(color) > 0) {

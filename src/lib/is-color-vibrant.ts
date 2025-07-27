@@ -1,5 +1,3 @@
-import { ModelComponent } from './component';
-import { CSSRGB, CSSRGBA } from './css-model';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
 
 const baseColors: number[][] = [
@@ -15,11 +13,8 @@ const baseColors: number[][] = [
 
 const baseStats = computeStats(baseColors); // Precompute once
 
-export function isColorVibrant(color: ModelComponent<CSSRGB | CSSRGBA>): number {
-  let [red, green, blue] = color.components;
-  if (red.type !== 'number' || green.type !== 'number' || blue.type !== 'number') return 0;
-
-  const [prg, pgb, pbr] = getPerChannelDifference(red.number, green.number, blue.number);
+export function isColorVibrant(red: number, green: number, blue: number): number {
+  const [prg, pgb, pbr] = getPerChannelDifference(red, green, blue);
 
   const [RG_avg, RG_stdev] = mergeStats(baseStats.avg[0], baseStats.stdev[0], baseStats.n, prg, 0, 1);
   const [GB_avg, GB_stdev] = mergeStats(baseStats.avg[1], baseStats.stdev[1], baseStats.n, pgb, 0, 1);
