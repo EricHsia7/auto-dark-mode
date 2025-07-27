@@ -1,4 +1,4 @@
-import { ModelComponent, parseComponent, parseModel } from './component';
+import { ModelComponent, parseComponent } from './component';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { hslToRgb } from './hsl-to-rgb';
 import { invertColor } from './invert-color';
@@ -219,6 +219,7 @@ function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGr
               }
             }
           }
+          components.splice(i, 1, subComponents); // TODO: convert to sting and put back
         } else if (component.type === 'number') {
           // component is a direction (ex: 45deg) or position alone (might appear in color hint syntax)
           // keep it as-is
