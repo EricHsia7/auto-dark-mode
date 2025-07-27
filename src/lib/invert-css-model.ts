@@ -1,11 +1,11 @@
 import { ModelComponent, parseComponent, stringifyComponent } from './component';
-import { cssDelimiters, cssPrimaryDelimiters } from './css-delimiters';
+import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { hslToRgb } from './hsl-to-rgb';
 import { invertColor } from './invert-color';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 
-function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean = false): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
+export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean = false): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
   switch (modelComponent.model) {
     case 'rgb': {
       const [red, green, blue, alpha] = modelComponent.components;
@@ -220,6 +220,86 @@ function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGr
               }
             }
           }
+          components.splice(i, 1, { type: 'string', string: subComponents.map((e) => stringifyComponent(e, cssPrimaryDelimiters)).join(' ') });
+        } else if (component.type === 'number') {
+          // component is a direction (ex: 45deg) or position alone (might appear in color hint syntax)
+          // keep it as-is
+        } else if (component.type === 'model') {
+          // component is a color alone
+          if (isColor(component) || isVariable(component)) {
+            const inverted = invertCSSModel(component);
+            components.splice(i, 1, inverted);
+          }
+        }
+      }
+      return modelComponent;
+    }
+
+    case 'radial-gradient': {
+      const components = modelComponent.components;
+      const componentsLen = components.length;
+
+      if (componentsLen === 0) return modelComponent;
+
+      for (let i = componentsLen - 1; i >= 0; i--) {
+        const component = components[i];
+        if (component.type === 'string') {
+          // component is a shape, size, or a group of unparseed components considered a color stop
+          if (/^(circle|ellipse|center)?\s*((at\s*(top|left|right|bottom|center|[\+\-0-9\.]+[a-z%]+|0)\s*(top|left|right|bottom|center|[\+\-0-9\.]+[a-z%]+|0)?)|closest-side|closest-corner|farthest-side|farthest-corner)?$/i.test(component.string)) continue; // keep it as-is
+
+          const splitString = splitByTopLevelDelimiter(component.string, [' ']).result;
+          const subComponents = splitString.map((e) => parseCSSModel(e) || parseComponent(e)).filter((e) => e !== undefined);
+          const subComponentsLen = subComponents.length;
+          for (let j = subComponentsLen - 1; j >= 0; j--) {
+            const subComponent = subComponents[j];
+            if (subComponent.type === 'model') {
+              if (isColor(subComponent) || isVariable(subComponent)) {
+                const inverted = invertCSSModel(subComponent);
+                subComponents.splice(j, 1, inverted);
+              }
+            }
+          }
+
+          components.splice(i, 1, { type: 'string', string: subComponents.map((e) => stringifyComponent(e, cssPrimaryDelimiters)).join(' ') });
+        } else if (component.type === 'number') {
+          // component is a direction (ex: 45deg) or position alone (might appear in color hint syntax)
+          // keep it as-is
+        } else if (component.type === 'model') {
+          // component is a color alone
+          if (isColor(component) || isVariable(component)) {
+            const inverted = invertCSSModel(component);
+            components.splice(i, 1, inverted);
+          }
+        }
+      }
+      return modelComponent;
+    }
+
+    case 'conic-gradient': {
+      const components = modelComponent.components;
+      const componentsLen = components.length;
+
+      if (componentsLen === 0) return modelComponent;
+
+      for (let i = componentsLen - 1; i >= 0; i--) {
+        const component = components[i];
+        if (component.type === 'string') {
+          // component is a starting angle, position, or a group of unparseed components considered a color stop
+          if (/^(from ([\+\-0-9\.]+(deg|rad|grad|turn)|0))?\s*(at\s*(top|left|right|bottom|center|[\+\-0-9\.]+[a-z%]+|0)\s*(top|left|right|bottom|center|[\+\-0-9\.]+[a-z%]+|0)?)?$/i.test(component.string)) continue; // keep it as-is
+
+          const splitString = splitByTopLevelDelimiter(component.string, [' ']).result;
+          const subComponents = splitString.map((e) => parseCSSModel(e) || parseComponent(e)).filter((e) => e !== undefined);
+          const subComponentsLen = subComponents.length;
+          for (let j = subComponentsLen - 1; j >= 0; j--) {
+            const subComponent = subComponents[j];
+            if (subComponent.type === 'model') {
+              if (isColor(subComponent) || isVariable(subComponent)) {
+                const inverted = invertCSSModel(subComponent);
+                subComponents.splice(j, 1, inverted);
+              }
+            }
+          }
+
           components.splice(i, 1, { type: 'string', string: subComponents.map((e) => stringifyComponent(e, cssPrimaryDelimiters)).join(' ') });
         } else if (component.type === 'number') {
           // component is a direction (ex: 45deg) or position alone (might appear in color hint syntax)
