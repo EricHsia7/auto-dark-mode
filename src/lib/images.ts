@@ -1,9 +1,12 @@
-import { colorToString, invertColor, parseColor } from './color';
+import { stringifyComponent } from './component';
+import { cssPrimaryDelimiters } from './css-delimiters';
+import { parseCSSModel } from './css-model';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
 import { getMimetype } from './get-mimetype';
 import { getSVGContent } from './get-svg-content';
+import { invertCSSModel } from './invert-css-model';
 import { invertPropertyValuePairs } from './invert-property-value-pairs';
 import { joinByDelimiters } from './join-by-delimiters';
 import { resolveRelativeURL } from './resolve-relative-url';
@@ -147,10 +150,10 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
             const colorsLen = colors.result.length;
             for (let i = colorsLen - 1; i >= 0; i--) {
               const color = colors.result[i];
-              const parsedColor = parseColor(color);
-              if (parsedColor) {
-                const invertedColor = invertColor(parsedColor, false);
-                colors.result.splice(i, 1, colorToString(invertedColor));
+              const parsedColor = parseCSSModel(color);
+              if (parsedColor !== undefined) {
+                const invertedColor = invertCSSModel(parsedColor, false);
+                colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
               }
             }
             element.setAttribute(property, joinByDelimiters(colors.result, colors.delimiters));

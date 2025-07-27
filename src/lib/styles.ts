@@ -1,9 +1,12 @@
 import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
+import { stringifyComponent } from './component';
+import { parseCSSModel } from './css-model';
 import { deepAssign } from './deep-assign';
 import { evaluateTheme } from './evaluate-theme';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
+import { invertCSSModel } from './invert-css-model';
 import { isDarkened } from './is-darkened';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
@@ -350,12 +353,13 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
         const colorsLen = colors.result.length;
         for (let i = colorsLen - 1; i >= 0; i--) {
           const color = colors.result[i];
-          const parsedColor = parseColor(color);
-          if (parsedColor) {
+          const parsedColor = parseCSSModel(color);
+          if (parsedColor !== undefined) {
             const darkened = isDarkened(key);
-            const invertedColor = invertColor(parsedColor, darkened);
-            colors.result.splice(i, 1, colorToString(invertedColor));
+            const invertedColor = invertCSSModel(parsedColor, darkened);
+            colors.result.splice(i, 1, stringifyComponent(invertedColor));
 
+            // TODO: check components
             if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
               let weight = 0;
               let r = 0;
