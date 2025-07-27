@@ -98,7 +98,7 @@ function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGr
       if (hue.type !== 'number' || saturation.type !== 'number' || lightness.type !== 'number') return modelComponent;
       if (hue.unit !== '' || saturation.unit !== '%' || lightness.unit !== '%') return modelComponent;
 
-      const [R, G, B] = hslToRgb(hue.number, saturation.number, lightness.number);
+      const [R, G, B] = hslToRgb(hue.number, saturation.number / 100, lightness.number / 100);
       const [R1, G1, B1] = invertColor(R, G, B, darkened);
 
       if (alpha === undefined) {
@@ -148,7 +148,7 @@ function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGr
       if (hue.type !== 'number' || saturation.type !== 'number' || lightness.type !== 'number') return modelComponent;
       if (hue.unit !== '' || saturation.unit !== '%' || lightness.unit !== '%') return modelComponent;
 
-      const [R, G, B] = hslToRgb(hue.number, saturation.number, lightness.number);
+      const [R, G, B] = hslToRgb(hue.number, saturation.number / 100, lightness.number / 100);
       const [R1, G1, B1] = invertColor(R, G, B, darkened);
 
       if (alpha.type === 'number' && alpha.number === 1) {
