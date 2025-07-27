@@ -69,7 +69,7 @@ export function parseNumber(value: string): NumberComponent | ParsingFailed {
 export function parseModel(value: string): ModelComponent<string> | ParsingFailed {
   if (isTopLevelModel(value)) {
     const strippedModel = stripTopLevelModel(value);
-    const legalDelimiters = cssDelimiters[strippedModel.model] || cssDelimiters['default'];
+    const legalDelimiters = cssDelimiters[strippedModel.model] || cssDelimiters['default']; // TODO: separate the map
     const array = splitByTopLevelDelimiter(strippedModel.result, legalDelimiters);
 
     const parsedComponents = array.result.map((a) => parseComponent(a)).filter((b) => b !== undefined);
