@@ -318,4 +318,16 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
     default:
       break;
   }
+
+  const fallbackResult: ModelComponent<CSSRGBA> = {
+    type: 'model',
+    model: 'rgba',
+    components: [
+      { type: 'number', number: 0, unit: '' },
+      { type: 'number', number: 0, unit: '' },
+      { type: 'number', number: 0, unit: '' },
+      { type: 'number', number: 0, unit: '' }
+    ]
+  };
+  return fallbackResult;
 }
