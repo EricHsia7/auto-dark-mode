@@ -2,7 +2,7 @@ import { isColorVibrant } from './is-color-vibrant';
 
 export function invertColor(red: number, green: number, blue: number, darkened: boolean = false): [red: number, green: number, blue: number] {
   if (isColorVibrant(red, green, blue) > 0) {
-    return color;
+    return [red, green, blue];
   }
 
   if (red === 0 && green === 0 && blue === 0) {
