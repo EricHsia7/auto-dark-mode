@@ -1,17 +1,24 @@
-import { ColorRGBA, isColorDark } from './color';
+import { isColorDark } from './is-color-dark';
 
 export type theme = 'light' | 'dark';
 
-export function evaluateTheme(backgroundColor: ColorRGBA, textColor: ColorRGBA): theme {
-  if (backgroundColor.rgba[3] === 0 && isColorDark(textColor) > 0.6) {
+export function evaluateTheme(backgroundColor: [red: number, green: number, blue: number, alpha: number], textColor: [red: number, green: number, blue: number, alpha: number]): theme {
+  const [r1, g1, b1, a1] = backgroundColor;
+  const [r2, g2, b2, a2] = textColor;
+
+  const p2 = isColorDark(r2, g2, b2, a2);
+
+  if (a1 === 0 && p2 > 0.6) {
     return 'light';
   }
 
-  if (textColor.rgba[3] === 0 && isColorDark(backgroundColor) < 0.4) {
+  const p1 = isColorDark(r1, g1, b1, a1);
+
+  if (a2 === 0 && p1 < 0.4) {
     return 'light';
   }
 
-  if (isColorDark(textColor) > isColorDark(backgroundColor)) {
+  if (p2 > p1) {
     return 'light';
   } else {
     return 'dark';
