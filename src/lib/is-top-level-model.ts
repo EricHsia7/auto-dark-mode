@@ -14,10 +14,10 @@ export function isTopLevelModel(value: string): boolean {
     } else if (char === ')') {
       rightBracket++;
       depth--;
-      lastRightBracketIndex = i;
     }
     if (leftBracket === rightBracket && depth === 0 && char === ')') {
       pairs++;
+      lastRightBracketIndex = i;
     }
     if (pairs > 1) {
       return false;
@@ -25,7 +25,7 @@ export function isTopLevelModel(value: string): boolean {
   }
   if (pairs === 1) {
     // Check for any non-whitespace after the last closing parenthesis
-    if (lastRightBracketIndex !== -1 && trimmed.slice(lastRightBracketIndex + 1).trim().length > 0) {
+    if (trimmedLen - 1 > lastRightBracketIndex) {
       return false;
     }
     return true;
