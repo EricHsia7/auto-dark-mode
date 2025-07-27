@@ -1,4 +1,4 @@
-export function joinByDelimiters(array: Array<string>, delimiters: Array<',' | ' '>): string {
+export function joinByDelimiters(array: Array<string>, delimiters: Array<string>): string {
   const arrayLen = array.length;
   const delimitersLen = delimiters.length;
   if (arrayLen - 1 === delimitersLen) {
