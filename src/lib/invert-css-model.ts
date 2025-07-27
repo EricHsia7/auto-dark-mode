@@ -232,6 +232,7 @@ function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGr
           }
         }
       }
+      return modelComponent;
     }
 
     default:
