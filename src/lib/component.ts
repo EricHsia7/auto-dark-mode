@@ -104,3 +104,29 @@ export function parseComponent(value: string): Component | ParsingFailed {
 
   return undefined;
 }
+
+export function stringifyComponent(
+  component: Component | ParsingFailed,
+  delimitersMap: {
+    [model: string]: string;
+  }
+): string {
+  if (!component) return '';
+
+  if (component.type === 'number') {
+    return `${component.number}${component.unit}`;
+  }
+
+  if (component.type === 'string') {
+    return component.string;
+  }
+
+  if (component.type === 'model') {
+    // Join subcomponents with a space (or use a delimiter if needed)
+    const delimiter = delimitersMap[component.model] || ' ';
+    const inner = component.components.map(stringifyComponent).join(delimiter);
+    return `${component.model}(${inner})`;
+  }
+
+  return '';
+}
