@@ -124,7 +124,7 @@ export function stringifyComponent(
   if (component.type === 'model') {
     // Join subcomponents with a space (or use a delimiter if needed)
     const delimiter = delimitersMap[component.model] || ' ';
-    const inner = component.components.map(stringifyComponent).join(delimiter);
+    const inner = component.components.map(e => stringifyComponent(e, delimitersMap)).join(delimiter);
     return `${component.model}(${inner})`;
   }
 

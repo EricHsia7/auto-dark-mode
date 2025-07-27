@@ -1,5 +1,5 @@
 import { ModelComponent, parseComponent, stringifyComponent } from './component';
-import { cssDelimiters } from './css-delimiters';
+import { cssDelimiters, cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { hslToRgb } from './hsl-to-rgb';
 import { invertColor } from './invert-color';
@@ -218,7 +218,7 @@ function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGr
                 const inverted = invertCSSModel(subComponent);
                 subComponents.splice(j, 1, {
                   type: 'string',
-                  string: stringifyComponent(inverted, cssDelimiters)
+                  string: stringifyComponent(inverted, cssPrimaryDelimiters)
                 });
               }
             }
