@@ -192,15 +192,16 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
       if (black.unit !== '' && black.unit !== '%') return modelComponent;
 
       const [R, G, B] = hwbToRgb(angleToDegrees(hue.number), white.number / 100, black.number / 100);
+      const [R1, G1, B1] = invertColor(R, G, B, darkened);
 
       if (alpha === undefined) {
         const result: ModelComponent<CSSRGB> = {
           type: 'model',
           model: 'rgb',
           components: [
-            { type: 'number', number: R, unit: '' },
-            { type: 'number', number: G, unit: '' },
-            { type: 'number', number: B, unit: '' }
+            { type: 'number', number: R1, unit: '' },
+            { type: 'number', number: G1, unit: '' },
+            { type: 'number', number: B1, unit: '' }
           ]
         };
         return result;
@@ -209,9 +210,9 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           type: 'model',
           model: 'rgb',
           components: [
-            { type: 'number', number: R, unit: '' },
-            { type: 'number', number: G, unit: '' },
-            { type: 'number', number: B, unit: '' }
+            { type: 'number', number: R1, unit: '' },
+            { type: 'number', number: G1, unit: '' },
+            { type: 'number', number: B1, unit: '' }
           ]
         };
         return result;
@@ -219,14 +220,14 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         const result: ModelComponent<CSSRGBA> = {
           type: 'model',
           model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          components: [{ type: 'number', number: R1, unit: '' }, { type: 'number', number: G1, unit: '' }, { type: 'number', number: B1, unit: '' }, alpha]
         };
         return result;
       } else if (alpha.type === 'model' && alpha.model === 'var') {
         const result: ModelComponent<CSSRGBA> = {
           type: 'model',
           model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          components: [{ type: 'number', number: R1, unit: '' }, { type: 'number', number: G1, unit: '' }, { type: 'number', number: B1, unit: '' }, alpha]
         };
         return result;
       }

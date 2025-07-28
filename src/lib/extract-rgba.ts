@@ -1,6 +1,9 @@
+import { angleToDegrees } from './angle-to-degree';
 import { ModelComponent } from './component';
 import { CSSColor, CSSGradient, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
+import { isAngle } from './css-units';
 import { hslToRgb } from './hsl-to-rgb';
+import { hwbToRgb } from './hwb-to-rgb';
 
 export function extractRGBA(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>): [red: number, green: number, blue: number, alpha: number] {
   switch (modelComponent.model) {
@@ -68,6 +71,23 @@ export function extractRGBA(modelComponent: ModelComponent<CSSColor | CSSVAR | C
       const [R, G, B] = hslToRgb(hue.number, saturation.number / 100, lightness.number / 100);
 
       return [R, G, B, alpha.number];
+    }
+
+    case 'hwb': {
+      const [hue, white, black, alpha] = modelComponent.components;
+      if (typeof hue !== 'object' || typeof black !== 'object' || typeof white !== 'object') return [0, 0, 0, 0];
+      if (hue.type !== 'number' || white.type !== 'number' || black.type !== 'number') return [0, 0, 0, 0];
+      if (!isAngle(hue)) return [0, 0, 0, 0];
+      if (white.unit !== '' && white.unit !== '%') return [0, 0, 0, 0];
+      if (black.unit !== '' && black.unit !== '%') return [0, 0, 0, 0];
+
+      const [R, G, B] = hwbToRgb(angleToDegrees(hue.number), white.number / 100, black.number / 100);
+
+      if (alpha === undefined) {
+        return [R, G, B, 1];
+      } else if (alpha.type === 'number') {
+        return [R, G, B, alpha.number];
+      }
     }
 
     case 'var': {
