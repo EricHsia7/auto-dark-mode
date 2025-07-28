@@ -1,0 +1,55 @@
+.auto_dark_mode_panel_container {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 99999;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (max-width: 768px) {
+  .auto_dark_mode_panel_container {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 60%, var(--auto-dark-mode-ffffff) 60%, var(--auto-dark-mode-ffffff) 100%);
+  }
+
+  .auto_dark_mode_panel_container::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .auto_dark_mode_panel_container {
+    background-color: rgba(0, 0, 0, 0);
+    overflow: hidden;
+  }
+}
+
+.auto_dark_mode_panel_container[displayed="true"] {
+  visibility: visible;
+}
+
+.auto_dark_mode_panel_container.auto_dark_mode_panel_container_slide_in {
+  animation-name: auto-dark-mode-panel-fade-in;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-direction: normal;
+}
+
+.auto_dark_mode_panel_container.auto_dark_mode_panel_container_slided_in {
+  opacity: 1;
+}
+
+.auto_dark_mode_panel_container.auto_dark_mode_panel_container_slide_out {
+  animation-name: auto-dark-mode-panel-fade-in;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-direction: reverse;
+}

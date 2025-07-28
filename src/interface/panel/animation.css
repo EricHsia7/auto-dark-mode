@@ -22,14 +22,12 @@
   }
 }
 
-@keyframes auto-dark-mode-panel-overlay-fade-in {
+@keyframes auto-dark-mode-panel-fade-in {
   0% {
     opacity: 0;
-    --auto-dark-mode-overlay-mask-percentage: 100%;
   }
 
   100% {
     opacity: 1;
-    --auto-dark-mode-overlay-mask-percentage: 70%;
   }
 }

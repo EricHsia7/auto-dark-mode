@@ -2,6 +2,7 @@ import { StyleSheetCSSArray, StyleSheetCSSItem } from '../../lib/styles';
 
 let panelInitialized: boolean = false;
 let overlayElement;
+let containerElement;
 let panelElement;
 let stylesheetsElement;
 let toggleElement;
@@ -129,6 +130,9 @@ export function initializePanel(): void {
   const newOverlayElement = document.createElement('div');
   newOverlayElement.classList.add('auto_dark_mode_panel_overlay');
 
+  const newContainerElement = document.createElement('div');
+  newContainerElement.classList.add('auto_dark_mode_panel_container');
+
   const newSpaceElement = document.createElement('div');
   newSpaceElement.classList.add('auto_dark_mode_space');
   newSpaceElement.addEventListener('click', function () {
@@ -205,14 +209,17 @@ export function initializePanel(): void {
 
   newPanelElement.appendChild(newPanelBodyElement);
 
-  newOverlayElement.appendChild(newSpaceElement);
+  newContainerElement.appendChild(newSpaceElement);
 
-  newOverlayElement.appendChild(newPanelElement);
+  newContainerElement.appendChild(newPanelElement);
 
   document.documentElement.appendChild(newOverlayElement);
 
+  document.documentElement.appendChild(newContainerElement);
+
   overlayElement = document.querySelector('.auto_dark_mode_panel_overlay') as HTMLElement;
-  panelElement = overlayElement.querySelector('.auto_dark_mode_panel') as HTMLElement;
+  containerElement = document.querySelector('.auto_dark_mode_panel_container') as HTMLElement;
+  panelElement = containerElement.querySelector('.auto_dark_mode_panel') as HTMLElement;
   stylesheetsElement = panelElement.querySelector('.auto_dark_mode_panel_stylesheets') as HTMLElement;
   toggleElement = panelElement.querySelector('.auto_dark_mode_panel_head .auto_dark_mode_toggle') as HTMLElement;
 }
@@ -223,6 +230,7 @@ export function openPanel(): void {
   }
 
   overlayElement.setAttribute('displayed', 'true');
+  containerElement.setAttribute('displayed', 'true');
   panelElement.setAttribute('displayed', 'true');
 
   overlayElement.addEventListener(
@@ -235,7 +243,7 @@ export function openPanel(): void {
     { once: true }
   );
 
-  panelElement.addEventListener(
+  containerElement.addEventListener(
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
@@ -246,7 +254,7 @@ export function openPanel(): void {
   );
 
   overlayElement.classList.add('auto_dark_mode_panel_overlay_fade_in');
-  panelElement.classList.add('auto_dark_mode_panel_slide_in');
+  containerElement.classList.add('auto_dark_mode_panel_slide_in');
 }
 
 export function closePanel(): void {
@@ -264,7 +272,7 @@ export function closePanel(): void {
     { once: true }
   );
 
-  panelElement.addEventListener(
+  containerElement.addEventListener(
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
@@ -275,5 +283,5 @@ export function closePanel(): void {
   );
 
   overlayElement.classList.add('auto_dark_mode_panel_overlay_fade_out');
-  panelElement.classList.add('auto_dark_mode_panel_slide_out');
+  containerElement.classList.add('auto_dark_mode_panel_slide_out');
 }
