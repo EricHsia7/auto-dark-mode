@@ -1,8 +1,10 @@
+import { angleToDegrees } from './angle-to-degree';
 import { ModelComponent, parseComponent, stringifyComponent } from './component';
 import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { isAngle } from './css-units';
 import { hslToRgb } from './hsl-to-rgb';
+import { hwbToRgb } from './hwb-to-rgb';
 import { invertColor } from './invert-color';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 
@@ -183,11 +185,51 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
 
     case 'hwb': {
       const [hue, white, black, alpha] = modelComponent.components;
-      if (typeof hue !== 'object' || typeof black !== 'object' || typeof white !== 'object' || typeof alpha !== 'object') return modelComponent;
+      if (typeof hue !== 'object' || typeof black !== 'object' || typeof white !== 'object') return modelComponent;
       if (hue.type !== 'number' || white.type !== 'number' || black.type !== 'number') return modelComponent;
       if (!isAngle(hue)) return modelComponent;
       if (white.unit !== '' && white.unit !== '%') return modelComponent;
       if (black.unit !== '' && black.unit !== '%') return modelComponent;
+
+      const [R, G, B] = hwbToRgb(angleToDegrees(hue.number), white.number / 100, black.number / 100);
+
+      if (alpha === undefined) {
+        const result: ModelComponent<CSSRGB> = {
+          type: 'model',
+          model: 'rgb',
+          components: [
+            { type: 'number', number: R, unit: '' },
+            { type: 'number', number: G, unit: '' },
+            { type: 'number', number: B, unit: '' }
+          ]
+        };
+        return result;
+      } else if (alpha.type === 'number' && alpha.number === 1) {
+        const result: ModelComponent<CSSRGB> = {
+          type: 'model',
+          model: 'rgb',
+          components: [
+            { type: 'number', number: R, unit: '' },
+            { type: 'number', number: G, unit: '' },
+            { type: 'number', number: B, unit: '' }
+          ]
+        };
+        return result;
+      } else if (alpha.type === 'number') {
+        const result: ModelComponent<CSSRGBA> = {
+          type: 'model',
+          model: 'rgba',
+          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+        };
+        return result;
+      } else if (alpha.type === 'model' && alpha.model === 'var') {
+        const result: ModelComponent<CSSRGBA> = {
+          type: 'model',
+          model: 'rgba',
+          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+        };
+        return result;
+      }
     }
 
     case 'var': {
