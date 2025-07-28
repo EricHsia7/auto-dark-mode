@@ -1,4 +1,5 @@
 import { stringifyComponent } from './component';
+import { cssPrimaryDelimiters } from './css-delimiters';
 import { parseCSSModel } from './css-model';
 import { invertCSSModel } from './invert-css-model';
 import { joinByDelimiters } from './join-by-delimiters';
@@ -50,7 +51,7 @@ export function invertPropertyValuePairs(cssText: string): string {
       const parsedColor = parseCSSModel(color);
       if (parsedColor !== undefined) {
         const invertedColor = invertCSSModel(parsedColor, false);
-        colors.result.splice(i, 1, stringifyComponent(invertedColor));
+        colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
       }
     }
 

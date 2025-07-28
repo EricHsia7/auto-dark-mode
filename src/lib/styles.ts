@@ -1,4 +1,5 @@
 import { stringifyComponent } from './component';
+import { cssPrimaryDelimiters } from './css-delimiters';
 import { parseCSSModel } from './css-model';
 import { deepAssign } from './deep-assign';
 import { evaluateTheme } from './evaluate-theme';
@@ -359,7 +360,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           if (parsedColor !== undefined) {
             const darkened = isDarkened(key);
             const invertedColor = invertCSSModel(parsedColor, darkened);
-            colors.result.splice(i, 1, stringifyComponent(invertedColor));
+            colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
 
             const [r, g, b, a] = extractRGBA(parsedColor);
             if (a !== 0) {

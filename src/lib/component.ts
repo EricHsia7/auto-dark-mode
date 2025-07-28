@@ -106,7 +106,7 @@ export function parseComponent(value: string): Component | ParsingFailed {
 }
 
 export function stringifyComponent(component: Component | ParsingFailed, delimitersMap: { [model: string]: string }): string {
-  if (component === undefined || typeof component !== 'object' || Array.isArray(component)) return '';
+  if (component === undefined) return '';
 
   if (component.type === 'number') {
     return `${component.number}${component.unit}`;
