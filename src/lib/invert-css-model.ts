@@ -190,6 +190,14 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
             const inverted = invertCSSModel(component);
             components.splice(i, 1, inverted);
           }
+        } else if (component.type === 'string') {
+          const parsed = parseCSSModel(component.string);
+          if (parsed !== undefined) {
+            if (isColor(parsed) || isVariable(parsed)) {
+              const inverted = invertCSSModel(parsed);
+              components.splice(i, 1, inverted);
+            }
+          }
         }
       }
       return modelComponent;
