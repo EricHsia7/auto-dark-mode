@@ -27,7 +27,7 @@
 
 @media (min-width: 769px) {
   .auto_dark_mode_panel_container {
-    transform: translateX(-100%);
+    transform: translateX(-400px);
     overflow: hidden;
     background-color: rgba(0, 0, 0, 0);
   }
@@ -52,7 +52,7 @@
 
 @media (min-width: 768px) {
   .auto_dark_mode_panel_container.auto_dark_mode_panel_container_slided_in {
-    transform: translateX(0%);
+    transform: translateX(0px);
   }
 }
 
