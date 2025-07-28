@@ -13,6 +13,7 @@
 
 @media (max-width: 768px) {
   .auto_dark_mode_panel_container {
+    transform: translateY(100%);
     overflow-x: hidden;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
@@ -27,8 +28,9 @@
 
 @media (min-width: 769px) {
   .auto_dark_mode_panel_container {
-    background-color: rgba(0, 0, 0, 0);
+    transform: translateX(-100%);
     overflow: hidden;
+    background-color: rgba(0, 0, 0, 0);
   }
 }
 
@@ -37,18 +39,26 @@
 }
 
 .auto_dark_mode_panel_container.auto_dark_mode_panel_container_slide_in {
-  animation-name: auto-dark-mode-panel-fade-in;
+  animation-name: auto-dark-mode-panel-slide-in;
   animation-duration: 0.3s;
   animation-fill-mode: forwards;
   animation-direction: normal;
 }
 
-.auto_dark_mode_panel_container.auto_dark_mode_panel_container_slided_in {
-  opacity: 1;
+@media (max-width: 768px) {
+  .auto_dark_mode_panel_container.auto_dark_mode_panel_container_slided_in {
+    transform: translateY(0%);
+  }
+}
+
+@media (min-width: 768px) {
+  .auto_dark_mode_panel_container.auto_dark_mode_panel_container_slided_in {
+    transform: translateX(0%);
+  }
 }
 
 .auto_dark_mode_panel_container.auto_dark_mode_panel_container_slide_out {
-  animation-name: auto-dark-mode-panel-fade-in;
+  animation-name: auto-dark-mode-panel-slide-in;
   animation-duration: 0.3s;
   animation-fill-mode: forwards;
   animation-direction: reverse;
