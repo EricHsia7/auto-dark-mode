@@ -35,25 +35,3 @@
     display: none;
   }
 }
-
-.auto_dark_mode_panel[displayed="true"] {
-  visibility: visible;
-}
-
-.auto_dark_mode_panel.auto_dark_mode_panel_slide_in {
-  animation-name: auto-dark-mode-panel-slide-in;
-  animation-duration: 0.3s;
-  animation-fill-mode: forwards;
-  animation-direction: normal;
-}
-
-.auto_dark_mode_panel.auto_dark_mode_panel_slided_in {
-  transform: translateY(0%);
-}
-
-.auto_dark_mode_panel.auto_dark_mode_panel_slide_out {
-  animation-name: auto-dark-mode-panel-slide-in;
-  animation-duration: 0.3s;
-  animation-fill-mode: forwards;
-  animation-direction: reverse;
-}

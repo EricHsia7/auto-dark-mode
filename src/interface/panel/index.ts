@@ -247,14 +247,14 @@ export function openPanel(): void {
     'animationend',
     function (event: Event) {
       const target = event.target as HTMLElement;
-      target.classList.add('auto_dark_mode_panel_slided_in');
-      target.classList.remove('auto_dark_mode_panel_slide_in');
+      target.classList.add('auto_dark_mode_panel_container_slided_in');
+      target.classList.remove('auto_dark_mode_panel_container_slide_in');
     },
     { once: true }
   );
 
   overlayElement.classList.add('auto_dark_mode_panel_overlay_fade_in');
-  containerElement.classList.add('auto_dark_mode_panel_slide_in');
+  containerElement.classList.add('auto_dark_mode_panel_container_slide_in');
 }
 
 export function closePanel(): void {
@@ -277,11 +277,11 @@ export function closePanel(): void {
     function (event: Event) {
       const target = event.target as HTMLElement;
       target.setAttribute('displayed', 'false');
-      target.classList.remove('auto_dark_mode_panel_slide_out');
+      target.classList.remove('auto_dark_mode_panel_container_slide_out');
     },
     { once: true }
   );
 
   overlayElement.classList.add('auto_dark_mode_panel_overlay_fade_out');
-  containerElement.classList.add('auto_dark_mode_panel_slide_out');
+  containerElement.classList.add('auto_dark_mode_panel_container_slide_out');
 }
