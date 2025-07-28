@@ -231,7 +231,6 @@ export function openPanel(): void {
 
   overlayElement.setAttribute('displayed', 'true');
   containerElement.setAttribute('displayed', 'true');
-  panelElement.setAttribute('displayed', 'true');
 
   overlayElement.addEventListener(
     'animationend',

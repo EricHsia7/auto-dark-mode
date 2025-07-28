@@ -2,7 +2,7 @@
   background-color: var(--auto-dark-mode-ffffff);
   user-select: none;
   -webkit-user-select: none;
-  visibility: hidden;
+  visibility: inherit;
   display: inline-block;
 }
 
