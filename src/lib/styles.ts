@@ -341,7 +341,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
   let textColorBlue = 0;
   let textColorAlpha = 0;
 
-  let quantity = 0;
+  // let quantity = 0;
 
   for (const key in object) {
     const value = object[key];
@@ -390,7 +390,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
                   }
                 }
               }
-              quantity++;
+              // quantity++;
             }
           }
         }
@@ -403,8 +403,8 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     }
   }
 
-  const mainBackgroundColor = backgroundColorAlpha > 0 ? [(backgroundColorRed / backgroundColorAlpha) * 255, (backgroundColorGreen / backgroundColorAlpha) * 255, (backgroundColorBlue / backgroundColorAlpha) * 255, backgroundColorAlpha / quantity] : [0, 0, 0, 0];
-  const mainTextColor = textColorAlpha > 0 ? [(textColorRed / textColorAlpha) * 255, (textColorGreen / textColorAlpha) * 255, (textColorBlue / textColorAlpha) * 255, textColorAlpha / quantity] : [0, 0, 0, 0];
+  const mainBackgroundColor = backgroundColorAlpha > 0 ? [(backgroundColorRed / backgroundColorAlpha) * 255, (backgroundColorGreen / backgroundColorAlpha) * 255, (backgroundColorBlue / backgroundColorAlpha) * 255, 1] : [0, 0, 0, 0];
+  const mainTextColor = textColorAlpha > 0 ? [(textColorRed / textColorAlpha) * 255, (textColorGreen / textColorAlpha) * 255, (textColorBlue / textColorAlpha) * 255, 1] : [0, 0, 0, 0];
 
   const originalTheme = evaluateTheme(mainBackgroundColor, mainTextColor);
 
