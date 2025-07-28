@@ -1,5 +1,5 @@
 import { ModelComponent } from './component';
-import { CSSColor, CSSGradient, CSSVAR } from './css-model';
+import { CSSColor, CSSGradient, CSSVAR, parseCSSModel } from './css-model';
 
 export function extractRGBA(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>): [red: number, green: number, blue: number, alpha: number] {
   switch (modelComponent.model) {
