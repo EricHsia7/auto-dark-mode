@@ -1,3 +1,4 @@
+import { clamp } from './clamp';
 import { isColorVibrant } from './is-color-vibrant';
 
 export function invertColor(red: number, green: number, blue: number, darkened: boolean = false): [red: number, green: number, blue: number] {
