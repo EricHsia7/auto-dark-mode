@@ -1,6 +1,7 @@
 import { ModelComponent, parseComponent, stringifyComponent } from './component';
 import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
+import { isAngle } from './css-units';
 import { hslToRgb } from './hsl-to-rgb';
 import { invertColor } from './invert-color';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
@@ -178,6 +179,15 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         return result;
       }
       break;
+    }
+
+    case 'hwb': {
+      const [hue, white, black, alpha] = modelComponent.components;
+      if (typeof hue !== 'object' || typeof black !== 'object' || typeof white !== 'object' || typeof alpha !== 'object') return modelComponent;
+      if (hue.type !== 'number' || white.type !== 'number' || black.type !== 'number') return modelComponent;
+      if (!isAngle(hue)) return modelComponent;
+      if (white.unit !== '' && white.unit !== '%') return modelComponent;
+      if (black.unit !== '' && black.unit !== '%') return modelComponent;
     }
 
     case 'var': {
