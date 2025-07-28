@@ -12,15 +12,16 @@ export type CSSRGB = 'rgb';
 export type CSSRGBA = 'rgba';
 export type CSSHSL = 'hsl';
 export type CSSHSLA = 'hsla';
+export type CSSHWB = 'hwb';
 export type CSSColorMix = 'color-mix';
 
-export type CSSColor = CSSRGB | CSSRGBA | CSSHSL | CSSHSLA | CSSColorMix;
+export type CSSColor = CSSRGB | CSSRGBA | CSSHSL | CSSHSLA | CSSHWB | CSSColorMix;
 
 export type CSSVAR = 'var';
 
 export type CSSCalc = 'calc';
 
-export const CSSColors: Array<CSSColor> = ['rgb', 'rgba', 'hsl', 'hsla', 'color-mix'];
+export const CSSColors: Array<CSSColor> = ['rgb', 'rgba', 'hsl', 'hsla', 'hwb', 'color-mix'];
 
 export const CSSGradients: Array<CSSGradient> = ['linear-gradient', 'radial-gradient', 'conic-gradient'];
 
