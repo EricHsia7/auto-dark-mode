@@ -1,8 +1,8 @@
-import { ColorRGBA, colorToString, invertColor, parseColor } from './color';
 import { stringifyComponent } from './component';
 import { parseCSSModel } from './css-model';
 import { deepAssign } from './deep-assign';
 import { evaluateTheme } from './evaluate-theme';
+import { extractRGBA } from './extract-rgba';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
@@ -333,12 +333,14 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
   let backgroundColorRed = 0;
   let backgroundColorGreen = 0;
   let backgroundColorBlue = 0;
-  let backgroundColorQuantity = 0;
+  let backgroundColorAlpha = 0;
 
   let textColorRed = 0;
   let textColorGreen = 0;
   let textColorBlue = 0;
-  let textColorQuantity = 0;
+  let textColorAlpha = 0;
+
+  let quantity = 0;
 
   for (const key in object) {
     const value = object[key];
@@ -359,52 +361,35 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             const invertedColor = invertCSSModel(parsedColor, darkened);
             colors.result.splice(i, 1, stringifyComponent(invertedColor));
 
-            // TODO: check components
-            if (parsedColor.type === 'rgba' || parsedColor.type === 'rgb') {
-              let weight = 0;
-              let r = 0;
-              let g = 0;
-              let b = 0;
-              if (parsedColor.type === 'rgba') {
-                weight = parsedColor.rgba[3];
-                r = (parsedColor.rgba[0] / 255) * weight;
-                g = (parsedColor.rgba[1] / 255) * weight;
-                b = (parsedColor.rgba[2] / 255) * weight;
-              }
-              if (parsedColor.type === 'rgb') {
-                weight = 1;
-                r = (parsedColor.rgb[0] / 255) * weight;
-                g = (parsedColor.rgb[1] / 255) * weight;
-                b = (parsedColor.rgb[2] / 255) * weight;
-              }
+            const [r, g, b, a] = extractRGBA(parsedColor);
+            if (a !== 0) {
               if (key === 'background-color' || key === 'background') {
-                backgroundColorRed += r;
-                backgroundColorGreen += g;
-                backgroundColorBlue += b;
-                backgroundColorQuantity += weight;
-              }
-              if (key === 'color') {
-                textColorRed += r;
-                textColorGreen += g;
-                textColorBlue += b;
-                textColorQuantity += weight;
-              }
-              if (key.startsWith('--')) {
+                backgroundColorRed += r / 255;
+                backgroundColorGreen += g / 255;
+                backgroundColorBlue += b / 255;
+                backgroundColorAlpha += a;
+              } else if (key === 'color') {
+                textColorRed += r / 255;
+                textColorGreen += g / 255;
+                textColorBlue += b / 255;
+                textColorAlpha += a;
+              } else if (key.startsWith('--')) {
                 if (referenceMap.hasOwnProperty(key)) {
                   if (referenceMap[key][0] > referenceMap[key][1]) {
-                    backgroundColorRed += r;
-                    backgroundColorGreen += g;
-                    backgroundColorBlue += b;
-                    backgroundColorQuantity += weight;
+                    backgroundColorRed += r / 255;
+                    backgroundColorGreen += g / 255;
+                    backgroundColorBlue += b / 255;
+                    backgroundColorAlpha += a;
                   }
                   if (referenceMap[key][0] < referenceMap[key][1]) {
-                    textColorRed += r;
-                    textColorGreen += g;
-                    textColorBlue += b;
-                    textColorQuantity += weight;
+                    textColorRed += r / 255;
+                    textColorGreen += g / 255;
+                    textColorBlue += b / 255;
+                    textColorAlpha += a;
                   }
                 }
               }
+              quantity++;
             }
           }
         }
@@ -417,15 +402,8 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     }
   }
 
-  const mainBackgroundColor: ColorRGBA = {
-    type: 'rgba',
-    rgba: backgroundColorQuantity > 0 ? [(backgroundColorRed / backgroundColorQuantity) * 255, (backgroundColorGreen / backgroundColorQuantity) * 255, (backgroundColorBlue / backgroundColorQuantity) * 255, 1] : [0, 0, 0, 0]
-  };
-
-  const mainTextColor: ColorRGBA = {
-    type: 'rgba',
-    rgba: textColorQuantity > 0 ? [(textColorRed / textColorQuantity) * 255, (textColorGreen / textColorQuantity) * 255, (textColorBlue / textColorQuantity) * 255, 1] : [0, 0, 0, 0]
-  };
+  const mainBackgroundColor = backgroundColorAlpha > 0 ? [(backgroundColorRed / backgroundColorAlpha) * 255, (backgroundColorGreen / backgroundColorAlpha) * 255, (backgroundColorBlue / backgroundColorAlpha) * 255, backgroundColorAlpha / quantity] : [0, 0, 0, 0];
+  const mainTextColor = textColorAlpha > 0 ? [(textColorRed / textColorAlpha) * 255, (textColorGreen / textColorAlpha) * 255, (textColorBlue / textColorAlpha) * 255, textColorAlpha / quantity] : [0, 0, 0, 0];
 
   const originalTheme = evaluateTheme(mainBackgroundColor, mainTextColor);
 
