@@ -161,8 +161,9 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         const extendedRuleStyle = Array.from(styleRule.style).concat(['background', 'border']);
         for (const prop of extendedRuleStyle) {
           const value = styleRule.style.getPropertyValue(prop).trim();
+          const priority = styleRule.style.getPropertyPriority(prop);
           if (value !== '') {
-            container[selectorText][prop] = value;
+            container[selectorText][prop] = `${value}${priority === 'important' ? ' !important' : ''}`;
             // Check if value refers to a CSS variable
             const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
             if (cssVarMatch !== null) {
@@ -319,6 +320,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
 
       for (const prop of element.style) {
         const value = element.style.getPropertyValue(prop).trim();
+        // const priority = element.style.getPropertyPriority(prop);
         if (value !== '') {
           lambdaStyles[selector][prop] = value;
         }
