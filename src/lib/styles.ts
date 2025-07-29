@@ -28,11 +28,11 @@ export type StylesCollection = {
 };
 
 export type CSSVariableReferenceStats = {
-  [cssVariableKey: string]: [backgroundColorCount: number, textColorCount: number];
+  [cssVariableName: string]: [backgroundColorCount: number, textColorCount: number];
 };
 
 export type CSSVariableReferenceMap = {
-  [cssVariableKey: string]: Array<ModelComponent<CSSColor>>;
+  [cssVariableName: string]: Array<ModelComponent<CSSColor>>;
 };
 
 export interface Styles {
@@ -178,9 +178,9 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
                   cssVariableReferenceStats[cssVariableName] = [0, 0];
                 }
                 if (prop === 'background' || prop === 'background-color') {
-                  cssVariableReferenceStats[cssVariableKey][0] += 1;
+                  cssVariableReferenceStats[cssVariableName][0] += 1;
                 } else if (prop === 'color') {
-                  cssVariableReferenceStats[cssVariableKey][1] += 1;
+                  cssVariableReferenceStats[cssVariableName][1] += 1;
                 }
                 if (!cssVariableReferenceMap.hasOwnProperty(cssVariableName)) {
                   cssVariableReferenceMap[cssVariableName] = [];
