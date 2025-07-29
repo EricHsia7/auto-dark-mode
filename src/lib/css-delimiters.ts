@@ -7,6 +7,7 @@ export const cssDelimiters = {
   'hsl': [',', ' ', '/'],
   'hsla': [',', ' '],
   'hwb': [' ', ',', '/'],
+  'var': [',', ' '],
   'color-mix': [',', '/'],
   'calc': ['+', '-', '*', '/'], // handled differently
   'default': [',', ' ']
@@ -20,7 +21,8 @@ export const cssPrimaryDelimiters = {
   'rgba': ',',
   'hsl': ',',
   'hsla': ',',
-  'hwb': [' '],
+  'hwb': ' ',
+  'var': ',',
   'color-mix': ',',
   'default': ','
 };
