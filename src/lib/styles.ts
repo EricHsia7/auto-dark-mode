@@ -170,20 +170,22 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
           if (value !== '') {
             container[selectorText][prop] = `${value}${priority === 'important' ? ' !important' : ''}`;
             // Check if value refers to a CSS variable
-            const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
 
-
-            
-            if (cssVarMatch !== null) {
-              const cssVariableKey = cssVarMatch[1];
-              if (!cssVariableReferenceStats.hasOwnProperty(cssVariableKey)) {
-                cssVariableReferenceStats[cssVariableKey] = [0, 0];
-              }
-              if (prop === 'background' || prop === 'background-color') {
-                cssVariableReferenceStats[cssVariableKey][0] += 1;
-              }
-              if (prop === 'color') {
-                cssVariableReferenceStats[cssVariableKey][1] += 1;
+            const cssVariableNameMatches = value.match(/--[a-z0-9_-]+/gim);
+            if (cssVariableNameMatches !== null) {
+              for (const cssVariableName of cssVariableNameMatches) {
+                if (!cssVariableReferenceStats.hasOwnProperty(cssVariableName)) {
+                  cssVariableReferenceStats[cssVariableName] = [0, 0];
+                }
+                if (prop === 'background' || prop === 'background-color') {
+                  cssVariableReferenceStats[cssVariableKey][0] += 1;
+                } else if (prop === 'color') {
+                  cssVariableReferenceStats[cssVariableKey][1] += 1;
+                }
+                if (!cssVariableReferenceMap.hasOwnProperty(cssVariableName)) {
+                  cssVariableReferenceMap[cssVariableName] = [];
+                }
+                cssVariableReferenceMap[cssVariableName].push(value);
               }
             }
           }

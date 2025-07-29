@@ -225,4 +225,6 @@ export async function initialize() {
     attributeFilter: ['src', 'srcset'],
     childList: true
   });
+
+  console.log(cssVariableReferenceMap);
 }
