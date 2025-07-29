@@ -32,7 +32,7 @@ export type CSSVariableReferenceStats = {
 };
 
 export type CSSVariableReferenceMap = {
-  [cssVariableName: string]: Array<ModelComponent<CSSColor>>;
+  [cssVariableName: string]: Array<string>;
 };
 
 export interface Styles {
@@ -185,7 +185,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
                 if (!cssVariableReferenceMap.hasOwnProperty(cssVariableName)) {
                   cssVariableReferenceMap[cssVariableName] = [];
                 }
-                cssVariableReferenceMap[cssVariableName].push(value);
+                cssVariableReferenceMap[cssVariableName].push(value); // TODO: evaluate the reliability
               }
             }
           }
