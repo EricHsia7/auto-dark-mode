@@ -1,6 +1,6 @@
-import { stringifyComponent } from './component';
+import { ModelComponent, stringifyComponent } from './component';
 import { cssPrimaryDelimiters } from './css-delimiters';
-import { parseCSSModel } from './css-model';
+import { CSSColor, parseCSSModel } from './css-model';
 import { deepAssign } from './deep-assign';
 import { evaluateTheme } from './evaluate-theme';
 import { extractRGBA } from './extract-rgba';
@@ -31,6 +31,10 @@ export type CSSVariableReferenceStats = {
   [cssVariableKey: string]: [backgroundColorCount: number, textColorCount: number];
 };
 
+export type CSSVariableReferenceMap = {
+  [cssVariableKey: string]: Array<ModelComponent<CSSColor>>;
+};
+
 export interface Styles {
   stylesCollection: StylesCollection;
   referenceStats: CSSVariableReferenceStats;
@@ -44,6 +48,7 @@ export interface StyleSheetCSSItem {
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
 export let cssVariableReferenceStats: CSSVariableReferenceStats = {};
+export let cssVariableReferenceMap: CSSVariableReferenceMap = {};
 export let currentStylesCollection: StylesCollection = {
   '@stylesheet-default': {
     'body': {
@@ -149,7 +154,7 @@ export let currentStylesCollection: StylesCollection = {
   }
 };
 
-function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, cssVariableReferenceStats: CSSVariableReferenceStats) {
+function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, cssVariableReferenceStats: CSSVariableReferenceStats, cssVariableReferenceMap: CSSVariableReferenceMap) {
   for (const rule of rules) {
     switch (rule.type) {
       case CSSRule.STYLE_RULE: {
@@ -166,6 +171,9 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
             container[selectorText][prop] = `${value}${priority === 'important' ? ' !important' : ''}`;
             // Check if value refers to a CSS variable
             const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
+
+
+            
             if (cssVarMatch !== null) {
               const cssVariableKey = cssVarMatch[1];
               if (!cssVariableReferenceStats.hasOwnProperty(cssVariableKey)) {
@@ -190,7 +198,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
           if (!container.hasOwnProperty(media)) {
             container[media] = {};
           }
-          processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceStats);
+          processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceStats, cssVariableReferenceMap);
         }
         break;
       }
@@ -200,7 +208,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (importRule.styleSheet) {
           // Import rules with nested stylesheets
           try {
-            processCSSRules(importRule.styleSheet.cssRules, container, cssVariableReferenceStats);
+            processCSSRules(importRule.styleSheet.cssRules, container, cssVariableReferenceStats, cssVariableReferenceMap);
           } catch (e) {
             // Skipped due to CORS/security
           }
@@ -246,7 +254,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (!container.hasOwnProperty(supports)) {
           container[supports] = {};
         }
-        processCSSRules(supportsRule.cssRules, container[supports], cssVariableReferenceStats);
+        processCSSRules(supportsRule.cssRules, container[supports], cssVariableReferenceStats, cssVariableReferenceMap);
         break;
       }
 
@@ -300,7 +308,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
         currentStylesCollection[sheetName] = {};
       } else {
         const sheetObj = {};
-        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceStats);
+        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceStats, cssVariableReferenceMap);
         currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
       }
     } catch (e) {
@@ -331,7 +339,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
   currentStylesCollection['@stylesheet-lambda'] = deepAssign(currentStylesCollection['@stylesheet-lambda'] || {}, lambdaStyles);
 }
 
-export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceStats: CSSVariableReferenceStats, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
+export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceStats: CSSVariableReferenceStats, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
   const newStyles: any = {};
   let backgroundColorRed = 0;
   let backgroundColorGreen = 0;
@@ -350,7 +358,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     const currentPath = path.concat(key);
 
     if (typeof value === 'object' && value !== null) {
-      newStyles[key] = invertStyles(value, referenceStats, currentPath); // Recursive copy
+      newStyles[key] = invertStyles(value, referenceStats, referenceMap, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
@@ -402,7 +410,6 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
       } else if (isPreserved(key)) {
         newStyles[key] = value;
       } else if (key.startsWith('--')) {
-        
       }
     }
   }
