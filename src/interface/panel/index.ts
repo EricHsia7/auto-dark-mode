@@ -266,8 +266,7 @@ export function closePanel(): void {
     function (event: Event) {
       const target = event.target as HTMLElement;
       target.setAttribute('displayed', 'false');
-      target.classList.remove('auto_dark_mode_panel_overlay_fade_out');
-      target.classList.remove('auto_dark_mode_panel_overlay_faded_in');
+      target.classList.remove('auto_dark_mode_panel_overlay_fade_out', 'auto_dark_mode_panel_overlay_faded_in');
     },
     { once: true }
   );
@@ -277,8 +276,7 @@ export function closePanel(): void {
     function (event: Event) {
       const target = event.target as HTMLElement;
       target.setAttribute('displayed', 'false');
-      target.classList.remove('auto_dark_mode_panel_container_slide_out');
-      target.classList.remove('auto_dark_mode_panel_container_slided_in');
+      target.classList.remove('auto_dark_mode_panel_container_slide_out', 'auto_dark_mode_panel_container_slided_in');
     },
     { once: true }
   );
