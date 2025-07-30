@@ -148,8 +148,9 @@ export let currentStylesCollection: StylesCollection = {
     }
   }
 };
+export let currentVariableLibrary = {};
 
-function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: CSSVariableReferenceStats) {
+function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: CSSVariableReferenceStats, variableLibrary, mediaQueryConditions: Array<string> = []) {
   for (const rule of rules) {
     switch (rule.type) {
       case CSSRule.STYLE_RULE: {
@@ -165,17 +166,35 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
           if (value !== '') {
             container[selectorText][prop] = `${value}${priority === 'important' ? ' !important' : ''}`;
             // Check if value refers to a CSS variable
-            const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
-            if (cssVarMatch !== null) {
-              const cssVariableKey = cssVarMatch[1];
-              if (!referenceStats.hasOwnProperty(cssVariableKey)) {
-                referenceStats[cssVariableKey] = [0, 0];
+            const cssVariableNameMatches = value.match(/--[a-z0-9_-]+/);
+            if (cssVariableNameMatches !== null) {
+              for (const cssVariableKey of cssVariableNameMatches) {
+                if (!referenceStats.hasOwnProperty(cssVariableKey)) {
+                  referenceStats[cssVariableKey] = [0, 0];
+                }
+                if (prop === 'background' || prop === 'background-color') {
+                  referenceStats[cssVariableKey][0] += 1;
+                } else if (prop === 'color') {
+                  referenceStats[cssVariableKey][1] += 1;
+                }
               }
-              if (prop === 'background' || prop === 'background-color') {
-                referenceStats[cssVariableKey][0] += 1;
-              }
-              if (prop === 'color') {
-                referenceStats[cssVariableKey][1] += 1;
+            }
+
+            if (prop.startsWith('--')) {
+              if (mediaQueryConditions.length > 0) {
+                const joinedMediaQueryConditions = mediaQueryConditions.join(' and ');
+                if (!variableLibrary.hasOwnProperty(joinedMediaQueryConditions)) {
+                  variableLibrary[joinedMediaQueryConditions] = {};
+                }
+                if (!variableLibrary[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
+                  variableLibrary[joinedMediaQueryConditions][selectorText] = {};
+                }
+                variableLibrary[joinedMediaQueryConditions][selectorText][prop] = value;
+              } else {
+                if (!variableLibrary.hasOwnProperty(selectorText)) {
+                  variableLibrary[selectorText] = {};
+                }
+                variableLibrary[selectorText][prop] = value;
               }
             }
           }
@@ -185,13 +204,13 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
 
       case CSSRule.MEDIA_RULE: {
         const mediaRule = rule as CSSMediaRule;
-        if (!/prefers-color-scheme:[\s]*dark/i.test(mediaRule.conditionText)) {
+        // if (!/prefers-color-scheme:[\s]*dark/i.test(mediaRule.conditionText)) {
           const media = `@media ${mediaRule.conditionText}`;
           if (!container.hasOwnProperty(media)) {
             container[media] = {};
           }
-          processCSSRules(mediaRule.cssRules, container[media], referenceStats);
-        }
+          processCSSRules(mediaRule.cssRules, container[media], referenceStats, mediaQueryConditions.concat(mediaRule.conditionText));
+        // }
         break;
       }
 
@@ -200,7 +219,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (importRule.styleSheet) {
           // Import rules with nested stylesheets
           try {
-            processCSSRules(importRule.styleSheet.cssRules, container, referenceStats);
+            processCSSRules(importRule.styleSheet.cssRules, container, referenceStats, variableLibrary);
           } catch (e) {
             // Skipped due to CORS/security
           }
@@ -246,7 +265,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (!container.hasOwnProperty(supports)) {
           container[supports] = {};
         }
-        processCSSRules(supportsRule.cssRules, container[supports], referenceStats);
+        processCSSRules(supportsRule.cssRules, container[supports], referenceStats, variableLibrary);
         break;
       }
 
@@ -300,7 +319,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
         currentStylesCollection[sheetName] = {};
       } else {
         const sheetObj = {};
-        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceStats);
+        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceStats, currentVariableLibrary);
         currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
       }
     } catch (e) {
