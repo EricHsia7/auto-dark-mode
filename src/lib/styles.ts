@@ -189,7 +189,15 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
                 if (!variableLibrary[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
                   variableLibrary[joinedMediaQueryConditions][selectorText] = {};
                 }
-                variableLibrary[joinedMediaQueryConditions][selectorText][prop] = value;
+                const args = splitByTopLevelDelimiter(value);
+                const argsLen = args.result.length;
+                if (argsLen > 1) {
+                  for (let i = argsLen - 1; i >= 0; i--) {
+                    variableLibrary[joinedMediaQueryConditions][selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
+                  }
+                } /* else {
+                  variableLibrary[joinedMediaQueryConditions][selectorText][prop] = value;
+                } */
               } else {
                 if (!variableLibrary.hasOwnProperty(selectorText)) {
                   variableLibrary[selectorText] = {};
@@ -200,9 +208,9 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
                   for (let i = argsLen - 1; i >= 0; i--) {
                     variableLibrary[selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
                   }
-                } else {
+                } /* else {
                   variableLibrary[selectorText][prop] = value;
-                }
+                } */
               }
             }
           }
