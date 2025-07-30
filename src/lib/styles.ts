@@ -182,7 +182,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
 
             if (prop.startsWith('--')) {
               if (mediaQueryConditions.length > 0) {
-                const joinedMediaQueryConditions = mediaQueryConditions.join(' and ');
+                const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
                 if (!variableLibrary.hasOwnProperty(joinedMediaQueryConditions)) {
                   variableLibrary[joinedMediaQueryConditions] = {};
                 }
@@ -194,7 +194,15 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
                 if (!variableLibrary.hasOwnProperty(selectorText)) {
                   variableLibrary[selectorText] = {};
                 }
-                variableLibrary[selectorText][prop] = value;
+                const args = splitByTopLevelDelimiter(value);
+                const argsLen = args.result.length;
+                if (argsLen > 1) {
+                  for (let i = argsLen - 1; i >= 0; i--) {
+                    variableLibrary[selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
+                  }
+                } else {
+                  variableLibrary[selectorText][prop] = value;
+                }
               }
             }
           }
@@ -205,12 +213,13 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
       case CSSRule.MEDIA_RULE: {
         const mediaRule = rule as CSSMediaRule;
         // if (!/prefers-color-scheme:[\s]*dark/i.test(mediaRule.conditionText)) {
-          const media = `@media ${mediaRule.conditionText}`;
-          if (!container.hasOwnProperty(media)) {
-            container[media] = {};
-          }
-          processCSSRules(mediaRule.cssRules, container[media], referenceStats, variableLibrary, mediaQueryConditions.concat(mediaRule.conditionText));
+        const media = `@media ${mediaRule.conditionText}`;
+        if (!container.hasOwnProperty(media)) {
+          container[media] = {};
+        }
+        processCSSRules(mediaRule.cssRules, container[media], referenceStats, variableLibrary, mediaQueryConditions.concat(mediaRule.conditionText));
         // }
+        // TODO: evaluate theme per color scheme
         break;
       }
 
