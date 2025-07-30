@@ -27,7 +27,7 @@ export function invertColor(red: number, green: number, blue: number, darkened: 
   if (darkened && newValue > equalizedValue) return [red, green, blue];
 
   const scaler = newValue / equalizedValue;
-  const ratio = (isColorVibrant(red, green, blue) + 0.55) / 2;
+  const ratio = (isColorVibrant(red, green, blue) + 0.49) / 2;
   const R1 = clamp(0, Math.round(R * scaler * (1 - ratio) + red * ratio), 255);
   const G1 = clamp(0, Math.round(G * scaler * (1 - ratio) + green * ratio), 255);
   const B1 = clamp(0, Math.round(B * scaler * (1 - ratio) + blue * ratio), 255);
