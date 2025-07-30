@@ -2,10 +2,6 @@ import { clamp } from './clamp';
 import { isColorVibrant } from './is-color-vibrant';
 
 export function invertColor(red: number, green: number, blue: number, darkened: boolean = false): [red: number, green: number, blue: number] {
-  if (isColorVibrant(red, green, blue) > 0) {
-    return [red, green, blue];
-  }
-
   if (red === 0 && green === 0 && blue === 0) {
     if (darkened) return [red, green, blue];
     return [255, 255, 255];
@@ -31,9 +27,11 @@ export function invertColor(red: number, green: number, blue: number, darkened: 
   if (darkened && newValue > equalizedValue) return [red, green, blue];
 
   const scaler = newValue / equalizedValue;
-  const R1 = clamp(0, Math.round(R * scaler), 255);
-  const G1 = clamp(0, Math.round(G * scaler), 255);
-  const B1 = clamp(0, Math.round(B * scaler), 255);
+  const ratio = (isColorVibrant(red, green, blue) + 0.49) / 2;
+  const R1 = clamp(0, Math.round(R * scaler * (1 - ratio) + red * ratio), 255);
+  const G1 = clamp(0, Math.round(G * scaler * (1 - ratio) + green * ratio), 255);
+  const B1 = clamp(0, Math.round(B * scaler * (1 - ratio) + blue * ratio), 255);
+
   return [R1, G1, B1];
 }
 /*
