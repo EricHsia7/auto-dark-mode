@@ -209,7 +209,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
           if (!container.hasOwnProperty(media)) {
             container[media] = {};
           }
-          processCSSRules(mediaRule.cssRules, container[media], referenceStats, mediaQueryConditions.concat(mediaRule.conditionText));
+          processCSSRules(mediaRule.cssRules, container[media], referenceStats, variableLibrary, mediaQueryConditions.concat(mediaRule.conditionText));
         // }
         break;
       }
