@@ -27,13 +27,13 @@ export type StylesCollection = {
   [sheetName: string]: StyleSheet;
 };
 
-export type CSSVariableReferenceMap = {
+export type CSSVariableReferenceStats = {
   [cssVariableKey: string]: [backgroundColorCount: number, textColorCount: number];
 };
 
 export interface Styles {
   stylesCollection: StylesCollection;
-  referenceMap: CSSVariableReferenceMap;
+  referenceStats: CSSVariableReferenceStats;
 }
 
 export interface StyleSheetCSSItem {
@@ -43,7 +43,7 @@ export interface StyleSheetCSSItem {
 
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
-export let cssVariableReferenceMap: CSSVariableReferenceMap = {};
+export let cssVariableReferenceStats: CSSVariableReferenceStats = {};
 export let currentStylesCollection: StylesCollection = {
   '@stylesheet-default': {
     'body': {
@@ -149,7 +149,7 @@ export let currentStylesCollection: StylesCollection = {
   }
 };
 
-function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, cssVariableReferenceMap: CSSVariableReferenceMap) {
+function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: CSSVariableReferenceStats) {
   for (const rule of rules) {
     switch (rule.type) {
       case CSSRule.STYLE_RULE: {
@@ -168,14 +168,14 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
             const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
             if (cssVarMatch !== null) {
               const cssVariableKey = cssVarMatch[1];
-              if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
-                cssVariableReferenceMap[cssVariableKey] = [0, 0];
+              if (!referenceStats.hasOwnProperty(cssVariableKey)) {
+                referenceStats[cssVariableKey] = [0, 0];
               }
               if (prop === 'background' || prop === 'background-color') {
-                cssVariableReferenceMap[cssVariableKey][0] += 1;
+                referenceStats[cssVariableKey][0] += 1;
               }
               if (prop === 'color') {
-                cssVariableReferenceMap[cssVariableKey][1] += 1;
+                referenceStats[cssVariableKey][1] += 1;
               }
             }
           }
@@ -190,7 +190,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
           if (!container.hasOwnProperty(media)) {
             container[media] = {};
           }
-          processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceMap);
+          processCSSRules(mediaRule.cssRules, container[media], referenceStats);
         }
         break;
       }
@@ -200,7 +200,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (importRule.styleSheet) {
           // Import rules with nested stylesheets
           try {
-            processCSSRules(importRule.styleSheet.cssRules, container, cssVariableReferenceMap);
+            processCSSRules(importRule.styleSheet.cssRules, container, referenceStats);
           } catch (e) {
             // Skipped due to CORS/security
           }
@@ -246,7 +246,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (!container.hasOwnProperty(supports)) {
           container[supports] = {};
         }
-        processCSSRules(supportsRule.cssRules, container[supports], cssVariableReferenceMap);
+        processCSSRules(supportsRule.cssRules, container[supports], referenceStats);
         break;
       }
 
@@ -300,7 +300,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
         currentStylesCollection[sheetName] = {};
       } else {
         const sheetObj = {};
-        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceMap);
+        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceStats);
         currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
       }
     } catch (e) {
@@ -331,7 +331,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
   currentStylesCollection['@stylesheet-lambda'] = deepAssign(currentStylesCollection['@stylesheet-lambda'] || {}, lambdaStyles);
 }
 
-export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
+export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceStats: CSSVariableReferenceStats, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
   const newStyles: any = {};
   let backgroundColorRed = 0;
   let backgroundColorGreen = 0;
@@ -350,7 +350,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     const currentPath = path.concat(key);
 
     if (typeof value === 'object' && value !== null) {
-      newStyles[key] = invertStyles(value, referenceMap, currentPath); // Recursive copy
+      newStyles[key] = invertStyles(value, referenceStats, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
@@ -377,14 +377,14 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
                 textColorBlue += b / 255;
                 textColorAlpha += a;
               } else if (key.startsWith('--')) {
-                if (referenceMap.hasOwnProperty(key)) {
-                  if (referenceMap[key][0] > referenceMap[key][1]) {
+                if (referenceStats.hasOwnProperty(key)) {
+                  if (referenceStats[key][0] > referenceStats[key][1]) {
                     backgroundColorRed += r / 255;
                     backgroundColorGreen += g / 255;
                     backgroundColorBlue += b / 255;
                     backgroundColorAlpha += a;
                   }
-                  if (referenceMap[key][0] < referenceMap[key][1]) {
+                  if (referenceStats[key][0] < referenceStats[key][1]) {
                     textColorRed += r / 255;
                     textColorGreen += g / 255;
                     textColorBlue += b / 255;
