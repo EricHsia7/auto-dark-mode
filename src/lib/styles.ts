@@ -164,18 +164,19 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
           const priority = styleRule.style.getPropertyPriority(prop);
           if (value !== '') {
             container[selectorText][prop] = `${value}${priority === 'important' ? ' !important' : ''}`;
-            // Check if value refers to a CSS variable
-            const cssVarMatch = value.match(/^var\((\s*--[^\)]+)\)/);
-            if (cssVarMatch !== null) {
-              const cssVariableKey = cssVarMatch[1];
-              if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
-                cssVariableReferenceMap[cssVariableKey] = [0, 0];
-              }
-              if (prop === 'background' || prop === 'background-color') {
-                cssVariableReferenceMap[cssVariableKey][0] += 1;
-              }
-              if (prop === 'color') {
-                cssVariableReferenceMap[cssVariableKey][1] += 1;
+            // Check if value refers to CSS variables
+            const cssVariableMatches = value.match(/--[a-z0-9_-]+/i);
+            if (cssVariableMatches !== null) {
+              for (const cssVariableKey of cssVariableMatches) {
+                if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
+                  cssVariableReferenceMap[cssVariableKey] = [0, 0];
+                }
+                if (prop === 'background' || prop === 'background-color') {
+                  cssVariableReferenceMap[cssVariableKey][0] += 1;
+                }
+                if (prop === 'color') {
+                  cssVariableReferenceMap[cssVariableKey][1] += 1;
+                }
               }
             }
           }
@@ -367,14 +368,14 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             const [r, g, b, a] = extractRGBA(parsedColor);
             if (a !== 0) {
               if (key === 'background-color' || key === 'background') {
-                backgroundColorRed += r / 255;
-                backgroundColorGreen += g / 255;
-                backgroundColorBlue += b / 255;
+                backgroundColorRed += (r * a) / 255;
+                backgroundColorGreen += (g * a) / 255;
+                backgroundColorBlue += (b * a) / 255;
                 backgroundColorAlpha += a;
               } else if (key === 'color') {
-                textColorRed += r / 255;
-                textColorGreen += g / 255;
-                textColorBlue += b / 255;
+                textColorRed += (r * a) / 255;
+                textColorGreen += (g * a) / 255;
+                textColorBlue += (b * a) / 255;
                 textColorAlpha += a;
               } else if (key.startsWith('--')) {
                 if (referenceMap.hasOwnProperty(key)) {
@@ -385,9 +386,9 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
                     backgroundColorAlpha += a;
                   }
                   if (referenceMap[key][0] < referenceMap[key][1]) {
-                    textColorRed += r / 255;
-                    textColorGreen += g / 255;
-                    textColorBlue += b / 255;
+                    textColorRed += (r * a) / 255;
+                    textColorGreen += (g * a) / 255;
+                    textColorBlue += (b * a) / 255;
                     textColorAlpha += a;
                   }
                 }
