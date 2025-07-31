@@ -127,7 +127,7 @@ export function extractRGBA(modelComponent: ModelComponent<CSSColor | CSSVAR | C
       rgba[0] /= rgba[3];
       rgba[1] /= rgba[3];
       rgba[2] /= rgba[3];
-      rgba[3] /= quantity;
+      rgba[3] = clamp(0, rgba[3], 1);
       return rgba;
     }
 
