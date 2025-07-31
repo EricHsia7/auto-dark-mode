@@ -1,11 +1,12 @@
 {
   "name": "auto-dark-mode",
-  "version": "0.33.8",
+  "version": "0.33.9",
   "description": "Darken Any Website",
   "author": "erichsia7",
   "inject-into": "content",
   "updateURL": "https://erichsia7.github.io/auto-dark-mode/auto-dark-mode.user.js",
   "downloadURL": "https://erichsia7.github.io/auto-dark-mode/auto-dark-mode.user.js",
+  "icon": "https://erichsia7.github.io/auto-dark-mode/icons/512.png",
   "match": "*://*/*",
   "grant": "GM_xmlhttpRequest",
   "run-at": "document-idle"
