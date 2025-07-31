@@ -1,4 +1,5 @@
 import { angleToDegrees } from './angle-to-degree';
+import { clamp } from './clamp';
 import { ModelComponent } from './component';
 import { CSSColor, CSSGradient, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { isAngle } from './css-units';
