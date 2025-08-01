@@ -1,4 +1,5 @@
 import { namedColors } from './named-colors';
+import { systemColors } from './system-colors';
 
 function looksLikeColorValue(value: string): boolean {
   value = value.trim().toLowerCase();
@@ -27,6 +28,11 @@ function looksLikeColorValue(value: string): boolean {
 
   // named colors
   if (namedColors.hasOwnProperty(value.toLowerCase())) {
+    return true;
+  }
+
+  // system colors
+  if (systemColors.hasOwnProperty(value.toLowerCase())) {
     return true;
   }
 
