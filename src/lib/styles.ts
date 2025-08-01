@@ -380,9 +380,9 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
               } else if (key.startsWith('--')) {
                 if (referenceMap.hasOwnProperty(key)) {
                   if (referenceMap[key][0] > referenceMap[key][1]) {
-                    backgroundColorRed += r / 255;
-                    backgroundColorGreen += g / 255;
-                    backgroundColorBlue += b / 255;
+                    backgroundColorRed += (r * a) / 255;
+                    backgroundColorGreen += (g * a) / 255;
+                    backgroundColorBlue += (b * a) / 255;
                     backgroundColorAlpha += a;
                   }
                   if (referenceMap[key][0] < referenceMap[key][1]) {
