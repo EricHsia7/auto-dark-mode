@@ -361,11 +361,11 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           const color = colors.result[i];
           const parsedColor = parseCSSModel(color);
           if (parsedColor !== undefined) {
+            const [r, g, b, a] = extractRGBA(parsedColor); // extraction must be before inverting, as Array.prototype.splice() is used.  
             const darkened = isDarkened(key);
             const invertedColor = invertCSSModel(parsedColor, darkened);
             colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
 
-            const [r, g, b, a] = extractRGBA(parsedColor);
             if (a !== 0) {
               if (key === 'background-color' || key === 'background') {
                 backgroundColorRed += (r * a) / 255;
