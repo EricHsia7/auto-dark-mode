@@ -1,5 +1,5 @@
 :root {
-  --auto-dark-mode-accent-color: #0db0e3;
+  --auto-dark-mode-accent-color: #222324;
   --auto-dark-mode-ffffff: #ffffff;
   --auto-dark-mode-e2e8f0: #e2e8f0;
   --auto-dark-mode-cccccc: #cccccc;
@@ -9,7 +9,7 @@
 
 @media (prefers-color-scheme:dark) {
   :root {
-    --auto-dark-mode-accent-color: #0db0e3;
+    --auto-dark-mode-accent-color: #ffffff;
     --auto-dark-mode-ffffff: #0c0d0f;
     --auto-dark-mode-e2e8f0: #1f2021;
     --auto-dark-mode-cccccc: #414243;
