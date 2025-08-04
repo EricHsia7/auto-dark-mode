@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - dev-invert-arguments
 
 jobs:
   build:

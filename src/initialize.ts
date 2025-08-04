@@ -56,7 +56,7 @@ export async function initialize() {
   updateStyles(elementsWithInlineStyle, svgElements, document.styleSheets);
 
   // Invert styles
-  const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats) as StylesCollection;
+  const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats, currentVariableLibrary) as StylesCollection;
 
   // Generate inverted css
   currentStylesheets = generateCssFromStyles(invertedStyles, false);
@@ -86,7 +86,7 @@ export async function initialize() {
               updateStyles([], [], [sheet]);
 
               // Invert styles
-              const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats) as StylesCollection;
+              const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats, currentVariableLibrary) as StylesCollection;
 
               // Generate css
               currentStylesheets = generateCssFromStyles(invertedStyles, false);
@@ -132,7 +132,7 @@ export async function initialize() {
     updateStyles(elementsWithInlineStyleToUpdate, svgElementsToUpdate, []);
 
     // Invert styles
-    const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats) as StylesCollection;
+    const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats, currentVariableLibrary) as StylesCollection;
 
     // Generate inverted css
     currentStylesheets = generateCssFromStyles(invertedStyles, false);

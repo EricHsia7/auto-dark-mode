@@ -367,7 +367,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     const currentPath = path.concat(key);
 
     if (typeof value === 'object' && value !== null) {
-      newStyles[key] = invertStyles(value, referenceStats, currentPath); // Recursive copy
+      newStyles[key] = invertStyles(value, referenceStats, variableLibrary, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
       const selectorText = currentPath[currentPath.length - 2];
