@@ -5,7 +5,7 @@ import { allowUnlistedStyles } from './lib/allow-unlisted-styles';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
-import { cssVariableReferenceStats, currentStylesCollection, currentVariableLengthMap, currentVariableLibrary, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
+import { currentVariableReferenceStats, currentStylesCollection, currentVariableLibrary, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
 import { isSVGElement, svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
@@ -56,7 +56,7 @@ export async function initialize() {
   updateStyles(elementsWithInlineStyle, svgElements, document.styleSheets);
 
   // Invert styles
-  const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceStats) as StylesCollection;
+  const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats) as StylesCollection;
 
   // Generate inverted css
   currentStylesheets = generateCssFromStyles(invertedStyles, false);
@@ -86,7 +86,7 @@ export async function initialize() {
               updateStyles([], [], [sheet]);
 
               // Invert styles
-              const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceStats) as StylesCollection;
+              const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats) as StylesCollection;
 
               // Generate css
               currentStylesheets = generateCssFromStyles(invertedStyles, false);
@@ -132,7 +132,7 @@ export async function initialize() {
     updateStyles(elementsWithInlineStyleToUpdate, svgElementsToUpdate, []);
 
     // Invert styles
-    const invertedStyles = invertStyles(currentStylesCollection, cssVariableReferenceStats) as StylesCollection;
+    const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats) as StylesCollection;
 
     // Generate inverted css
     currentStylesheets = generateCssFromStyles(invertedStyles, false);
@@ -226,5 +226,5 @@ export async function initialize() {
     childList: true
   });
 
-  console.log(currentVariableLibrary, currentVariableLengthMap);
+  console.log(currentVariableLibrary);
 }

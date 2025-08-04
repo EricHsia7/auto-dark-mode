@@ -9,7 +9,7 @@ import { invertColor } from './invert-color';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { spreadCSSVariables } from './spread-css-variables';
 
-export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean, spread: boolean = false, variableLibrary, mediaQueryConditionsText: Array<string> = [], selectorText: string = ''): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
+export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean, spread: boolean = false, variableLibrary, mediaQueryConditionsText: string, selectorText: string = ''): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
   switch (modelComponent.model) {
     case 'rgb': {
       const [red, green, blue, alpha] = modelComponent.components;
@@ -57,7 +57,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log( spreadCSSVariables(modelComponent, selectorText, mediaQueryConditionsText, ));
+        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -101,7 +101,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(modelComponent, selectorText, mediaQueryConditionsText, usedVariables, spreadCSSVariables(modelComponent, selectorText, mediaQueryConditionsText, usedVariables));
+        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -158,7 +158,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(modelComponent, selectorText, mediaQueryConditionsText, usedVariables, spreadCSSVariables(modelComponent, selectorText, mediaQueryConditionsText, usedVariables));
+        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -204,7 +204,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(modelComponent, selectorText, mediaQueryConditionsText, usedVariables, spreadCSSVariables(modelComponent, selectorText, mediaQueryConditionsText, usedVariables));
+        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -264,7 +264,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(modelComponent, selectorText, mediaQueryConditionsText, usedVariables, spreadCSSVariables(modelComponent, selectorText, mediaQueryConditionsText, usedVariables));
+        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -285,7 +285,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           const parsed = parseCSSModel(component.string);
           if (parsed !== undefined) {
             if (isColor(parsed) || isVariable(parsed)) {
-              const inverted = invertCSSModel(parsed, darkened, spread,variableLibrary,  mediaQueryConditionsText, selectorText);
+              const inverted = invertCSSModel(parsed, darkened, spread, variableLibrary, mediaQueryConditionsText, selectorText);
               components.splice(i, 1, inverted);
             }
           }

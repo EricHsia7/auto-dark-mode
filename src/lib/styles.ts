@@ -27,14 +27,9 @@ export type StylesCollection = {
   [sheetName: string]: StyleSheet;
 };
 
-export type CSSVariableReferenceStats = {
+export type VariableReferenceStats = {
   [cssVariableKey: string]: [backgroundColorCount: number, textColorCount: number];
 };
-
-export interface Styles {
-  stylesCollection: StylesCollection;
-  referenceStats: CSSVariableReferenceStats;
-}
 
 export interface StyleSheetCSSItem {
   css: string;
@@ -43,7 +38,7 @@ export interface StyleSheetCSSItem {
 
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
-export let cssVariableReferenceStats: CSSVariableReferenceStats = {};
+export let currentVariableReferenceStats: VariableReferenceStats = {};
 export let currentStylesCollection: StylesCollection = {
   '@stylesheet-default': {
     'body': {
@@ -149,9 +144,8 @@ export let currentStylesCollection: StylesCollection = {
   }
 };
 export let currentVariableLibrary = {};
-export let currentVariableLengthMap = {};
 
-function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: CSSVariableReferenceStats, variableLibrary, mediaQueryConditions: Array<string> = []) {
+function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: VariableReferenceStats, variableLibrary, mediaQueryConditions: Array<string> = []) {
   for (const rule of rules) {
     switch (rule.type) {
       case CSSRule.STYLE_RULE: {
@@ -323,7 +317,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
         currentStylesCollection[sheetName] = {};
       } else {
         const sheetObj = {};
-        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceStats, currentVariableLibrary);
+        processCSSRules(sheet.cssRules, sheetObj, currentVariableReferenceStats, currentVariableLibrary);
         currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
       }
     } catch (e) {
@@ -354,7 +348,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
   currentStylesCollection['@stylesheet-lambda'] = deepAssign(currentStylesCollection['@stylesheet-lambda'] || {}, lambdaStyles);
 }
 
-export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceStats: CSSVariableReferenceStats, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
+export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceStats: VariableReferenceStats, variableLibrary, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
   const newStyles: any = {};
   let backgroundColorRed = 0;
   let backgroundColorGreen = 0;
@@ -387,8 +381,8 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           if (parsedColor !== undefined) {
             const [r, g, b, a] = extractRGBA(parsedColor); // Extraction must occur before inverting because Array.prototype.splice() modifies arrays in place (array objects are mutable)
             const darkened = isDarkened(key);
-            // const mediaQueryConditionsText = mediaQueryConditions.length > 0 ? `@media ${mediaQueryConditions.join(' and ')}` : '';
-            const invertedColor = invertCSSModel(parsedColor, darkened, true, selectorText, mediaQueryConditions, currentVariableLengthMap, usedVariables);
+            const mediaQueryConditionsText = mediaQueryConditions.length > 0 ? `@media ${mediaQueryConditions.join(' and ')}` : '';
+            const invertedColor = invertCSSModel(parsedColor, darkened, true, variableLibrary, mediaQueryConditionsText, selectorText);
             colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
 
             if (a !== 0) {
