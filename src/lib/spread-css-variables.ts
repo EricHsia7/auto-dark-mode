@@ -3,7 +3,7 @@ import { CSSColor, CSSGradient, CSSVAR } from './css-model';
 import { isPathContinuous } from './is-path-continuous';
 
 function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, selectorText: string, mediaQueryConditions: Array<string>, variableLengthMap, usedVariables): Array<Component> {
-  console.log(0);
+  console.log(1);
   const components = variableComponent.components;
   const componentsLen = components.length;
   const mediaQueryConditionsLen = mediaQueryConditions.length;
