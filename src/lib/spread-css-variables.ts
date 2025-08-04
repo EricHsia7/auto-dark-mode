@@ -36,8 +36,8 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
               if (isColor(parsed) || isGradient(parsed)) {
                 spreadComponents.unshift(spreadCSSVariables(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
               } else if (isVariable(parsed)) {
-                spreadComponents.unshift.apply(getSpreadComponents(component, variableLibrary, mediaQueryConditionsText, selectorText));
-              } 
+                spreadComponents.unshift.apply(spreadComponents, getSpreadComponents(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
+              }
             } else {
               const property = `--varlib-${component.string}-${j.toString()}`;
               const spreadComponent: ModelComponent<CSSVAR> = {
