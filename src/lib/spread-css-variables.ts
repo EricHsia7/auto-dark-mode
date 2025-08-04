@@ -10,6 +10,7 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
   for (let i = componentsLen - 1; i >= 0; i--) {
     const component = components[i];
     if (component.type === 'string' && component.string.startsWith('--')) {
+      // spread referenced variable
       let value = undefined;
       if (mediaQueryConditionsText !== '' && isPathContinuous(variableLibrary, [mediaQueryConditionsText, selectorText, component.string])) {
         // root > media query > selector > property
@@ -56,9 +57,43 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
         }
         break;
       }
+    } else if (component.type === 'string') {
+      // spread the alternative argument list in a variable
+      const args = splitByTopLevelDelimiter(component.string).result;
+      const argsLen = args.length;
+      for (let j = argsLen - 1; j >= 0; j--) {
+        const arg = args[j];
+        const parsed = parseCSSModel(arg) || parseComponent(arg);
+        if (parsed !== undefined) {
+          if (parsed.type === 'model') {
+            // spread variables in intermediate models
+            if (isColor(parsed) || isGradient(parsed)) {
+              spreadComponents.unshift(spreadCSSVariables(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
+            } else if (isVariable(parsed)) {
+              spreadComponents.unshift.apply(spreadComponents, getSpreadComponents(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
+            }
+          } else {
+            const property = `--varlib-${component.string}-${j.toString()}`;
+            const spreadComponent: ModelComponent<CSSVAR> = {
+              type: 'model',
+              model: 'var',
+              components: [
+                {
+                  type: 'string',
+                  string: property
+                }
+              ]
+            };
+            spreadComponents.unshift(spreadComponent);
+          }
+        }
+      }
+      break;
     } else if (component.type === 'model' && component.model === 'var') {
+      // spread variable in a variable
       spreadComponents = getSpreadComponents(component, variableLibrary, mediaQueryConditionsText, selectorText);
     } else {
+      // keep other components
       spreadComponents.unshift(component);
       break;
     }
