@@ -166,6 +166,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
           const priority = styleRule.style.getPropertyPriority(prop);
           if (value !== '') {
             container[selectorText][prop] = `${value}${priority === 'important' ? ' !important' : ''}`;
+
             // Check if value refers to CSS variables
             const cssVariableNameMatches = value.match(/--[a-z0-9_-]+/i);
             if (cssVariableNameMatches !== null) {
@@ -184,35 +185,19 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
 
             if (prop.startsWith('--')) {
               if (mediaQueryConditions.length > 0) {
-                const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`; // TODO: simplify media query
-                if (!variableLibrary.hasOwnProperty(joinedMediaQueryConditions)) {
-                  variableLibrary[joinedMediaQueryConditions] = {};
+                const mediaQueryConditionsText = `@media ${mediaQueryConditions.join(' and ')}`; // TODO: simplify media query
+                if (!variableLibrary.hasOwnProperty(mediaQueryConditionsText)) {
+                  variableLibrary[mediaQueryConditionsText] = {};
                 }
-                if (!variableLibrary[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
-                  variableLibrary[joinedMediaQueryConditions][selectorText] = {};
+                if (!variableLibrary[mediaQueryConditionsText].hasOwnProperty(selectorText)) {
+                  variableLibrary[mediaQueryConditionsText][selectorText] = {};
                 }
-                variableLibrary[joinedMediaQueryConditions][selectorText][prop] = value;
-                /*
-                const args = splitByTopLevelDelimiter(value);
-                const argsLen = args.result.length;
-                if (argsLen > 1) {
-                  for (let i = argsLen - 1; i >= 0; i--) {
-                    variableLibrary[joinedMediaQueryConditions][selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
-                  }
-                } */
+                variableLibrary[mediaQueryConditionsText][selectorText][prop] = value;
               } else {
                 if (!variableLibrary.hasOwnProperty(selectorText)) {
                   variableLibrary[selectorText] = {};
                 }
                 variableLibrary[selectorText][prop] = value;
-                /*
-                const args = splitByTopLevelDelimiter(value);
-                const argsLen = args.result.length;
-                if (argsLen > 1) {
-                  for (let i = argsLen - 1; i >= 0; i--) {
-                    variableLibrary[selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
-                  }
-                } */
               }
             }
           }
@@ -402,7 +387,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           if (parsedColor !== undefined) {
             const [r, g, b, a] = extractRGBA(parsedColor); // Extraction must occur before inverting because Array.prototype.splice() modifies arrays in place (array objects are mutable)
             const darkened = isDarkened(key);
-            const usedVariables = {};
+            // const mediaQueryConditionsText = mediaQueryConditions.length > 0 ? `@media ${mediaQueryConditions.join(' and ')}` : '';
             const invertedColor = invertCSSModel(parsedColor, darkened, true, selectorText, mediaQueryConditions, currentVariableLengthMap, usedVariables);
             colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
 
