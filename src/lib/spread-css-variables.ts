@@ -1,5 +1,5 @@
 import { Component, ModelComponent, parseComponent } from './component';
-import { CSSColor, CSSGradient, CSSVAR, isColor, isGradient, isVariable, parseCSSModel } from './css-model';
+import { CSSColor, CSSGradient, CSSVAR, isCalc, isColor, isGradient, isVariable, parseCSSModel } from './css-model';
 import { isPathContinuous } from './is-path-continuous';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 
