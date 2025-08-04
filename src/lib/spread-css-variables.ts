@@ -57,11 +57,16 @@ export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSS
   const components = modelComponent.components;
   const componentsLen = components.length;
   for (let i = componentsLen - 1; i >= 0; i--) {
+    console.log(0);
     const component = components[i];
+    console.log(1);
     if (component.type === 'model' && component.model === 'var') {
+      console.log(2);
       const spreadComponents = getSpreadComponents(component, selectorText, mediaQueryConditions, variableLengthMap, usedVariables);
       components.splice(i, spreadComponents.length, ...spreadComponents);
+      console.log(3, spreadComponents);
     }
   }
+  console.log(4, components, modelComponent);
   return modelComponent;
 }
