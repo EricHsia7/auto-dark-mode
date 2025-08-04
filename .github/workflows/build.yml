@@ -25,6 +25,9 @@ jobs:
 
       - name: Build project
         run: webpack --mode=production
+      
+      - name: Copy icons to dist
+        run: cp -r ./icons/ ./dist/icons/
 
       - name: Deploy with gh-pages
         run: |

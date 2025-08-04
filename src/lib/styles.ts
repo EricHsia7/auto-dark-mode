@@ -165,21 +165,20 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
           const priority = styleRule.style.getPropertyPriority(prop);
           if (value !== '') {
             container[selectorText][prop] = `${value}${priority === 'important' ? ' !important' : ''}`;
-            // Check if value refers to a CSS variable
-            const cssVariableNameMatches = value.match(/--[a-z0-9_-]+/);
+            // Check if value refers to CSS variables
+            const cssVariableNameMatches = value.match(/--[a-z0-9_-]+/i);
             if (cssVariableNameMatches !== null) {
-              for (const cssVariableKey of cssVariableNameMatches) {
-                if (!referenceStats.hasOwnProperty(cssVariableKey)) {
-                  referenceStats[cssVariableKey] = [0, 0];
+              for (const cssVariableName of cssVariableNameMatches) {
+                if (!referenceStats.hasOwnProperty(cssVariableName)) {
+                  referenceStats[cssVariableName] = [0, 0];
                 }
                 if (prop === 'background' || prop === 'background-color') {
-                  referenceStats[cssVariableKey][0] += 1;
-                } else if (prop === 'color') {
-                  referenceStats[cssVariableKey][1] += 1;
+                  referenceStats[cssVariableName][0] += 1;
                 }
-              }
-            }
-
+                if (prop === 'color') {
+                  referenceStats[cssVariableName][1] += 1;
+                }
+         
             if (prop.startsWith('--')) {
               if (mediaQueryConditions.length > 0) {
                 const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
@@ -211,6 +210,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
                 } /* else {
                   variableLibrary[selectorText][prop] = value;
                 } */
+
               }
             }
           }
@@ -396,34 +396,34 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           const color = colors.result[i];
           const parsedColor = parseCSSModel(color);
           if (parsedColor !== undefined) {
+            const [r, g, b, a] = extractRGBA(parsedColor); // Extraction must occur before inverting because Array.prototype.splice() modifies arrays in place (array objects are mutable)
             const darkened = isDarkened(key);
             const invertedColor = invertCSSModel(parsedColor, darkened);
             colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
 
-            const [r, g, b, a] = extractRGBA(parsedColor);
             if (a !== 0) {
               if (key === 'background-color' || key === 'background') {
-                backgroundColorRed += r / 255;
-                backgroundColorGreen += g / 255;
-                backgroundColorBlue += b / 255;
+                backgroundColorRed += (r * a) / 255;
+                backgroundColorGreen += (g * a) / 255;
+                backgroundColorBlue += (b * a) / 255;
                 backgroundColorAlpha += a;
               } else if (key === 'color') {
-                textColorRed += r / 255;
-                textColorGreen += g / 255;
-                textColorBlue += b / 255;
+                textColorRed += (r * a) / 255;
+                textColorGreen += (g * a) / 255;
+                textColorBlue += (b * a) / 255;
                 textColorAlpha += a;
               } else if (key.startsWith('--')) {
                 if (referenceStats.hasOwnProperty(key)) {
                   if (referenceStats[key][0] > referenceStats[key][1]) {
-                    backgroundColorRed += r / 255;
-                    backgroundColorGreen += g / 255;
-                    backgroundColorBlue += b / 255;
+                    backgroundColorRed += (r * a) / 255;
+                    backgroundColorGreen += (g * a) / 255;
+                    backgroundColorBlue += (b * a) / 255;
                     backgroundColorAlpha += a;
                   }
                   if (referenceStats[key][0] < referenceStats[key][1]) {
-                    textColorRed += r / 255;
-                    textColorGreen += g / 255;
-                    textColorBlue += b / 255;
+                    textColorRed += (r * a) / 255;
+                    textColorGreen += (g * a) / 255;
+                    textColorBlue += (b * a) / 255;
                     textColorAlpha += a;
                   }
                 }

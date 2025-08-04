@@ -1,8 +1,6 @@
 .auto_dark_mode_button {
   position: fixed;
-  /* box-shadow: 0px 0px 15px -12px rgba(0, 0, 0, 0.1); */
   box-sizing: border-box;
-  background-color: var(--auto-dark-mode-accent-color);
   appearance: none;
   -webkit-appearance: none;
   outline: none;
@@ -13,25 +11,28 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 99997;
+  z-index: 100000;
 }
 
 /* framed: false */
 .auto_dark_mode_button[framed="false"] {
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(5px) contrast(200) invert(1) grayscale(1) brightness(1.2);
+  -webkit-backdrop-filter: blur(5px) contrast(200) invert(1) grayscale(1) brightness(1.2);
+  -webkit-mask-image: var(--auto-dark-mode-button-mask);
+  mask-image: var(--auto-dark-mode-button-mask);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  mask-size: 48px 48px;
+  -webkit-mask-size: 48px 48px;
+  mask-position: center center;
+  -webkit-mask-position: center center;
+  mask-repeat: no-repeat;
   left: 20px;
   bottom: calc(var(--auto-dark-mode-safe-area-bottom) + 20px);
   width: 48px;
   height: 48px;
   border-radius: 24px;
-}
-
-.auto_dark_mode_button[framed="false"] svg {
-  width: 24px;
-  height: 24px;
-}
-
-.auto_dark_mode_button[framed="false"] svg path {
-  fill: var(--auto-dark-mode-ffffff);
 }
 
 /* framed: true */
@@ -47,6 +48,7 @@
     bottom: 0px;
     width: 48px;
     height: 24px;
+    background-color: var(--auto-dark-mode-accent-color);
     color: var(--auto-dark-mode-ffffff);
     font-family: sans-serif;
     font-weight: 400;

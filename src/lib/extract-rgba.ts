@@ -1,4 +1,5 @@
 import { angleToDegrees } from './angle-to-degree';
+import { clamp } from './clamp';
 import { ModelComponent } from './component';
 import { CSSColor, CSSGradient, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { isAngle } from './css-units';
@@ -94,7 +95,6 @@ export function extractRGBA(modelComponent: ModelComponent<CSSColor | CSSVAR | C
       const components = modelComponent.components;
       const componentsLen = components.length;
       const rgba: [red: number, green: number, blue: number, alpha: number] = [0, 0, 0, 0];
-      let quantity = 0;
       for (let i = componentsLen - 1; i >= 0; i--) {
         const component = components[i];
         if (component.type === 'model') {
@@ -105,7 +105,6 @@ export function extractRGBA(modelComponent: ModelComponent<CSSColor | CSSVAR | C
             rgba[1] += extractedRGBA[1] * extractedRGBA[3];
             rgba[2] += extractedRGBA[2] * extractedRGBA[3];
             rgba[3] += extractedRGBA[3];
-            quantity++;
           }
         } else if (component.type === 'string') {
           const parsed = parseCSSModel(component.string);
@@ -117,7 +116,6 @@ export function extractRGBA(modelComponent: ModelComponent<CSSColor | CSSVAR | C
               rgba[1] += extractedRGBA[1] * extractedRGBA[3];
               rgba[2] += extractedRGBA[2] * extractedRGBA[3];
               rgba[3] += extractedRGBA[3];
-              quantity++;
             }
           }
         }
@@ -127,7 +125,7 @@ export function extractRGBA(modelComponent: ModelComponent<CSSColor | CSSVAR | C
       rgba[0] /= rgba[3];
       rgba[1] /= rgba[3];
       rgba[2] /= rgba[3];
-      rgba[3] /= quantity;
+      rgba[3] = clamp(0, rgba[3], 1);
       return rgba;
     }
 
