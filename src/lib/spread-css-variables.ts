@@ -1,12 +1,12 @@
 import { Component, ModelComponent } from './component';
-import { CSSColor, CSSGradient, CSSVAR } from './css-model';
+import { CSSColor, CSSGradient, CSSVAR, isVariable } from './css-model';
 
 function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): Array<Component<string>> {
   const components = variableComponent.components;
   const componentsLen = components.length;
   const mediaQueryConditionsLen = mediaQueryConditions.length;
   const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
-  const spreadComponents = [];
+  let spreadComponents = [];
   for (let i = componentsLen - 1; i >= 0; i--) {
     const component = components[i];
     if (component.type === 'string' && component.string.startsWith('--')) {
@@ -87,6 +87,8 @@ function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, select
         }
         break;
       }
+    } else if (component.type === 'model' && isVariable(component)) {
+      spreadComponents = getSpreadCSSVariables(component, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables);
     } else {
       spreadComponents.unshift(component);
       break;
@@ -95,6 +97,12 @@ function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, select
   return spreadComponents;
 }
 
-export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
-  
+export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSSGradient>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
+  switch (key) {
+    case value:
+      break;
+
+    default:
+      break;
+  }
 }
