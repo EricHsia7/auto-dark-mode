@@ -184,7 +184,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
 
             if (prop.startsWith('--')) {
               if (mediaQueryConditions.length > 0) {
-                const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
+                const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`; // TODO: simplify media query
                 if (!variableLibrary.hasOwnProperty(joinedMediaQueryConditions)) {
                   variableLibrary[joinedMediaQueryConditions] = {};
                 }
