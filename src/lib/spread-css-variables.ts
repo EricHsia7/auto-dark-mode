@@ -1,7 +1,7 @@
 import { Component, ModelComponent } from './component';
-import { CSSColor, CSSGradient, CSSVAR, isVariable } from './css-model';
+import { CSSColor, CSSGradient, CSSVAR } from './css-model';
 
-function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): Array<Component<string>> {
+function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): Array<Component> {
   const components = variableComponent.components;
   const componentsLen = components.length;
   const mediaQueryConditionsLen = mediaQueryConditions.length;
@@ -87,7 +87,7 @@ function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, select
         }
         break;
       }
-    } else if (component.type === 'model' && isVariable(component)) {
+    } else if (component.type === 'model' && component.model === 'var') {
       spreadComponents = getSpreadCSSVariables(component, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables);
     } else {
       spreadComponents.unshift(component);
@@ -98,11 +98,14 @@ function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, select
 }
 
 export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSSGradient>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
-  switch (key) {
-    case value:
-      break;
-
-    default:
-      break;
+  const components = modelComponent.components;
+  const componentsLen = components.length;
+  for (let i = componentsLen - 1; i >= 0; i--) {
+    const component = components[i];
+    if (component.type === 'model' && component.model === 'var') {
+      const spread = getSpreadCSSVariables(component, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables);
+      components.splice(i, spread.length, ...spread);
+    }
   }
+  return modelComponent;
 }

@@ -12,53 +12,49 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
   switch (modelComponent.model) {
     case 'rgb': {
       const [red, green, blue, alpha] = modelComponent.components;
-      if (typeof red !== 'object' && typeof green !== 'object' && typeof blue !== 'object' && red?.type === 'number' && green?.type === 'number' && blue?.type === 'number') {
-        // absolute
-        const [R, G, B] = invertColor(red.number, green.number, blue.number, darkened);
-        if (alpha === undefined) {
-          const result: ModelComponent<CSSRGB> = {
-            type: 'model',
-            model: 'rgb',
-            components: [
-              { type: 'number', number: R, unit: '' },
-              { type: 'number', number: G, unit: '' },
-              { type: 'number', number: B, unit: '' }
-            ]
-          };
-          return result;
-        } else if (alpha.type === 'number' && alpha.number === 1) {
-          const result: ModelComponent<CSSRGB> = {
-            type: 'model',
-            model: 'rgb',
-            components: [
-              { type: 'number', number: R, unit: '' },
-              { type: 'number', number: G, unit: '' },
-              { type: 'number', number: B, unit: '' }
-            ]
-          };
-          return result;
-        } else if (alpha.type === 'number' && alpha.unit === '') {
-          const result: ModelComponent<CSSRGBA> = {
-            type: 'model',
-            model: 'rgba',
-            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-          };
-          return result;
-        } else if (alpha.type === 'model' && alpha.model === 'var') {
-          const result: ModelComponent<CSSRGBA> = {
-            type: 'model',
-            model: 'rgba',
-            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-          };
-          return result;
-        }
-      } else if (modelComponent.components.length > 0) {
-        // variables
-        
-      } else {
-        return modelComponent;
+
+      if (typeof red !== 'object' || typeof green !== 'object' || typeof blue !== 'object') return modelComponent;
+      if (red?.type !== 'number' || green?.type !== 'number' || blue?.type !== 'number') return modelComponent;
+
+      const [R, G, B] = invertColor(red.number, green.number, blue.number, darkened);
+
+      if (alpha === undefined) {
+        const result: ModelComponent<CSSRGB> = {
+          type: 'model',
+          model: 'rgb',
+          components: [
+            { type: 'number', number: R, unit: '' },
+            { type: 'number', number: G, unit: '' },
+            { type: 'number', number: B, unit: '' }
+          ]
+        };
+        return result;
+      } else if (alpha.type === 'number' && alpha.number === 1) {
+        const result: ModelComponent<CSSRGB> = {
+          type: 'model',
+          model: 'rgb',
+          components: [
+            { type: 'number', number: R, unit: '' },
+            { type: 'number', number: G, unit: '' },
+            { type: 'number', number: B, unit: '' }
+          ]
+        };
+        return result;
+      } else if (alpha.type === 'number' && alpha.unit === '') {
+        const result: ModelComponent<CSSRGBA> = {
+          type: 'model',
+          model: 'rgba',
+          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+        };
+        return result;
+      } else if (alpha.type === 'model' && alpha.model === 'var') {
+        const result: ModelComponent<CSSRGBA> = {
+          type: 'model',
+          model: 'rgba',
+          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+        };
+        return result;
       }
-      break;
     }
 
     case 'rgba': {
@@ -244,14 +240,14 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         const component = components[i];
         if (component.type === 'model') {
           if (isColor(component) || isVariable(component)) {
-            const inverted = invertCSSModel(component);
+            const inverted = invertCSSModel(component, darkened);
             components.splice(i, 1, inverted);
           }
         } else if (component.type === 'string') {
           const parsed = parseCSSModel(component.string);
           if (parsed !== undefined) {
             if (isColor(parsed) || isVariable(parsed)) {
-              const inverted = invertCSSModel(parsed);
+              const inverted = invertCSSModel(parsed, darkened);
               components.splice(i, 1, inverted);
             }
           }
@@ -280,7 +276,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
             const subComponent = subComponents[j];
             if (subComponent.type === 'model') {
               if (isColor(subComponent) || isVariable(subComponent)) {
-                const inverted = invertCSSModel(subComponent);
+                const inverted = invertCSSModel(subComponent, darkened);
                 subComponents.splice(j, 1, inverted);
               }
             }
@@ -292,7 +288,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         } else if (component.type === 'model') {
           // component is a color alone
           if (isColor(component) || isVariable(component)) {
-            const inverted = invertCSSModel(component);
+            const inverted = invertCSSModel(component, darkened);
             components.splice(i, 1, inverted);
           }
         }
@@ -319,7 +315,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
             const subComponent = subComponents[j];
             if (subComponent.type === 'model') {
               if (isColor(subComponent) || isVariable(subComponent)) {
-                const inverted = invertCSSModel(subComponent);
+                const inverted = invertCSSModel(subComponent, darkened);
                 subComponents.splice(j, 1, inverted);
               }
             }
@@ -332,7 +328,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         } else if (component.type === 'model') {
           // component is a color alone
           if (isColor(component) || isVariable(component)) {
-            const inverted = invertCSSModel(component);
+            const inverted = invertCSSModel(component, darkened);
             components.splice(i, 1, inverted);
           }
         }
@@ -359,7 +355,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
             const subComponent = subComponents[j];
             if (subComponent.type === 'model') {
               if (isColor(subComponent) || isVariable(subComponent)) {
-                const inverted = invertCSSModel(subComponent);
+                const inverted = invertCSSModel(subComponent, darkened);
                 subComponents.splice(j, 1, inverted);
               }
             }
@@ -372,7 +368,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         } else if (component.type === 'model') {
           // component is a color alone
           if (isColor(component) || isVariable(component)) {
-            const inverted = invertCSSModel(component);
+            const inverted = invertCSSModel(component, darkened);
             components.splice(i, 1, inverted);
           }
         }
