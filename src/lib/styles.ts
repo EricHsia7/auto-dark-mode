@@ -185,6 +185,12 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
             if (prop.startsWith('--')) {
               if (mediaQueryConditions.length > 0) {
                 const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
+                if (!variableLengthMap.hasOwnProperty(joinedMediaQueryConditions)) {
+                  variableLengthMap[joinedMediaQueryConditions] = {};
+                }
+                if (!variableLengthMap[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
+                  variableLengthMap[joinedMediaQueryConditions][selectorText] = {};
+                }
                 if (!variableLibrary.hasOwnProperty(joinedMediaQueryConditions)) {
                   variableLibrary[joinedMediaQueryConditions] = {};
                 }
@@ -202,6 +208,9 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
                   variableLibrary[joinedMediaQueryConditions][selectorText][prop] = value;
                 } */
               } else {
+                if (!variableLengthMap.hasOwnProperty(selectorText)) {
+                  variableLengthMap[selectorText] = {};
+                }
                 if (!variableLibrary.hasOwnProperty(selectorText)) {
                   variableLibrary[selectorText] = {};
                 }

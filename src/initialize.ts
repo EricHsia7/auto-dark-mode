@@ -226,5 +226,5 @@ export async function initialize() {
     childList: true
   });
 
-  console.log(currentVariableLibrary)
+  console.log(currentVariableLibrary);
 }
