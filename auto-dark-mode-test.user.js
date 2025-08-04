@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         auto-dark-mode-test
-// @version      20250805.12.13
+// @version      20250805.12.18
 // @description  Darken Any Website
 // @author       erichsia7
 // @inject-into  content
