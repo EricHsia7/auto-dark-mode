@@ -59,7 +59,7 @@ export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSS
     const component = components[i];
     if (component.type === 'model' && component.model === 'var') {
       const spreadComponents = getSpreadComponents(component, selectorText, mediaQueryConditions, variableLengthMap, usedVariables);
-      components.splice(i, spreadComponents.length, ...spreadComponents);
+      components.splice(i, 1, ...spreadComponents);
     }
   }
   return modelComponent;
