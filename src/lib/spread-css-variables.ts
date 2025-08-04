@@ -16,7 +16,7 @@ function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, select
       if (mediaQueryConditionsLen > 0 && isPathContinuous(variableLengthMap, [joinedMediaQueryConditions, selectorText, component.string])) {
         // root > media query > selector > property
         variableLen = variableLengthMap[joinedMediaQueryConditions][selectorText][component.string];
-      } else if (isPathContinuous(variableLengthMap, [joinedMediaQueryConditions, ':root', component.string])) {
+      } else if (mediaQueryConditionsLen > 0 && isPathContinuous(variableLengthMap, [joinedMediaQueryConditions, ':root', component.string])) {
         // root > media query > :root > property
         variableLen = variableLengthMap[joinedMediaQueryConditions][':root'][component.string];
       } else if (isPathContinuous(variableLengthMap, [selectorText, component.string])) {
@@ -41,7 +41,7 @@ function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, select
         };
         spreadComponents.unshift(spreadComponent);
       }
-      
+
       if (variableLen !== -1) break;
     } else if (component.type === 'model' && component.model === 'var') {
       spreadComponents = getSpreadCSSVariables(component, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables);
