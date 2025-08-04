@@ -73,7 +73,7 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
               spreadComponents.unshift.apply(spreadComponents, getSpreadComponents(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
             }
           } else {
-            spreadComponents.unshift(component);
+            spreadComponents.unshift(parsed);
           }
         }
       }
