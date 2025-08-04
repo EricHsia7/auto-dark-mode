@@ -1,5 +1,6 @@
 import { Component, ModelComponent } from './component';
 import { CSSColor, CSSGradient, CSSVAR } from './css-model';
+import { isPathContinuous } from './is-path-continuous';
 
 function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): Array<Component> {
   const components = variableComponent.components;
@@ -9,84 +10,39 @@ function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, select
   let spreadComponents = [];
   for (let i = componentsLen - 1; i >= 0; i--) {
     const component = components[i];
+
     if (component.type === 'string' && component.string.startsWith('--')) {
-      if (mediaQueryConditionsLen > 0 && variableLengthMap.hasOwnProperty(joinedMediaQueryConditions) && variableLengthMap[joinedMediaQueryConditions].hasOwnProperty(selectorText) && variableLengthMap[joinedMediaQueryConditions][selectorText].hasOwnProperty(component.string)) {
+      let variableLen = -1;
+      if (mediaQueryConditionsLen > 0 && isPathContinuous(variableLengthMap, [joinedMediaQueryConditions, selectorText, component.string])) {
         // root > media query > selector > property
-        const variableLen = variableLengthMap[joinedMediaQueryConditions][selectorText][component.string];
-        for (let j = variableLen - 1; j >= 0; j--) {
-          const prop = `--varlib-${component.string}-${j.toString()}`;
-          // const arg = variableLibrary[joinedMediaQueryConditions][selectorText][prop];
-          const spreadComponent: ModelComponent<CSSVAR> = {
-            type: 'model',
-            model: 'var',
-            components: [
-              {
-                type: 'string',
-                string: prop
-              }
-            ]
-          };
-          spreadComponents.unshift(spreadComponent);
-        }
-        break;
-      } else if (variableLengthMap[joinedMediaQueryConditions].hasOwnProperty(':root') && variableLengthMap[joinedMediaQueryConditions][':root'].hasOwnProperty(component.string)) {
+        variableLen = variableLengthMap[joinedMediaQueryConditions][selectorText][component.string];
+      } else if (isPathContinuous(variableLengthMap, [joinedMediaQueryConditions, ':root', component.string])) {
         // root > media query > :root > property
-        const variableLen = variableLengthMap[joinedMediaQueryConditions][':root'][component.string];
-        for (let j = variableLen - 1; j >= 0; j--) {
-          const prop = `--varlib-${component.string}-${j.toString()}`;
-          // const arg = variableLibrary[joinedMediaQueryConditions][':root'][prop];
-          const spreadComponent: ModelComponent<CSSVAR> = {
-            type: 'model',
-            model: 'var',
-            components: [
-              {
-                type: 'string',
-                string: prop
-              }
-            ]
-          };
-          spreadComponents.unshift(spreadComponent);
-        }
-        break;
-      } else if (variableLengthMap.hasOwnProperty(selectorText) && variableLengthMap[selectorText].hasOwnProperty(component.string)) {
+        variableLen = variableLengthMap[joinedMediaQueryConditions][':root'][component.string];
+      } else if (isPathContinuous(variableLengthMap, [selectorText, component.string])) {
         // root > selector
-        const variableLen = variableLengthMap[selectorText][component.string];
-        for (let j = variableLen - 1; j >= 0; j--) {
-          const prop = `--varlib-${component.string}-${j.toString()}`;
-          // const arg = variableLibrary[selectorText][prop];
-          const spreadComponent: ModelComponent<CSSVAR> = {
-            type: 'model',
-            model: 'var',
-            components: [
-              {
-                type: 'string',
-                string: prop
-              }
-            ]
-          };
-          spreadComponents.unshift(spreadComponent);
-        }
-        break;
-      } else if (variableLengthMap.hasOwnProperty(':root') && variableLengthMap[':root'].hasOwnProperty(component.string)) {
+        variableLen = variableLengthMap[selectorText][component.string];
+      } else if (isPathContinuous(variableLengthMap, [':root', component.string])) {
         // root > :root
-        const variableLen = variableLengthMap[':root'][component.string];
-        for (let j = variableLen - 1; j >= 0; j--) {
-          const prop = `--varlib-${component.string}-${j.toString()}`;
-          // const arg = variableLibrary[':root'][prop];
-          const spreadComponent: ModelComponent<CSSVAR> = {
-            type: 'model',
-            model: 'var',
-            components: [
-              {
-                type: 'string',
-                string: prop
-              }
-            ]
-          };
-          spreadComponents.unshift(spreadComponent);
-        }
-        break;
+        variableLen = variableLengthMap[':root'][component.string];
       }
+
+      for (let j = variableLen - 1; j >= 0; j--) {
+        const prop = `--varlib-${component.string}-${j.toString()}`;
+        const spreadComponent: ModelComponent<CSSVAR> = {
+          type: 'model',
+          model: 'var',
+          components: [
+            {
+              type: 'string',
+              string: prop
+            }
+          ]
+        };
+        spreadComponents.unshift(spreadComponent);
+      }
+      
+      if (variableLen !== -1) break;
     } else if (component.type === 'model' && component.model === 'var') {
       spreadComponents = getSpreadCSSVariables(component, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables);
     } else {
