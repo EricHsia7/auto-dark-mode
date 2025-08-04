@@ -27,13 +27,13 @@ export type StylesCollection = {
   [sheetName: string]: StyleSheet;
 };
 
-export type CSSVariableReferenceMap = {
+export type CSSVariableReferenceStats = {
   [cssVariableKey: string]: [backgroundColorCount: number, textColorCount: number];
 };
 
 export interface Styles {
   stylesCollection: StylesCollection;
-  referenceMap: CSSVariableReferenceMap;
+  referenceStats: CSSVariableReferenceStats;
 }
 
 export interface StyleSheetCSSItem {
@@ -43,7 +43,7 @@ export interface StyleSheetCSSItem {
 
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
-export let cssVariableReferenceMap: CSSVariableReferenceMap = {};
+export let cssVariableReferenceStats: CSSVariableReferenceStats = {};
 export let currentStylesCollection: StylesCollection = {
   '@stylesheet-default': {
     'body': {
@@ -148,8 +148,9 @@ export let currentStylesCollection: StylesCollection = {
     }
   }
 };
+export let currentVariableLibrary = {};
 
-function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, cssVariableReferenceMap: CSSVariableReferenceMap) {
+function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: CSSVariableReferenceStats, variableLibrary, mediaQueryConditions: Array<string> = []) {
   for (const rule of rules) {
     switch (rule.type) {
       case CSSRule.STYLE_RULE: {
@@ -165,18 +166,51 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
           if (value !== '') {
             container[selectorText][prop] = `${value}${priority === 'important' ? ' !important' : ''}`;
             // Check if value refers to CSS variables
-            const cssVariableMatches = value.match(/--[a-z0-9_-]+/i);
-            if (cssVariableMatches !== null) {
-              for (const cssVariableKey of cssVariableMatches) {
-                if (!cssVariableReferenceMap.hasOwnProperty(cssVariableKey)) {
-                  cssVariableReferenceMap[cssVariableKey] = [0, 0];
+            const cssVariableNameMatches = value.match(/--[a-z0-9_-]+/i);
+            if (cssVariableNameMatches !== null) {
+              for (const cssVariableName of cssVariableNameMatches) {
+                if (!referenceStats.hasOwnProperty(cssVariableName)) {
+                  referenceStats[cssVariableName] = [0, 0];
                 }
                 if (prop === 'background' || prop === 'background-color') {
-                  cssVariableReferenceMap[cssVariableKey][0] += 1;
+                  referenceStats[cssVariableName][0] += 1;
                 }
                 if (prop === 'color') {
-                  cssVariableReferenceMap[cssVariableKey][1] += 1;
+                  referenceStats[cssVariableName][1] += 1;
                 }
+         
+            if (prop.startsWith('--')) {
+              if (mediaQueryConditions.length > 0) {
+                const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
+                if (!variableLibrary.hasOwnProperty(joinedMediaQueryConditions)) {
+                  variableLibrary[joinedMediaQueryConditions] = {};
+                }
+                if (!variableLibrary[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
+                  variableLibrary[joinedMediaQueryConditions][selectorText] = {};
+                }
+                const args = splitByTopLevelDelimiter(value);
+                const argsLen = args.result.length;
+                if (argsLen > 1) {
+                  for (let i = argsLen - 1; i >= 0; i--) {
+                    variableLibrary[joinedMediaQueryConditions][selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
+                  }
+                } /* else {
+                  variableLibrary[joinedMediaQueryConditions][selectorText][prop] = value;
+                } */
+              } else {
+                if (!variableLibrary.hasOwnProperty(selectorText)) {
+                  variableLibrary[selectorText] = {};
+                }
+                const args = splitByTopLevelDelimiter(value);
+                const argsLen = args.result.length;
+                if (argsLen > 1) {
+                  for (let i = argsLen - 1; i >= 0; i--) {
+                    variableLibrary[selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
+                  }
+                } /* else {
+                  variableLibrary[selectorText][prop] = value;
+                } */
+
               }
             }
           }
@@ -186,13 +220,14 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
 
       case CSSRule.MEDIA_RULE: {
         const mediaRule = rule as CSSMediaRule;
-        if (!/prefers-color-scheme:[\s]*dark/i.test(mediaRule.conditionText)) {
-          const media = `@media ${mediaRule.conditionText}`;
-          if (!container.hasOwnProperty(media)) {
-            container[media] = {};
-          }
-          processCSSRules(mediaRule.cssRules, container[media], cssVariableReferenceMap);
+        // if (!/prefers-color-scheme:[\s]*dark/i.test(mediaRule.conditionText)) {
+        const media = `@media ${mediaRule.conditionText}`;
+        if (!container.hasOwnProperty(media)) {
+          container[media] = {};
         }
+        processCSSRules(mediaRule.cssRules, container[media], referenceStats, variableLibrary, mediaQueryConditions.concat(mediaRule.conditionText));
+        // }
+        // TODO: evaluate theme per color scheme
         break;
       }
 
@@ -201,7 +236,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (importRule.styleSheet) {
           // Import rules with nested stylesheets
           try {
-            processCSSRules(importRule.styleSheet.cssRules, container, cssVariableReferenceMap);
+            processCSSRules(importRule.styleSheet.cssRules, container, referenceStats, variableLibrary);
           } catch (e) {
             // Skipped due to CORS/security
           }
@@ -247,7 +282,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (!container.hasOwnProperty(supports)) {
           container[supports] = {};
         }
-        processCSSRules(supportsRule.cssRules, container[supports], cssVariableReferenceMap);
+        processCSSRules(supportsRule.cssRules, container[supports], referenceStats, variableLibrary);
         break;
       }
 
@@ -301,7 +336,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
         currentStylesCollection[sheetName] = {};
       } else {
         const sheetObj = {};
-        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceMap);
+        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceStats, currentVariableLibrary);
         currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
       }
     } catch (e) {
@@ -332,7 +367,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
   currentStylesCollection['@stylesheet-lambda'] = deepAssign(currentStylesCollection['@stylesheet-lambda'] || {}, lambdaStyles);
 }
 
-export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceMap: CSSVariableReferenceMap, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
+export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceStats: CSSVariableReferenceStats, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
   const newStyles: any = {};
   let backgroundColorRed = 0;
   let backgroundColorGreen = 0;
@@ -351,7 +386,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     const currentPath = path.concat(key);
 
     if (typeof value === 'object' && value !== null) {
-      newStyles[key] = invertStyles(value, referenceMap, currentPath); // Recursive copy
+      newStyles[key] = invertStyles(value, referenceStats, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
       if (isInvertible(key, value)) {
@@ -378,14 +413,14 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
                 textColorBlue += (b * a) / 255;
                 textColorAlpha += a;
               } else if (key.startsWith('--')) {
-                if (referenceMap.hasOwnProperty(key)) {
-                  if (referenceMap[key][0] > referenceMap[key][1]) {
+                if (referenceStats.hasOwnProperty(key)) {
+                  if (referenceStats[key][0] > referenceStats[key][1]) {
                     backgroundColorRed += (r * a) / 255;
                     backgroundColorGreen += (g * a) / 255;
                     backgroundColorBlue += (b * a) / 255;
                     backgroundColorAlpha += a;
                   }
-                  if (referenceMap[key][0] < referenceMap[key][1]) {
+                  if (referenceStats[key][0] < referenceStats[key][1]) {
                     textColorRed += (r * a) / 255;
                     textColorGreen += (g * a) / 255;
                     textColorBlue += (b * a) / 255;
