@@ -57,7 +57,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        console.log(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables, spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables));
         return modelComponent;
       } else {
         return modelComponent;
@@ -101,7 +101,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        console.log(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables, spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables));
         return modelComponent;
       } else {
         return modelComponent;
@@ -158,7 +158,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        console.log(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables, spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables));
         return modelComponent;
       } else {
         return modelComponent;
@@ -204,7 +204,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        console.log(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables, spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables));
         return modelComponent;
       } else {
         return modelComponent;
@@ -264,7 +264,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        console.log(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables, spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLengthMap, usedVariables));
         return modelComponent;
       } else {
         return modelComponent;

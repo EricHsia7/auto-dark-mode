@@ -2,7 +2,7 @@ import { Component, ModelComponent } from './component';
 import { CSSColor, CSSGradient, CSSVAR } from './css-model';
 import { isPathContinuous } from './is-path-continuous';
 
-function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): Array<Component> {
+function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, selectorText: string, mediaQueryConditions: Array<string>, variableLengthMap, usedVariables): Array<Component> {
   const components = variableComponent.components;
   const componentsLen = components.length;
   const mediaQueryConditionsLen = mediaQueryConditions.length;
@@ -44,7 +44,7 @@ function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, select
 
       if (variableLen !== -1) break;
     } else if (component.type === 'model' && component.model === 'var') {
-      spreadComponents = getSpreadCSSVariables(component, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables);
+      spreadComponents = getSpreadComponents(component, selectorText, mediaQueryConditions, variableLengthMap, usedVariables);
     } else {
       spreadComponents.unshift(component);
       break;
@@ -53,14 +53,14 @@ function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, select
   return spreadComponents;
 }
 
-export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSSGradient>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
+export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSSGradient>, selectorText: string, mediaQueryConditions: Array<string>, variableLengthMap, usedVariables): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
   const components = modelComponent.components;
   const componentsLen = components.length;
   for (let i = componentsLen - 1; i >= 0; i--) {
     const component = components[i];
     if (component.type === 'model' && component.model === 'var') {
-      const spread = getSpreadCSSVariables(component, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables);
-      components.splice(i, spread.length, ...spread);
+      const spreadComponents = getSpreadComponents(component, selectorText, mediaQueryConditions, variableLengthMap, usedVariables);
+      components.splice(i, spreadComponents.length, ...spreadComponents);
     }
   }
   return modelComponent;
