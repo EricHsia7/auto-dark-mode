@@ -393,6 +393,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
       newStyles[key] = invertStyles(value, referenceStats, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
+      const selectorText = currentPath[currentPath.length - 2];
       if (isInvertible(key, value)) {
         const colors = splitByTopLevelDelimiter(value);
         const colorsLen = colors.result.length;
@@ -402,7 +403,9 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
           if (parsedColor !== undefined) {
             const [r, g, b, a] = extractRGBA(parsedColor); // Extraction must occur before inverting because Array.prototype.splice() modifies arrays in place (array objects are mutable)
             const darkened = isDarkened(key);
-            const invertedColor = invertCSSModel(parsedColor, darkened);
+            let usedVariables = {};
+            const invertedColor = invertCSSModel(parsedColor, darkened, true, selectorText, [], currentVariableLibrary, currentVariableLengthMap, usedVariables);
+            // TODO: media query conditions
             colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
 
             if (a !== 0) {
