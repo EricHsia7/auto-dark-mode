@@ -1,11 +1,9 @@
 // ==UserScript==
-// @name         auto-dark-mode
-// @version      0.34.7
+// @name         auto-dark-mode-test
+// @version      20250805.5.4
 // @description  Darken Any Website
 // @author       erichsia7
 // @inject-into  content
-// @updateURL    https://erichsia7.github.io/auto-dark-mode/auto-dark-mode.user.js
-// @downloadURL  https://erichsia7.github.io/auto-dark-mode/auto-dark-mode.user.js
 // @icon         https://erichsia7.github.io/auto-dark-mode/icons/512.png
 // @match        *://*/*
 // @grant        GM_xmlhttpRequest
