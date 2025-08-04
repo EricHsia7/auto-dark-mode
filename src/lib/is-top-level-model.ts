@@ -10,7 +10,7 @@ export function isTopLevelModel(value: string): boolean {
   for (let i = 0, l = trimmedLen; i < l; i++) {
     const char = trimmed[i];
     if (char === '(') {
-      if (leftBracket === 1) firstLeftBracketIndex = i;
+      if (leftBracket === 0) firstLeftBracketIndex = i;
       leftBracket++;
       depth++;
     } else if (char === ')') {
