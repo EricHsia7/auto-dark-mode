@@ -7,89 +7,104 @@ import { hslToRgb } from './hsl-to-rgb';
 import { hwbToRgb } from './hwb-to-rgb';
 import { invertColor } from './invert-color';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { spreadCSSVariables } from './spread-css-variables';
 
-export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean = false): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
+export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean, spread: boolean = false, selectorText: string = '', mediaQueryConditions: Array<string> = [], variableLibrary = {}, variableLengthMap = {}, usedVariables = {}): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
   switch (modelComponent.model) {
     case 'rgb': {
       const [red, green, blue, alpha] = modelComponent.components;
 
-      if (typeof red !== 'object' || typeof green !== 'object' || typeof blue !== 'object') return modelComponent;
-      if (red?.type !== 'number' || green?.type !== 'number' || blue?.type !== 'number') return modelComponent;
+      const areRGBObject = typeof red === 'object' && typeof green === 'object' && typeof blue === 'object';
+      const absolute = areRGBObject && red?.type === 'number' && green?.type === 'number' && blue?.type === 'number';
 
-      const [R, G, B] = invertColor(red.number, green.number, blue.number, darkened);
-
-      if (alpha === undefined) {
-        const result: ModelComponent<CSSRGB> = {
-          type: 'model',
-          model: 'rgb',
-          components: [
-            { type: 'number', number: R, unit: '' },
-            { type: 'number', number: G, unit: '' },
-            { type: 'number', number: B, unit: '' }
-          ]
-        };
-        return result;
-      } else if (alpha.type === 'number' && alpha.number === 1) {
-        const result: ModelComponent<CSSRGB> = {
-          type: 'model',
-          model: 'rgb',
-          components: [
-            { type: 'number', number: R, unit: '' },
-            { type: 'number', number: G, unit: '' },
-            { type: 'number', number: B, unit: '' }
-          ]
-        };
-        return result;
-      } else if (alpha.type === 'number' && alpha.unit === '') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-        };
-        return result;
-      } else if (alpha.type === 'model' && alpha.model === 'var') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-        };
-        return result;
+      if (absolute) {
+        const [R, G, B] = invertColor(red.number, green.number, blue.number, darkened);
+        if (alpha === undefined) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [
+              { type: 'number', number: R, unit: '' },
+              { type: 'number', number: G, unit: '' },
+              { type: 'number', number: B, unit: '' }
+            ]
+          };
+          return result;
+        } else if (alpha.type === 'number' && alpha.number === 1) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [
+              { type: 'number', number: R, unit: '' },
+              { type: 'number', number: G, unit: '' },
+              { type: 'number', number: B, unit: '' }
+            ]
+          };
+          return result;
+        } else if (alpha.type === 'number' && alpha.unit === '') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          };
+          return result;
+        } else if (alpha.type === 'model' && alpha.model === 'var') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          };
+          return result;
+        }
+      } else if (spread) {
+        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        return modelComponent;
+      } else {
+        return modelComponent;
       }
+      break;
     }
 
     case 'rgba': {
       const [red, green, blue, alpha] = modelComponent.components;
 
-      if (typeof red !== 'object' || typeof green !== 'object' || typeof blue !== 'object' || typeof alpha !== 'object') return modelComponent;
-      if (red?.type !== 'number' || green?.type !== 'number' || blue?.type !== 'number') return modelComponent;
+      const areRGBAObject = typeof red === 'object' && typeof green === 'object' && typeof blue === 'object' && typeof alpha === 'object';
+      const absolute = areRGBAObject && red?.type === 'number' && green?.type === 'number' && blue?.type === 'number';
 
-      const [R, G, B] = invertColor(red.number, green.number, blue.number, darkened);
+      if (absolute) {
+        const [R, G, B] = invertColor(red.number, green.number, blue.number, darkened);
 
-      if (alpha.type === 'number' && alpha.number === 1) {
-        const result: ModelComponent<CSSRGB> = {
-          type: 'model',
-          model: 'rgb',
-          components: [
-            { type: 'number', number: R, unit: '' },
-            { type: 'number', number: G, unit: '' },
-            { type: 'number', number: B, unit: '' }
-          ]
-        };
-        return result;
-      } else if (alpha.type === 'number' && alpha.unit === '') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-        };
-        return result;
-      } else if (alpha.type === 'model' && alpha.model === 'var') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-        };
-        return result;
+        if (alpha.type === 'number' && alpha.number === 1) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [
+              { type: 'number', number: R, unit: '' },
+              { type: 'number', number: G, unit: '' },
+              { type: 'number', number: B, unit: '' }
+            ]
+          };
+          return result;
+        } else if (alpha.type === 'number' && alpha.unit === '') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          };
+          return result;
+        } else if (alpha.type === 'model' && alpha.model === 'var') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          };
+          return result;
+        }
+      } else if (spread) {
+        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        return modelComponent;
+      } else {
+        return modelComponent;
       }
       break;
     }
@@ -97,49 +112,56 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
     case 'hsl': {
       const [hue, saturation, lightness, alpha] = modelComponent.components;
 
-      if (typeof hue !== 'object' || typeof saturation !== 'object' || typeof lightness !== 'object') return modelComponent;
-      if (hue.type !== 'number' || saturation.type !== 'number' || lightness.type !== 'number') return modelComponent;
-      if (hue.unit !== '' || saturation.unit !== '%' || lightness.unit !== '%') return modelComponent;
+      const areHSLObject = typeof hue === 'object' && typeof saturation === 'object' && typeof lightness === 'object';
+      const areHSLNumber = areHSLObject && hue?.type === 'number' && saturation?.type === 'number' && lightness?.type === 'number';
+      const absolute = areHSLNumber && hue.unit === '' && saturation.unit === '%' && lightness.unit === '%';
 
-      const [R, G, B] = hslToRgb(hue.number, saturation.number / 100, lightness.number / 100);
-      const [R1, G1, B1] = invertColor(R, G, B, darkened);
+      if (absolute) {
+        const [R, G, B] = hslToRgb(hue.number, saturation.number / 100, lightness.number / 100);
+        const [R1, G1, B1] = invertColor(R, G, B, darkened);
 
-      if (alpha === undefined) {
-        const result: ModelComponent<CSSRGB> = {
-          type: 'model',
-          model: 'rgb',
-          components: [
-            { type: 'number', number: R1, unit: '' },
-            { type: 'number', number: G1, unit: '' },
-            { type: 'number', number: B1, unit: '' }
-          ]
-        };
-        return result;
-      } else if (alpha.type === 'number' && alpha.number === 1) {
-        const result: ModelComponent<CSSRGB> = {
-          type: 'model',
-          model: 'rgb',
-          components: [
-            { type: 'number', number: R1, unit: '' },
-            { type: 'number', number: G1, unit: '' },
-            { type: 'number', number: B1, unit: '' }
-          ]
-        };
-        return result;
-      } else if (alpha.type === 'number') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-        };
-        return result;
-      } else if (alpha.type === 'model' && alpha.model === 'var') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-        };
-        return result;
+        if (alpha === undefined) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [
+              { type: 'number', number: R1, unit: '' },
+              { type: 'number', number: G1, unit: '' },
+              { type: 'number', number: B1, unit: '' }
+            ]
+          };
+          return result;
+        } else if (alpha.type === 'number' && alpha.number === 1) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [
+              { type: 'number', number: R1, unit: '' },
+              { type: 'number', number: G1, unit: '' },
+              { type: 'number', number: B1, unit: '' }
+            ]
+          };
+          return result;
+        } else if (alpha.type === 'number') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          };
+          return result;
+        } else if (alpha.type === 'model' && alpha.model === 'var') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          };
+          return result;
+        }
+      } else if (spread) {
+        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        return modelComponent;
+      } else {
+        return modelComponent;
       }
       break;
     }
@@ -147,89 +169,105 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
     case 'hsla': {
       const [hue, saturation, lightness, alpha] = modelComponent.components;
 
-      if (typeof hue !== 'object' || typeof saturation !== 'object' || typeof lightness !== 'object' || typeof alpha !== 'object') return modelComponent;
-      if (hue.type !== 'number' || saturation.type !== 'number' || lightness.type !== 'number') return modelComponent;
-      if (hue.unit !== '' || saturation.unit !== '%' || lightness.unit !== '%') return modelComponent;
+      const areHSLAObject = typeof hue === 'object' && typeof saturation === 'object' && typeof lightness === 'object' && typeof alpha === 'object';
+      const areHSLNumber = areHSLAObject && hue.type === 'number' && saturation.type === 'number' && lightness.type === 'number';
+      const absolute = areHSLNumber && hue.unit === '' && saturation.unit === '%' && lightness.unit === '%';
 
-      const [R, G, B] = hslToRgb(hue.number, saturation.number / 100, lightness.number / 100);
-      const [R1, G1, B1] = invertColor(R, G, B, darkened);
+      if (absolute) {
+        const [R, G, B] = hslToRgb(hue.number, saturation.number / 100, lightness.number / 100);
+        const [R1, G1, B1] = invertColor(R, G, B, darkened);
 
-      if (alpha.type === 'number' && alpha.number === 1) {
-        const result: ModelComponent<CSSRGB> = {
-          type: 'model',
-          model: 'rgb',
-          components: [
-            { type: 'number', number: R1, unit: '' },
-            { type: 'number', number: G1, unit: '' },
-            { type: 'number', number: B1, unit: '' }
-          ]
-        };
-        return result;
-      } else if (alpha.type === 'number') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-        };
-        return result;
-      } else if (alpha.type === 'model' && alpha.model === 'var') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
-        };
-        return result;
+        if (alpha.type === 'number' && alpha.number === 1) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [
+              { type: 'number', number: R1, unit: '' },
+              { type: 'number', number: G1, unit: '' },
+              { type: 'number', number: B1, unit: '' }
+            ]
+          };
+          return result;
+        } else if (alpha.type === 'number') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          };
+          return result;
+        } else if (alpha.type === 'model' && alpha.model === 'var') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R, unit: '' }, { type: 'number', number: G, unit: '' }, { type: 'number', number: B, unit: '' }, alpha]
+          };
+          return result;
+        }
+      } else if (spread) {
+        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        return modelComponent;
+      } else {
+        return modelComponent;
       }
       break;
     }
 
     case 'hwb': {
       const [hue, white, black, alpha] = modelComponent.components;
-      if (typeof hue !== 'object' || typeof black !== 'object' || typeof white !== 'object') return modelComponent;
-      if (hue.type !== 'number' || white.type !== 'number' || black.type !== 'number') return modelComponent;
-      if (!isAngle(hue)) return modelComponent;
-      if (white.unit !== '' && white.unit !== '%') return modelComponent;
-      if (black.unit !== '' && black.unit !== '%') return modelComponent;
 
-      const [R, G, B] = hwbToRgb(angleToDegrees(hue.number), white.number / 100, black.number / 100);
-      const [R1, G1, B1] = invertColor(R, G, B, darkened);
+      const areHWBObject = typeof hue === 'object' && typeof black === 'object' && typeof white === 'object';
+      const areHWBNumber = areHWBObject && hue.type === 'number' && white.type === 'number' && black.type === 'number';
+      const isHueAngle = areHWBNumber && isAngle(hue);
+      const isWhitePercentage = areHWBNumber && (white.unit !== '' || white.unit !== '%');
+      const isBlackPercentage = areHWBNumber && (black.unit !== '' || black.unit !== '%');
+      const absolute = isHueAngle && isWhitePercentage && isBlackPercentage;
 
-      if (alpha === undefined) {
-        const result: ModelComponent<CSSRGB> = {
-          type: 'model',
-          model: 'rgb',
-          components: [
-            { type: 'number', number: R1, unit: '' },
-            { type: 'number', number: G1, unit: '' },
-            { type: 'number', number: B1, unit: '' }
-          ]
-        };
-        return result;
-      } else if (alpha.type === 'number' && alpha.number === 1) {
-        const result: ModelComponent<CSSRGB> = {
-          type: 'model',
-          model: 'rgb',
-          components: [
-            { type: 'number', number: R1, unit: '' },
-            { type: 'number', number: G1, unit: '' },
-            { type: 'number', number: B1, unit: '' }
-          ]
-        };
-        return result;
-      } else if (alpha.type === 'number') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R1, unit: '' }, { type: 'number', number: G1, unit: '' }, { type: 'number', number: B1, unit: '' }, alpha]
-        };
-        return result;
-      } else if (alpha.type === 'model' && alpha.model === 'var') {
-        const result: ModelComponent<CSSRGBA> = {
-          type: 'model',
-          model: 'rgba',
-          components: [{ type: 'number', number: R1, unit: '' }, { type: 'number', number: G1, unit: '' }, { type: 'number', number: B1, unit: '' }, alpha]
-        };
-        return result;
+      if (absolute) {
+        const [R, G, B] = hwbToRgb(angleToDegrees(hue.number), white.number / 100, black.number / 100);
+        const [R1, G1, B1] = invertColor(R, G, B, darkened);
+
+        if (alpha === undefined) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [
+              { type: 'number', number: R1, unit: '' },
+              { type: 'number', number: G1, unit: '' },
+              { type: 'number', number: B1, unit: '' }
+            ]
+          };
+          return result;
+        } else if (alpha.type === 'number' && alpha.number === 1) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [
+              { type: 'number', number: R1, unit: '' },
+              { type: 'number', number: G1, unit: '' },
+              { type: 'number', number: B1, unit: '' }
+            ]
+          };
+          return result;
+        } else if (alpha.type === 'number') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R1, unit: '' }, { type: 'number', number: G1, unit: '' }, { type: 'number', number: B1, unit: '' }, alpha]
+          };
+          return result;
+        } else if (alpha.type === 'model' && alpha.model === 'var') {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [{ type: 'number', number: R1, unit: '' }, { type: 'number', number: G1, unit: '' }, { type: 'number', number: B1, unit: '' }, alpha]
+          };
+          return result;
+        }
+      } else if (spread) {
+        console.log(spreadCSSVariables(modelComponent, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables));
+        return modelComponent;
+      } else {
+        return modelComponent;
       }
     }
 
