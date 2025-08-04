@@ -414,7 +414,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             const [r, g, b, a] = extractRGBA(parsedColor); // Extraction must occur before inverting because Array.prototype.splice() modifies arrays in place (array objects are mutable)
             const darkened = isDarkened(key);
             const usedVariables = {};
-            const invertedColor = invertCSSModel(parsedColor, darkened, true, selectorText, mediaQueryConditions, currentVariableLibrary, currentVariableLengthMap, usedVariables);
+            const invertedColor = invertCSSModel(parsedColor, darkened, true, selectorText, mediaQueryConditions, currentVariableLengthMap, usedVariables);
             colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
 
             if (a !== 0) {

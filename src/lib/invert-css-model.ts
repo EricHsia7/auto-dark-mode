@@ -9,7 +9,7 @@ import { invertColor } from './invert-color';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { spreadCSSVariables } from './spread-css-variables';
 
-export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean, spread: boolean = false, selectorText: string = '', mediaQueryConditions: Array<string> = [], variableLibrary = {}, variableLengthMap = {}, usedVariables = {}): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
+export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean, spread: boolean = false, selectorText: string = '', mediaQueryConditions: Array<string> = [], variableLengthMap = {}, usedVariables = {}): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
   switch (modelComponent.model) {
     case 'rgb': {
       const [red, green, blue, alpha] = modelComponent.components;
@@ -278,14 +278,14 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         const component = components[i];
         if (component.type === 'model') {
           if (isColor(component) || isVariable(component)) {
-            const inverted = invertCSSModel(component, darkened, spread, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables);
+            const inverted = invertCSSModel(component, darkened, spread, selectorText, mediaQueryConditions, variableLengthMap, usedVariables);
             components.splice(i, 1, inverted);
           }
         } else if (component.type === 'string') {
           const parsed = parseCSSModel(component.string);
           if (parsed !== undefined) {
             if (isColor(parsed) || isVariable(parsed)) {
-              const inverted = invertCSSModel(parsed, darkened, spread, selectorText, mediaQueryConditions, variableLibrary, variableLengthMap, usedVariables);
+              const inverted = invertCSSModel(parsed, darkened, spread, selectorText, mediaQueryConditions, variableLengthMap, usedVariables);
               components.splice(i, 1, inverted);
             }
           }
