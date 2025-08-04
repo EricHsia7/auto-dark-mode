@@ -73,6 +73,8 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
               spreadComponents.push(spreadCSSVariables(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
             } else if (isVariable(parsed)) {
               spreadComponents.push.apply(spreadComponents, getSpreadComponents(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
+            } else if (isCalc(parsed)) {
+              spreadComponents.push(parsed);
             }
           } else {
             spreadComponents.push(parsed);
