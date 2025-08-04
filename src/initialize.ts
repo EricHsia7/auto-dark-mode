@@ -2,6 +2,7 @@ import { initializeButton } from './interface/button/index';
 import { initializeFrame } from './interface/frame/index';
 import { initializePanel, updateStylesheets } from './interface/panel/index';
 import { allowUnlistedStyles } from './lib/allow-unlisted-styles';
+import { getColorVibrancyConstantStyles } from './lib/color-vibrancy';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
@@ -10,6 +11,7 @@ import { isSVGElement, svgElementsQuerySelectorString } from './lib/svg-elements
 import { transformLayerCSS } from './lib/transform-layer-css';
 
 let currentStylesheets: StyleSheetCSSArray = [];
+let colorVibrancyConstantStylesheet: StyleSheetCSSArray = [];
 let variableLibraryStylesheet: StyleSheetCSSArray = [];
 let imageStylesheets: StyleSheetCSSArray = [];
 
@@ -62,11 +64,14 @@ export async function initialize() {
   // Generate inverted css
   currentStylesheets = generateCssFromStyles(invertedStyles, false);
 
+  // Generate color vibrancy constant css
+  colorVibrancyConstantStylesheet = generateCssFromStyles({ '@stylesheet-color-vibrancy-constant': getColorVibrancyConstantStyles() }, false);
+
   // Generate variable library css
   variableLibraryStylesheet = generateCssFromStyles({ '@stylesheet-variable-library': currentVariableLibrary }, false);
 
   // Update stylesheets
-  updateStylesheets(currentStylesheets.concat(variableLibraryStylesheet).concat(imageStylesheets));
+  updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
 
   const stylesheetsObserver = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
@@ -96,7 +101,7 @@ export async function initialize() {
               currentStylesheets = generateCssFromStyles(invertedStyles, false);
 
               // Update stylesheets
-              updateStylesheets(currentStylesheets.concat(variableLibraryStylesheet).concat(imageStylesheets));
+              updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
             }
             processingElements.delete(node);
           }
@@ -145,7 +150,7 @@ export async function initialize() {
     variableLibraryStylesheet = generateCssFromStyles({ '@stylesheet-variable-library': currentVariableLibrary }, false);
 
     // Update stylesheets
-    updateStylesheets(currentStylesheets.concat(variableLibraryStylesheet).concat(imageStylesheets));
+    updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
   });
 
   elementsObserver.observe(document.body, {
@@ -173,7 +178,7 @@ export async function initialize() {
             if (typeof invertedImageItem !== 'boolean') {
               const invertedImageItemCSS = generateCssFromImageItem(invertedImageItem);
               imageStylesheets.push(invertedImageItemCSS);
-              updateStylesheets(currentStylesheets.concat(variableLibraryStylesheet).concat(imageStylesheets));
+              updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
             }
           });
         }
@@ -218,7 +223,7 @@ export async function initialize() {
               // Update stylesheet
               imageStylesheets.push(invertedImageItemCSS);
 
-              updateStylesheets(currentStylesheets.concat(variableLibraryStylesheet).concat(imageStylesheets));
+              updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
             }
           });
         }
