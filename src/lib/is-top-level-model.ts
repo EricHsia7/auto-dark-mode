@@ -39,5 +39,3 @@ export function isTopLevelModel(value: string): boolean {
     return false;
   }
 }
-
-console.log(isTopLevelModel('abc(123)'));
