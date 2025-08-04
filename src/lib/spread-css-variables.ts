@@ -27,14 +27,15 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, selector
       }
 
       for (let j = variableLen - 1; j >= 0; j--) {
-        const prop = `--varlib-${component.string}-${j.toString()}`;
+        const property = `--varlib-${component.string}-${j.toString()}`;
+        // TODO: check sub property length
         const spreadComponent: ModelComponent<CSSVAR> = {
           type: 'model',
           model: 'var',
           components: [
             {
               type: 'string',
-              string: prop
+              string: property
             }
           ]
         };
