@@ -8,6 +8,7 @@ import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
 import { getInheritedPresentationAttribute } from './get-inherited-presentation-attribute';
 import { invertCSSModel } from './invert-css-model';
+import { baseStats } from './is-color-vibrant';
 import { isDarkened } from './is-darkened';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
@@ -40,6 +41,17 @@ export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
 export let currentVariableReferenceStats: VariableReferenceStats = {};
 export let currentStylesCollection: StylesCollection = {
+  '@stylesheet-color-vibrancy-constant': {
+    ':root': {
+      '--auto-dark-mode-color-vibrancy-constant-number': baseStats.n.toString(),
+      '--auto-dark-mode-color-vibrancy-constant-rg-avg': baseStats.avg[0].toString(),
+      '--auto-dark-mode-color-vibrancy-constant-rg-stdev': baseStats.stdev[0].toString(),
+      '--auto-dark-mode-color-vibrancy-constant-gb-avg': baseStats.avg[1].toString(),
+      '--auto-dark-mode-color-vibrancy-constant-gb-stdev': baseStats.stdev[1].toString(),
+      '--auto-dark-mode-color-vibrancy-constant-br-avg': baseStats.avg[2].toString(),
+      '--auto-dark-mode-color-vibrancy-constant-br-stdev': baseStats.stdev[2].toString()
+    }
+  },
   '@stylesheet-default': {
     'body': {
       'background-color': '#ffffff',

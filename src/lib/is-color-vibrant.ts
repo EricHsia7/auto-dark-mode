@@ -11,7 +11,7 @@ const baseColors: number[][] = [
   [0, 0, 255]
 ];
 
-const baseStats = computeStats(baseColors); // Precompute once
+export const baseStats = computeStats(baseColors); // Precompute once
 
 export function isColorVibrant(red: number, green: number, blue: number): number {
   const [prg, pgb, pbr] = getPerChannelDifference(red, green, blue);
