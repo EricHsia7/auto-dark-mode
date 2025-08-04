@@ -1,31 +1,100 @@
-import { ModelComponent } from './component';
+import { Component, ModelComponent } from './component';
 import { CSSColor, CSSGradient, CSSVAR } from './css-model';
 
-export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
-  const components = modelComponent.components;
+function getSpreadCSSVariables(variableComponent: ModelComponent<CSSVAR>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): Array<Component<string>> {
+  const components = variableComponent.components;
   const componentsLen = components.length;
   const mediaQueryConditionsLen = mediaQueryConditions.length;
   const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
-
+  const spreadComponents = [];
   for (let i = componentsLen - 1; i >= 0; i--) {
     const component = components[i];
     if (component.type === 'string' && component.string.startsWith('--')) {
-      if (mediaQueryConditionsLen > 0 && variableLengthMap.hasOwnProperty(joinedMediaQueryConditions)) {
-         if (variableLengthMap[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
-          const variableLen = variableLengthMap[joinedMediaQueryConditions][component.string];
-          for (let j = variableLen - 1; j >= 0; j--) {
-            const arg = variableLibrary[joinedMediaQueryConditions][selectorText][`--varlib-${component.string}-${j.toString()}`]
-
-          }
+      if (mediaQueryConditionsLen > 0 && variableLengthMap.hasOwnProperty(joinedMediaQueryConditions) && variableLengthMap[joinedMediaQueryConditions].hasOwnProperty(selectorText) && variableLengthMap[joinedMediaQueryConditions][selectorText].hasOwnProperty(component.string)) {
+        // root > media query > selector > property
+        const variableLen = variableLengthMap[joinedMediaQueryConditions][selectorText][component.string];
+        for (let j = variableLen - 1; j >= 0; j--) {
+          const prop = `--varlib-${component.string}-${j.toString()}`;
+          // const arg = variableLibrary[joinedMediaQueryConditions][selectorText][prop];
+          const spreadComponent: ModelComponent<CSSVAR> = {
+            type: 'model',
+            model: 'var',
+            components: [
+              {
+                type: 'string',
+                string: prop
+              }
+            ]
+          };
+          spreadComponents.unshift(spreadComponent);
         }
-        if (variableLengthMap[joinedMediaQueryConditions].hasOwnProperty(component.string)) {
-          const variableLen = variableLengthMap[joinedMediaQueryConditions][component.string];
-          for (let j = variableLen - 1; j >= 0; j--) {
-            const arg = variableLibrary[joinedMediaQueryConditions][selectorText][`--varlib-${component.string}-${j.toString()}`]
-
-          }
+        break;
+      } else if (variableLengthMap[joinedMediaQueryConditions].hasOwnProperty(':root') && variableLengthMap[joinedMediaQueryConditions][':root'].hasOwnProperty(component.string)) {
+        // root > media query > :root > property
+        const variableLen = variableLengthMap[joinedMediaQueryConditions][':root'][component.string];
+        for (let j = variableLen - 1; j >= 0; j--) {
+          const prop = `--varlib-${component.string}-${j.toString()}`;
+          // const arg = variableLibrary[joinedMediaQueryConditions][':root'][prop];
+          const spreadComponent: ModelComponent<CSSVAR> = {
+            type: 'model',
+            model: 'var',
+            components: [
+              {
+                type: 'string',
+                string: prop
+              }
+            ]
+          };
+          spreadComponents.unshift(spreadComponent);
         }
+        break;
+      } else if (variableLengthMap.hasOwnProperty(selectorText) && variableLengthMap[selectorText].hasOwnProperty(component.string)) {
+        // root > selector
+        const variableLen = variableLengthMap[selectorText][component.string];
+        for (let j = variableLen - 1; j >= 0; j--) {
+          const prop = `--varlib-${component.string}-${j.toString()}`;
+          // const arg = variableLibrary[selectorText][prop];
+          const spreadComponent: ModelComponent<CSSVAR> = {
+            type: 'model',
+            model: 'var',
+            components: [
+              {
+                type: 'string',
+                string: prop
+              }
+            ]
+          };
+          spreadComponents.unshift(spreadComponent);
+        }
+        break;
+      } else if (variableLengthMap.hasOwnProperty(':root') && variableLengthMap[':root'].hasOwnProperty(component.string)) {
+        // root > :root
+        const variableLen = variableLengthMap[':root'][component.string];
+        for (let j = variableLen - 1; j >= 0; j--) {
+          const prop = `--varlib-${component.string}-${j.toString()}`;
+          // const arg = variableLibrary[':root'][prop];
+          const spreadComponent: ModelComponent<CSSVAR> = {
+            type: 'model',
+            model: 'var',
+            components: [
+              {
+                type: 'string',
+                string: prop
+              }
+            ]
+          };
+          spreadComponents.unshift(spreadComponent);
+        }
+        break;
       }
+    } else {
+      spreadComponents.unshift(component);
+      break;
     }
   }
+  return spreadComponents;
+}
+
+export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, selectorText: string, mediaQueryConditions: Array<string>, variableLibrary, variableLengthMap, usedVariables): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
+  
 }
