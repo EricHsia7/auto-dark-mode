@@ -11,16 +11,16 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
     const component = components[i];
     if (component.type === 'string' && component.string.startsWith('--')) {
       let value = undefined;
-      if (mediaQueryConditionsText !== '' && isPathContinuous(variableLengthMap, [mediaQueryConditionsText, selectorText, component.string])) {
+      if (mediaQueryConditionsText !== '' && isPathContinuous(variableLibrary, [mediaQueryConditionsText, selectorText, component.string])) {
         // root > media query > selector > property
         value = variableLibrary[mediaQueryConditionsText][selectorText][component.string];
-      } else if (mediaQueryConditionsText !== '' && isPathContinuous(variableLengthMap, [mediaQueryConditionsText, ':root', component.string])) {
+      } else if (mediaQueryConditionsText !== '' && isPathContinuous(variableLibrary, [mediaQueryConditionsText, ':root', component.string])) {
         // root > media query > :root > property
         value = variableLibrary[mediaQueryConditionsText][':root'][component.string];
-      } else if (isPathContinuous(variableLengthMap, [selectorText, component.string])) {
+      } else if (isPathContinuous(variableLibrary, [selectorText, component.string])) {
         // root > selector
         value = variableLibrary[selectorText][component.string];
-      } else if (isPathContinuous(variableLengthMap, [':root', component.string])) {
+      } else if (isPathContinuous(variableLibrary, [':root', component.string])) {
         // root > :root
         value = variableLibrary[':root'][component.string];
       }
