@@ -178,39 +178,39 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
                 if (prop === 'color') {
                   referenceStats[cssVariableName][1] += 1;
                 }
+              }
 
-                if (prop.startsWith('--')) {
-                  if (mediaQueryConditions.length > 0) {
-                    const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
-                    if (!variableLibrary.hasOwnProperty(joinedMediaQueryConditions)) {
-                      variableLibrary[joinedMediaQueryConditions] = {};
+              if (prop.startsWith('--')) {
+                if (mediaQueryConditions.length > 0) {
+                  const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
+                  if (!variableLibrary.hasOwnProperty(joinedMediaQueryConditions)) {
+                    variableLibrary[joinedMediaQueryConditions] = {};
+                  }
+                  if (!variableLibrary[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
+                    variableLibrary[joinedMediaQueryConditions][selectorText] = {};
+                  }
+                  const args = splitByTopLevelDelimiter(value);
+                  const argsLen = args.result.length;
+                  if (argsLen > 1) {
+                    for (let i = argsLen - 1; i >= 0; i--) {
+                      variableLibrary[joinedMediaQueryConditions][selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
                     }
-                    if (!variableLibrary[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
-                      variableLibrary[joinedMediaQueryConditions][selectorText] = {};
-                    }
-                    const args = splitByTopLevelDelimiter(value);
-                    const argsLen = args.result.length;
-                    if (argsLen > 1) {
-                      for (let i = argsLen - 1; i >= 0; i--) {
-                        variableLibrary[joinedMediaQueryConditions][selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
-                      }
-                    } /* else {
+                  } /* else {
                       variableLibrary[joinedMediaQueryConditions][selectorText][prop] = value;
                     } */
-                  } else {
-                    if (!variableLibrary.hasOwnProperty(selectorText)) {
-                      variableLibrary[selectorText] = {};
+                } else {
+                  if (!variableLibrary.hasOwnProperty(selectorText)) {
+                    variableLibrary[selectorText] = {};
+                  }
+                  const args = splitByTopLevelDelimiter(value);
+                  const argsLen = args.result.length;
+                  if (argsLen > 1) {
+                    for (let i = argsLen - 1; i >= 0; i--) {
+                      variableLibrary[selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
                     }
-                    const args = splitByTopLevelDelimiter(value);
-                    const argsLen = args.result.length;
-                    if (argsLen > 1) {
-                      for (let i = argsLen - 1; i >= 0; i--) {
-                        variableLibrary[selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
-                      }
-                    } /* else {
+                  } /* else {
                       variableLibrary[selectorText][prop] = value;
                     } */
-                  }
                 }
               }
             }
