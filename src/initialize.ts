@@ -5,7 +5,7 @@ import { allowUnlistedStyles } from './lib/allow-unlisted-styles';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
-import { currentVariableReferenceStats, currentStylesCollection, currentVariableLibrary, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
+import { currentStylesCollection, currentVariableLibrary, currentVariableReferenceStats, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
 import { isSVGElement, svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
@@ -64,7 +64,6 @@ export async function initialize() {
 
   // Generate variable library css
   variableLibraryStylesheet = generateCssFromStyles({ '@stylesheet-variable-library': currentVariableLibrary }, false);
-  console.log(variableLibraryStylesheet);
 
   // Update stylesheets
   updateStylesheets(currentStylesheets.concat(variableLibraryStylesheet).concat(imageStylesheets));
