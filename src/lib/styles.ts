@@ -151,7 +151,7 @@ export let currentStylesCollection: StylesCollection = {
 export let currentVariableLibrary = {};
 export let currentVariableLengthMap = {};
 
-function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: CSSVariableReferenceStats, variableLibrary, variableLengthMap, mediaQueryConditions: Array<string> = []) {
+function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: CSSVariableReferenceStats, variableLibrary, mediaQueryConditions: Array<string> = []) {
   for (const rule of rules) {
     switch (rule.type) {
       case CSSRule.STYLE_RULE: {
@@ -185,44 +185,33 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
             if (prop.startsWith('--')) {
               if (mediaQueryConditions.length > 0) {
                 const joinedMediaQueryConditions = `@media ${mediaQueryConditions.join(' and ')}`;
-                if (!variableLengthMap.hasOwnProperty(joinedMediaQueryConditions)) {
-                  variableLengthMap[joinedMediaQueryConditions] = {};
-                }
-                if (!variableLengthMap[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
-                  variableLengthMap[joinedMediaQueryConditions][selectorText] = {};
-                }
                 if (!variableLibrary.hasOwnProperty(joinedMediaQueryConditions)) {
                   variableLibrary[joinedMediaQueryConditions] = {};
                 }
                 if (!variableLibrary[joinedMediaQueryConditions].hasOwnProperty(selectorText)) {
                   variableLibrary[joinedMediaQueryConditions][selectorText] = {};
                 }
+                variableLibrary[joinedMediaQueryConditions][selectorText][prop] = value;
+                /*
                 const args = splitByTopLevelDelimiter(value);
                 const argsLen = args.result.length;
                 if (argsLen > 1) {
-                  variableLengthMap[joinedMediaQueryConditions][selectorText][prop] = argsLen;
                   for (let i = argsLen - 1; i >= 0; i--) {
                     variableLibrary[joinedMediaQueryConditions][selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
                   }
-                } /* else {
-                  variableLibrary[joinedMediaQueryConditions][selectorText][prop] = value;
                 } */
               } else {
-                if (!variableLengthMap.hasOwnProperty(selectorText)) {
-                  variableLengthMap[selectorText] = {};
-                }
                 if (!variableLibrary.hasOwnProperty(selectorText)) {
                   variableLibrary[selectorText] = {};
                 }
+                variableLibrary[selectorText][prop] = value;
+                /*
                 const args = splitByTopLevelDelimiter(value);
                 const argsLen = args.result.length;
                 if (argsLen > 1) {
-                  variableLengthMap[selectorText][prop] = argsLen;
                   for (let i = argsLen - 1; i >= 0; i--) {
                     variableLibrary[selectorText][`--varlib-${prop}-${i.toString()}`] = args.result[i];
                   }
-                } /* else {
-                  variableLibrary[selectorText][prop] = value;
                 } */
               }
             }
@@ -238,7 +227,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (!container.hasOwnProperty(media)) {
           container[media] = {};
         }
-        processCSSRules(mediaRule.cssRules, container[media], referenceStats, variableLibrary, variableLengthMap, mediaQueryConditions.concat(mediaRule.conditionText));
+        processCSSRules(mediaRule.cssRules, container[media], referenceStats, variableLibrary, mediaQueryConditions.concat(mediaRule.conditionText));
         // }
         // TODO: evaluate theme per color scheme
         break;
@@ -249,7 +238,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (importRule.styleSheet) {
           // Import rules with nested stylesheets
           try {
-            processCSSRules(importRule.styleSheet.cssRules, container, referenceStats, variableLibrary, variableLengthMap);
+            processCSSRules(importRule.styleSheet.cssRules, container, referenceStats, variableLibrary);
           } catch (e) {
             // Skipped due to CORS/security
           }
@@ -295,7 +284,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (!container.hasOwnProperty(supports)) {
           container[supports] = {};
         }
-        processCSSRules(supportsRule.cssRules, container[supports], referenceStats, variableLibrary, variableLengthMap);
+        processCSSRules(supportsRule.cssRules, container[supports], referenceStats, variableLibrary);
         break;
       }
 
@@ -349,7 +338,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
         currentStylesCollection[sheetName] = {};
       } else {
         const sheetObj = {};
-        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceStats, currentVariableLibrary, currentVariableLengthMap);
+        processCSSRules(sheet.cssRules, sheetObj, cssVariableReferenceStats, currentVariableLibrary);
         currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
       }
     } catch (e) {
