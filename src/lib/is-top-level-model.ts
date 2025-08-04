@@ -6,9 +6,11 @@ export function isTopLevelModel(value: string): boolean {
   let depth = 0;
   let pairs = 0;
   let lastRightBracketIndex = -1;
+  let firstLeftBracketIndex = trimmedLen - 1;
   for (let i = 0, l = trimmedLen; i < l; i++) {
     const char = trimmed[i];
     if (char === '(') {
+      if (leftBracket === 1) firstLeftBracketIndex = i;
       leftBracket++;
       depth++;
     } else if (char === ')') {
@@ -24,6 +26,10 @@ export function isTopLevelModel(value: string): boolean {
     }
   }
   if (pairs === 1) {
+    // Check for any whitespace in the model name
+    if (/\s+/g.test(trimmed.slice(0, firstLeftBracketIndex))) {
+      return false;
+    }
     // Check for any non-whitespace after the last closing parenthesis
     if (trimmedLen - 1 > lastRightBracketIndex) {
       return false;
@@ -33,3 +39,5 @@ export function isTopLevelModel(value: string): boolean {
     return false;
   }
 }
+
+console.log(isTopLevelModel('abc(123)'));

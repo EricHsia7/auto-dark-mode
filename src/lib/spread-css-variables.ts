@@ -11,21 +11,22 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
     const component = components[i];
     if (component.type === 'string' && component.string.startsWith('--')) {
       // spread referenced variable
-      let value = undefined;
+      let context = undefined;
       if (mediaQueryConditionsText !== '' && isPathContinuous(variableLibrary, [mediaQueryConditionsText, selectorText, component.string])) {
         // root > media query > selector > property
-        value = variableLibrary[mediaQueryConditionsText][selectorText][component.string];
+        context = variableLibrary[mediaQueryConditionsText][selectorText];
       } else if (mediaQueryConditionsText !== '' && isPathContinuous(variableLibrary, [mediaQueryConditionsText, ':root', component.string])) {
         // root > media query > :root > property
-        value = variableLibrary[mediaQueryConditionsText][':root'][component.string];
+        context = variableLibrary[mediaQueryConditionsText][':root'];
       } else if (isPathContinuous(variableLibrary, [selectorText, component.string])) {
         // root > selector
-        value = variableLibrary[selectorText][component.string];
+        context = variableLibrary[selectorText];
       } else if (isPathContinuous(variableLibrary, [':root', component.string])) {
         // root > :root
-        value = variableLibrary[':root'][component.string];
+        context = variableLibrary[':root'];
       }
-      if (value !== undefined) {
+      if (context !== undefined) {
+        const value = context[component.string];
         const args = splitByTopLevelDelimiter(value).result;
         const argsLen = args.length;
         for (let j = 0, m = argsLen; j < m; j++) {
@@ -52,6 +53,7 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
                 ]
               };
               spreadComponents.push(spreadComponent);
+              context[property] = arg;
             }
           }
         }

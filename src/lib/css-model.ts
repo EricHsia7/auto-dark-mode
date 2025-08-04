@@ -37,6 +37,10 @@ export function isVariable(modelComponent: ModelComponent<string>): modelCompone
   return (modelComponent.model as CSSVAR) === 'var';
 }
 
+export function isCalc(modelComponent: ModelComponent<string>): modelComponent is ModelComponent<CSSCalc> {
+  return (modelComponent.model as CSSCalc) === 'calc';
+}
+
 export function parseCSSModel(value: string): ModelComponent<CSSColor | CSSGradient | CSSVAR> | ParsingFailed {
   const object = parseComponent(value);
   if (object === undefined) {
@@ -153,7 +157,7 @@ export function parseCSSModel(value: string): ModelComponent<CSSColor | CSSGradi
   }
 
   if (object.type === 'model') {
-    if (isColor(object) || isGradient(object) || isVariable(object)) {
+    if (isColor(object) || isGradient(object) || isVariable(object) || isCalc(object)) {
       return object;
     }
   }

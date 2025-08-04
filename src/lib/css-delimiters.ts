@@ -9,7 +9,7 @@ export const cssDelimiters = {
   'hwb': [' ', ',', '/'],
   'var': [','],
   'color-mix': [',', '/'],
-  'calc': ['+', '-', '*', '/'], // handled differently
+  'calc': [],
   'default': [',', ' ']
 };
 
@@ -24,5 +24,6 @@ export const cssPrimaryDelimiters = {
   'hwb': ' ',
   'var': ',',
   'color-mix': ',',
+  'calc': '',
   'default': ','
 };
