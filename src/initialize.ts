@@ -64,6 +64,7 @@ export async function initialize() {
 
   // Generate variable library css
   variableLibraryStylesheet = generateCssFromStyles({ '@stylesheet-variable-library': currentVariableLibrary }, false);
+  console.log(variableLibraryStylesheet);
 
   // Update stylesheets
   updateStylesheets(currentStylesheets.concat(variableLibraryStylesheet).concat(imageStylesheets));
