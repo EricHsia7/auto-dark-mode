@@ -55,10 +55,11 @@ export function invertRGB(red: number, green: number, blue: number, darkened: bo
 
 export function getInvertedRGBCSSVariables(id: string, red: Component, green: Component, blue: Component, container): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
   const baseName = `--${id}`;
-  const R = stringifyComponent(red, cssPrimaryDelimiters);
-  const G = stringifyComponent(green, cssPrimaryDelimiters);
-  const B = stringifyComponent(blue, cssPrimaryDelimiters);
-  container[`${baseName}-max`] = `max(${R},${G},${B},0.1)`;
+  const R = `calc(${stringifyComponent(red, cssPrimaryDelimiters)} + 0.01)`;
+  const G = `calc(${stringifyComponent(green, cssPrimaryDelimiters)} + 0.01)`;
+  const B = `calc(${stringifyComponent(blue, cssPrimaryDelimiters)} + 0.01)`;
+  // add 0.01 to avoid zero division error
+  container[`${baseName}-max`] = `max(${R},${G},${B})`;
   container[`${baseName}-min`] = `min(${R},${G},${B})`;
   container[`${baseName}-sat`] = `calc(var(${baseName}-max) - var(${baseName}-min)) / var(${baseName}-max)`;
   container[`${baseName}-eq`] = `calc(-0.1 + sqrt(var(${baseName}-sat)) * 1.1)`;
