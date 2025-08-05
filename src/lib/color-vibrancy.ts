@@ -1,3 +1,5 @@
+import { Component, ModelComponent, stringifyComponent } from './component';
+import { CSSVAR } from './css-model';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
 import { StyleSheet } from './styles';
 
@@ -39,6 +41,25 @@ export function getColorVibrancyConstantStyles(): StyleSheet {
       '--auto-dark-mode-color-vibrancy-constant-br-avg': baseStats.avg[2].toString(),
       '--auto-dark-mode-color-vibrancy-constant-br-stdev': baseStats.stdev[2].toString()
     }
+  };
+}
+
+export function getColorVibrancyCSSVariable(id: string, red: Component, green: Component, blue: Component, container): ModelComponent<CSSVAR> {
+  const R = stringifyComponent(red);
+  const G = stringifyComponent(green);
+  const B = stringifyComponent(blue);
+  const baseName = `--${id}`;
+  container[`${baseName}-prg`] = `calc(abs(${R} - ${G}))`;
+  container[`${baseName}-pgb`] = `calc(abs(${G} - ${B}))`;
+  container[`${baseName}-pbr`] = `calc(abs(${B} - ${R}))`;
+  container[`${baseName}-d`] = `calc((var(${baseName}-prg) - var(--auto-dark-mode-color-vibrancy-constant-rg-avg)) / var(--auto-dark-mode-color-vibrancy-constant-rg-stdev))`;
+  container[`${baseName}-e`] = `calc((var(${baseName}-pgb) - var(--auto-dark-mode-color-vibrancy-constant-gb-avg)) / var(--auto-dark-mode-color-vibrancy-constant-gb-stdev))`;
+  container[`${baseName}-f`] = `calc((var(${baseName}-pbr) - var(--auto-dark-mode-color-vibrancy-constant-br-avg)) / var(--auto-dark-mode-color-vibrancy-constant-br-stdev))`;
+  container[`${baseName}-vibrancy`] = `calc((var(--d) + var(--e) + var(--f)) / 3)`;
+  return {
+    type: 'model',
+    model: 'var',
+    components: [{ type: 'string', string: `${baseName}-vibrancy` }]
   };
 }
 

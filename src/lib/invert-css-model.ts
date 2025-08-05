@@ -1,11 +1,13 @@
 import { angleToDegrees } from './angle-to-degree';
+import { getColorVibrancyCSSVariable } from './color-vibrancy';
 import { ModelComponent, parseComponent, stringifyComponent } from './component';
 import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { isAngle } from './css-units';
+import { generateIdentifier } from './generate-identifier';
 import { hslToRgb } from './hsl-to-rgb';
 import { hwbToRgb } from './hwb-to-rgb';
-import { invertColor } from './invert-color';
+import { getInvertedRGBCSSVariable, invertRGB } from './invert-rgb';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { spreadCSSVariables } from './spread-css-variables';
 
@@ -18,7 +20,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
       const absolute = areRGBObject && red?.type === 'number' && green?.type === 'number' && blue?.type === 'number';
 
       if (absolute) {
-        const [R, G, B] = invertColor(red.number, green.number, blue.number, darkened);
+        const [R, G, B] = invertRGB(red.number, green.number, blue.number, darkened);
         if (alpha === undefined) {
           const result: ModelComponent<CSSRGB> = {
             type: 'model',
@@ -57,8 +59,28 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
-        return modelComponent;
+        const id = generateIdentifier();
+        const spreadModelComponent = spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText);
+        const [red1, green1, blue1, alpha1] = spreadModelComponent.components;
+        const container = {}; // TODO: context as container
+        getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
+        const [red2, green2, blue2] = getInvertedRGBCSSVariable(id, red1, green1, blue1, container);
+        console.log(JSON.stringify(container, null, 2));
+        if (alpha === undefined) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [red2, green2, blue2]
+          };
+          return result;
+        } else {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [red2, green2, blue2, alpha1]
+          };
+          return result;
+        }
       } else {
         return modelComponent;
       }
@@ -72,7 +94,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
       const absolute = areRGBAObject && red?.type === 'number' && green?.type === 'number' && blue?.type === 'number';
 
       if (absolute) {
-        const [R, G, B] = invertColor(red.number, green.number, blue.number, darkened);
+        const [R, G, B] = invertRGB(red.number, green.number, blue.number, darkened);
 
         if (alpha.type === 'number' && alpha.number === 1) {
           const result: ModelComponent<CSSRGB> = {
@@ -118,7 +140,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
 
       if (absolute) {
         const [R, G, B] = hslToRgb(hue.number, saturation.number / 100, lightness.number / 100);
-        const [R1, G1, B1] = invertColor(R, G, B, darkened);
+        const [R1, G1, B1] = invertRGB(R, G, B, darkened);
 
         if (alpha === undefined) {
           const result: ModelComponent<CSSRGB> = {
@@ -175,7 +197,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
 
       if (absolute) {
         const [R, G, B] = hslToRgb(hue.number, saturation.number / 100, lightness.number / 100);
-        const [R1, G1, B1] = invertColor(R, G, B, darkened);
+        const [R1, G1, B1] = invertRGB(R, G, B, darkened);
 
         if (alpha.type === 'number' && alpha.number === 1) {
           const result: ModelComponent<CSSRGB> = {
@@ -224,7 +246,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
 
       if (absolute) {
         const [R, G, B] = hwbToRgb(angleToDegrees(hue.number), white.number / 100, black.number / 100);
-        const [R1, G1, B1] = invertColor(R, G, B, darkened);
+        const [R1, G1, B1] = invertRGB(R, G, B, darkened);
 
         if (alpha === undefined) {
           const result: ModelComponent<CSSRGB> = {
