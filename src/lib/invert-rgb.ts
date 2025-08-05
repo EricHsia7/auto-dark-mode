@@ -54,7 +54,7 @@ export function invertRGB(red: number, green: number, blue: number, darkened: bo
 */
 
 export function getInvertedRGBCSSVariables(id: string, red: Component, green: Component, blue: Component, vibrancy: ModelComponent<CSSVAR>, container): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
-  const baseName = `--${id}`;
+  const baseName = `--${id}-rgb`;
   const R = `calc(${stringifyComponent(red, cssPrimaryDelimiters)} + 0.01)`;
   const G = `calc(${stringifyComponent(green, cssPrimaryDelimiters)} + 0.01)`;
   const B = `calc(${stringifyComponent(blue, cssPrimaryDelimiters)} + 0.01)`;
@@ -71,9 +71,9 @@ export function getInvertedRGBCSSVariables(id: string, red: Component, green: Co
   container[`${baseName}-eq-v`] = `calc(max(var(${baseName}-eq-r),var(${baseName}-eq-g),var(${baseName}-eq-b)) / 255)`;
   container[`${baseName}-scaler`] = `calc((6 / 85 + (1 - 6 / 85) * (1 - var(${baseName}-eq-v))) / var(${baseName}-eq-v))`;
   container[`${baseName}-ratio`] = `calc((${V} + 0.49) / 2)`;
-  container[`${baseName}-r`] = `round(clamp(0, calc(var(${baseName}-eq-r) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${R} * var(${baseName}-ratio)), 255))`;
-  container[`${baseName}-g`] = `round(clamp(0, calc(var(${baseName}-eq-g) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${G} * var(${baseName}-ratio)), 255))`;
-  container[`${baseName}-b`] = `round(clamp(0, calc(var(${baseName}-eq-b) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${B} * var(${baseName}-ratio)), 255))`;
+  container[`${baseName}-r`] = `round(clamp(0,calc(var(${baseName}-eq-r) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${R} * var(${baseName}-ratio)),255))`;
+  container[`${baseName}-g`] = `round(clamp(0,calc(var(${baseName}-eq-g) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${G} * var(${baseName}-ratio)),255))`;
+  container[`${baseName}-b`] = `round(clamp(0,calc(var(${baseName}-eq-b) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${B} * var(${baseName}-ratio)),255))`;
   return [
     {
       type: 'model',
