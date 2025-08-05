@@ -40,8 +40,7 @@ export function getConvertedHSLCSSVariables(id: string, hue: Component, saturati
     ['4', 'b']
   ]) {
     container[`${baseName}-${channel[1]}-k`] = `calc(mod(${channel[0]} + ${H} / 30, 12))`;
-    container[`${baseName}-${channel[1]}-a`] = `calc(${S} * min(${L}, 1 - ${L}))`;
-    container[`${baseName}-${channel[1]}`] = `calc((${L} - var(${baseName}-${channel[1]}-a) * max(-1, min(var(${baseName}-${channel[1]}-k) - 3, 9 - var(${baseName}-${channel[1]}-k), 1))) * 255)`;
+    container[`${baseName}-${channel[1]}`] = `calc((${L} - ${S} * min(${L},1 - ${L}) * max(-1,min(var(${baseName}-${channel[1]}-k) - 3,9 - var(${baseName}-${channel[1]}-k),1))) * 255)`;
   }
 
   return [

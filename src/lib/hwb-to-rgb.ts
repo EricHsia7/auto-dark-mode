@@ -1,6 +1,5 @@
 import { Component, stringifyComponent } from './component';
 import { cssPrimaryDelimiters } from './css-delimiters';
-import { getConvertedHSLCSSVariables, hslToRgb } from './hsl-to-rgb';
 import { CSSProperties } from './styles';
 
 export function hwbToRgb(hue: number, white: number, black: number): [red: number, green: number, blue: number] {
@@ -23,20 +22,22 @@ export function getConvertedHWBCSSVariables(id: string, hue: Component, white: C
   const baseName = `--${id}-hwb`;
   const W = `calc(${stringifyComponent(white, cssPrimaryDelimiters)} / 100%)`;
   const B = `calc(${stringifyComponent(black, cssPrimaryDelimiters)} / 100%)`;
-  container[`${baseName}-wb`] = `calc(${W} + ${B})`;
-  container[`${baseName}-ratio`] = `round(down,clamp(0,var(${baseName}-wb),1))`;
-  container[`${baseName}-gray`] = `calc(${W} / var(${baseName}-wb))`;
-  container[`${baseName}-x`] = `calc(1 - var(${baseName}-wb))`;
-  container[`${baseName}-y`] = `calc(${W} * 255)`;
-  // const [r, g, b] = getConvertedHSLCSSVariables(id, { type: 'model', model: 'calc', components: [{ type: 'string', string: `${stringifyComponent(hue, cssPrimaryDelimiters)} / 1deg` }] }, { type: 'number', number: 100, unit: '%' }, { type: 'number', number: 50, unit: '%' }, container);
-  const [r, g, b] = [
-    { type: 'number', number: 255, unit: '' },
-    { type: 'number', number: 0, unit: '' },
-    { type: 'number', number: 0, unit: '' }
-  ];
-  container[`${baseName}-r`] = `round(clamp(0,calc(var(${baseName}-x) * ${stringifyComponent(r, cssPrimaryDelimiters)} + var(${baseName}-y)),255) * (1 - var(${baseName}-ratio)) + var(${baseName}-gray) * var(${baseName}-ratio))`;
-  container[`${baseName}-g`] = `round(clamp(0,calc(var(${baseName}-x) * ${stringifyComponent(g, cssPrimaryDelimiters)} + var(${baseName}-y)),255) * (1 - var(${baseName}-ratio)) + var(${baseName}-gray) * var(${baseName}-ratio))`;
-  container[`${baseName}-b`] = `round(clamp(0,calc(var(${baseName}-x) * ${stringifyComponent(b, cssPrimaryDelimiters)} + var(${baseName}-y)),255) * (1 - var(${baseName}-ratio)) + var(${baseName}-gray) * var(${baseName}-ratio))`;
+  container[`${baseName}-wb`] = `calc(${W} + ${B} + 0.01)`;
+  container[`${baseName}-ratio`] = `round(down,clamp(0,${W} + ${B},1))`;
+  container[`${baseName}-gray`] = `calc(${W} / (${W} + ${B} + 0.01))`;
+  container[`${baseName}-x`] = `calc(1 - ${W} - ${B})`;
+  container[`${baseName}-y`] = `${W}`;
+  const H = stringifyComponent(hue, cssPrimaryDelimiters);
+  for (const channel of [
+    ['0', 'r'],
+    ['8', 'g'],
+    ['4', 'b']
+  ]) {
+    container[`${baseName}-${channel[1]}-k`] = `calc(mod(${channel[0]} + ${H} / 30deg, 12))`;
+    container[`${baseName}-${channel[1]}-t`] = `calc(0.5 - 0.5 * max(-1,min(var(${baseName}-${channel[1]}-k) - 3,9 - var(${baseName}-${channel[1]}-k),1)))`;
+    container[`${baseName}-${channel[1]}`] = `round(clamp(0, calc((((1 - ${W} - ${B}) * var(${baseName}-${channel[1]}-t) + ${W}) * (1 - var(${baseName}-ratio)) + var(${baseName}-gray) * var(${baseName}-ratio)) * 255), 255))`;
+  }
+
   return [
     {
       type: 'model',
