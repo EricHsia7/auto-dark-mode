@@ -43,8 +43,8 @@ export function getColorVibrancyCSSVariable(id: string, red: Component, green: C
   container[`${baseName}-gb-avg`] = `calc((${baseStats.avg[1] * baseStats.n} + ${G}) / ${mergedNumber})`;
   container[`${baseName}-br-avg`] = `calc((${baseStats.avg[2] * baseStats.n} + ${B}) / ${mergedNumber})`;
   container[`${baseName}-rg-stdev`] = `calc((${x} + pow(${R},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2))`;
-  container[`${baseName}-gb-stdev`] = `calc((${y} + pow(${G},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2))`;
-  container[`${baseName}-br-stdev`] = `calc((${z} + pow(${B},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2))`;
+  container[`${baseName}-gb-stdev`] = `calc((${y} + pow(${G},2)) / ${mergedNumber} - pow(var(${baseName}-gb-avg),2))`;
+  container[`${baseName}-br-stdev`] = `calc((${z} + pow(${B},2)) / ${mergedNumber} - pow(var(${baseName}-br-avg),2))`;
   container[`${baseName}-d`] = `calc((abs(${R} - ${G}) - var(${baseName}-rg-avg)) / var(${baseName}-rg-stdev))`;
   container[`${baseName}-e`] = `calc((abs(${G} - ${B}) - var(${baseName}-gb-avg)) / var(${baseName}-gb-stdev))`;
   container[`${baseName}-f`] = `calc((abs(${B} - ${R}) - var(${baseName}-br-avg)) / var(${baseName}-br-stdev))`;
