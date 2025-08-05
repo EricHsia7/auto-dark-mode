@@ -4,7 +4,6 @@ import { ModelComponent, parseComponent, stringifyComponent } from './component'
 import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { isAngle } from './css-units';
-import { deepAssign } from './deep-assign';
 import { generateIdentifier } from './generate-identifier';
 import { hslToRgb } from './hsl-to-rgb';
 import { hwbToRgb } from './hwb-to-rgb';
@@ -180,7 +179,6 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, variableIndex, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -226,7 +224,6 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, variableIndex, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -286,7 +283,6 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, variableIndex, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;

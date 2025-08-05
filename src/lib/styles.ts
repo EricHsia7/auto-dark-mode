@@ -39,6 +39,7 @@ export interface StyleSheetCSSItem {
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
 
 export let currentVariableReferenceStats: VariableReferenceStats = {};
+export let currentVariableIndex = {};
 export let currentStylesCollection: StylesCollection = {
   '@stylesheet-default': {
     'body': {
@@ -143,7 +144,6 @@ export let currentStylesCollection: StylesCollection = {
     }
   }
 };
-export let currentVariableIndex = {};
 
 function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: VariableReferenceStats, variableIndex, mediaQueryConditions: Array<string> = []) {
   for (const rule of rules) {
