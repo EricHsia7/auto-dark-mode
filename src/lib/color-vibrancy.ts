@@ -31,28 +31,14 @@ export function getColorVibrancy(red: number, green: number, blue: number): numb
   return (d + e + f) / 3;
 }
 
-export function getColorVibrancyConstantStyles(): StyleSheet {
-  return {
-    ':root': {
-      '--auto-dark-mode-color-vibrancy-constant-number': baseStats.n.toString(),
-      '--auto-dark-mode-color-vibrancy-constant-rg-avg': baseStats.avg[0].toString(),
-      '--auto-dark-mode-color-vibrancy-constant-rg-stdev': baseStats.stdev[0].toString(),
-      '--auto-dark-mode-color-vibrancy-constant-gb-avg': baseStats.avg[1].toString(),
-      '--auto-dark-mode-color-vibrancy-constant-gb-stdev': baseStats.stdev[1].toString(),
-      '--auto-dark-mode-color-vibrancy-constant-br-avg': baseStats.avg[2].toString(),
-      '--auto-dark-mode-color-vibrancy-constant-br-stdev': baseStats.stdev[2].toString()
-    }
-  };
-}
-
 export function getColorVibrancyCSSVariable(id: string, red: Component, green: Component, blue: Component, container): ModelComponent<CSSVAR> {
   const R = stringifyComponent(red, cssPrimaryDelimiters);
   const G = stringifyComponent(green, cssPrimaryDelimiters);
   const B = stringifyComponent(blue, cssPrimaryDelimiters);
   const baseName = `--${id}-vibrancy`;
-  container[`${baseName}-d`] = `calc((abs(${R} - ${G}) - var(--auto-dark-mode-color-vibrancy-constant-rg-avg)) / var(--auto-dark-mode-color-vibrancy-constant-rg-stdev))`;
-  container[`${baseName}-e`] = `calc((abs(${G} - ${B}) - var(--auto-dark-mode-color-vibrancy-constant-gb-avg)) / var(--auto-dark-mode-color-vibrancy-constant-gb-stdev))`;
-  container[`${baseName}-f`] = `calc((abs(${B} - ${R}) - var(--auto-dark-mode-color-vibrancy-constant-br-avg)) / var(--auto-dark-mode-color-vibrancy-constant-br-stdev))`;
+  container[`${baseName}-d`] = `calc((abs(${R} - ${G}) - ${baseStats.avg[0]}) / ${baseStats.stdev[0]})`;
+  container[`${baseName}-e`] = `calc((abs(${G} - ${B}) - ${baseStats.avg[1]}) / ${baseStats.stdev[1]})`;
+  container[`${baseName}-f`] = `calc((abs(${B} - ${R}) - ${baseStats.avg[2]}) / ${baseStats.stdev[2]})`;
   container[`${baseName}-v`] = `calc((var(${baseName}-d) + var(${baseName}-e) + var(${baseName}-f)) / 3)`;
   return {
     type: 'model',
