@@ -49,18 +49,15 @@ export function getColorVibrancyCSSVariable(id: string, red: Component, green: C
   const R = stringifyComponent(red, cssPrimaryDelimiters);
   const G = stringifyComponent(green, cssPrimaryDelimiters);
   const B = stringifyComponent(blue, cssPrimaryDelimiters);
-  const baseName = `--${id}`;
-  container[`${baseName}-prg`] = `abs(${R} - ${G})`;
-  container[`${baseName}-pgb`] = `abs(${G} - ${B})`;
-  container[`${baseName}-pbr`] = `abs(${B} - ${R})`;
-  container[`${baseName}-d`] = `calc((var(${baseName}-prg) - var(--auto-dark-mode-color-vibrancy-constant-rg-avg)) / var(--auto-dark-mode-color-vibrancy-constant-rg-stdev))`;
-  container[`${baseName}-e`] = `calc((var(${baseName}-pgb) - var(--auto-dark-mode-color-vibrancy-constant-gb-avg)) / var(--auto-dark-mode-color-vibrancy-constant-gb-stdev))`;
-  container[`${baseName}-f`] = `calc((var(${baseName}-pbr) - var(--auto-dark-mode-color-vibrancy-constant-br-avg)) / var(--auto-dark-mode-color-vibrancy-constant-br-stdev))`;
-  container[`${baseName}-vibrancy`] = `calc((var(${baseName}-d) + var(${baseName}-e) + var(${baseName}-f)) / 3)`;
+  const baseName = `--${id}-vibrancy`;
+  container[`${baseName}-d`] = `calc((abs(${R} - ${G}) - var(--auto-dark-mode-color-vibrancy-constant-rg-avg)) / var(--auto-dark-mode-color-vibrancy-constant-rg-stdev))`;
+  container[`${baseName}-e`] = `calc((abs(${G} - ${B}) - var(--auto-dark-mode-color-vibrancy-constant-gb-avg)) / var(--auto-dark-mode-color-vibrancy-constant-gb-stdev))`;
+  container[`${baseName}-f`] = `calc((abs(${B} - ${R}) - var(--auto-dark-mode-color-vibrancy-constant-br-avg)) / var(--auto-dark-mode-color-vibrancy-constant-br-stdev))`;
+  container[`${baseName}-v`] = `calc((var(${baseName}-d) + var(${baseName}-e) + var(${baseName}-f)) / 3)`;
   return {
     type: 'model',
     model: 'var',
-    components: [{ type: 'string', string: `${baseName}-vibrancy` }]
+    components: [{ type: 'string', string: `${baseName}-v` }]
   };
 }
 

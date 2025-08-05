@@ -33,6 +33,8 @@ export function getConvertedHSLCSSVariables(id: string, hue: Component, saturati
   const H = stringifyComponent(hue, cssPrimaryDelimiters);
   const S = `calc(${stringifyComponent(saturation, cssPrimaryDelimiters)} / 100%)`;
   const L = `calc(${stringifyComponent(lightness, cssPrimaryDelimiters)} / 100%)`;
+  // this operation requires unit algebra proposed in CSS Values and Units Module Level 4
+  // https://www.w3.org/TR/css-values-4/#additions-L3
 
   for (const channel of [
     ['0', 'r'],

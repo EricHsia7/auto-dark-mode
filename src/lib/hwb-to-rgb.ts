@@ -22,6 +22,9 @@ export function getConvertedHWBCSSVariables(id: string, hue: Component, white: C
   const baseName = `--${id}-hwb`;
   const W = `calc(${stringifyComponent(white, cssPrimaryDelimiters)} / 100%)`;
   const B = `calc(${stringifyComponent(black, cssPrimaryDelimiters)} / 100%)`;
+  // this operation requires unit algebra proposed in CSS Values and Units Module Level 4
+  // https://www.w3.org/TR/css-values-4/#additions-L3
+
   container[`${baseName}-ratio`] = `round(down,clamp(0,${W} + ${B},1))`;
   container[`${baseName}-gray`] = `calc(${W} / (${W} + ${B} + 0.01))`;
   container[`${baseName}-x`] = `calc(1 - ${W} - ${B})`;
