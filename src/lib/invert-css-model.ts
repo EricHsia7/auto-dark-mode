@@ -195,7 +195,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         const id = generateIdentifier();
         const spreadModelComponent = spreadCSSVariables(modelComponent, variableIndex, mediaQueryConditionsText, selectorText, container);
         const [hue1, saturation1, lightness1, alpha1] = spreadModelComponent.components;
-        const [red1, green1, blue1, alpha1] = getConvertedHSLCSSVariables(id, hue1, saturation1, lightness1, container);
+        const [red1, green1, blue1] = getConvertedHSLCSSVariables(id, hue1, saturation1, lightness1, container);
         const vibrancy = getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
         const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, vibrancy, container);
         if (alpha === undefined) {
