@@ -7,7 +7,7 @@ import { isAngle } from './css-units';
 import { generateIdentifier } from './generate-identifier';
 import { hslToRgb } from './hsl-to-rgb';
 import { hwbToRgb } from './hwb-to-rgb';
-import { getInvertedRGBCSSVariable, invertRGB } from './invert-rgb';
+import { getInvertedRGBCSSVariables, invertRGB } from './invert-rgb';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { spreadCSSVariables } from './spread-css-variables';
 
@@ -62,10 +62,15 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         const id = generateIdentifier();
         const spreadModelComponent = spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText);
         const [red1, green1, blue1, alpha1] = spreadModelComponent.components;
+        console.log(JSON.stringify(spreadModelComponent, null, 2));
         const container = {}; // TODO: context as container
-        getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
-        const [red2, green2, blue2] = getInvertedRGBCSSVariable(id, red1, green1, blue1, container);
-        console.log(JSON.stringify(container, null, 2));
+        try {
+          getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
+          const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, container);
+          console.log(JSON.stringify(container, null, 2));
+        } catch (e) {
+          console.log(e);
+        }
         if (alpha === undefined) {
           const result: ModelComponent<CSSRGB> = {
             type: 'model',

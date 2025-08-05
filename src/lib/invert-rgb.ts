@@ -1,6 +1,6 @@
 import { clamp } from './clamp';
 import { getColorVibrancy } from './color-vibrancy';
-import { Component, ModelComponent } from './component';
+import { Component, ModelComponent, stringifyComponent } from './component';
 import { CSSVAR } from './css-model';
 
 export function invertRGB(red: number, green: number, blue: number, darkened: boolean = false): [red: number, green: number, blue: number] {
@@ -52,7 +52,7 @@ export function invertRGB(red: number, green: number, blue: number, darkened: bo
   h' = h and s' = s and v' = tv
 */
 
-export function getInvertedRGBCSSVariable(id: string, red: Component, green: Component, blue: Component, container): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
+export function getInvertedRGBCSSVariables(id: string, red: Component, green: Component, blue: Component, container): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
   const baseName = `--${id}`;
   const R = stringifyComponent(red);
   const G = stringifyComponent(green);
