@@ -50,9 +50,9 @@ export function getColorVibrancyCSSVariable(id: string, red: Component, green: C
   const G = stringifyComponent(green, cssPrimaryDelimiters);
   const B = stringifyComponent(blue, cssPrimaryDelimiters);
   const baseName = `--${id}`;
-  container[`${baseName}-prg`] = `calc(abs(${R} - ${G}))`;
-  container[`${baseName}-pgb`] = `calc(abs(${G} - ${B}))`;
-  container[`${baseName}-pbr`] = `calc(abs(${B} - ${R}))`;
+  container[`${baseName}-prg`] = `abs(${R} - ${G})`;
+  container[`${baseName}-pgb`] = `abs(${G} - ${B})`;
+  container[`${baseName}-pbr`] = `abs(${B} - ${R})`;
   container[`${baseName}-d`] = `calc((var(${baseName}-prg) - var(--auto-dark-mode-color-vibrancy-constant-rg-avg)) / var(--auto-dark-mode-color-vibrancy-constant-rg-stdev))`;
   container[`${baseName}-e`] = `calc((var(${baseName}-pgb) - var(--auto-dark-mode-color-vibrancy-constant-gb-avg)) / var(--auto-dark-mode-color-vibrancy-constant-gb-stdev))`;
   container[`${baseName}-f`] = `calc((var(${baseName}-pbr) - var(--auto-dark-mode-color-vibrancy-constant-br-avg)) / var(--auto-dark-mode-color-vibrancy-constant-br-stdev))`;

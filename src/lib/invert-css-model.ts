@@ -4,7 +4,9 @@ import { ModelComponent, parseComponent, stringifyComponent } from './component'
 import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { isAngle } from './css-units';
+import { deepAssign } from './deep-assign';
 import { generateIdentifier } from './generate-identifier';
+import { getVariableLibraryContext } from './get-variable-library-context';
 import { hslToRgb } from './hsl-to-rgb';
 import { hwbToRgb } from './hwb-to-rgb';
 import { getInvertedRGBCSSVariables, invertRGB } from './invert-rgb';
@@ -63,28 +65,38 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         const spreadModelComponent = spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText);
         const [red1, green1, blue1, alpha1] = spreadModelComponent.components;
         console.log(JSON.stringify(spreadModelComponent, null, 2));
-        const container = {}; // TODO: context as container
-        try {
-          getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
-          const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, container);
-          console.log(JSON.stringify(container, null, 2));
-          if (alpha === undefined) {
-            const result: ModelComponent<CSSRGB> = {
-              type: 'model',
-              model: 'rgb',
-              components: [red2, green2, blue2]
-            };
-            return result;
-          } else {
-            const result: ModelComponent<CSSRGBA> = {
-              type: 'model',
-              model: 'rgba',
-              components: [red2, green2, blue2, alpha1]
-            };
-            return result;
+        const container = {};
+        getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
+        const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, container);
+        if (mediaQueryConditionsText === '') {
+          if (!variableLibrary.hasOwnProperty(':root')) {
+            variableLibrary[':root'] = {};
           }
-        } catch (e) {
-          console.log(e);
+          variableLibrary[':root'] = deepAssign(variableLibrary[':root'], container);
+        } else {
+          if (!variableLibrary.hasOwnProperty(mediaQueryConditionsText)) {
+            variableLibrary[mediaQueryConditionsText] = {};
+          }
+          if (!variableLibrary[mediaQueryConditionsText].hasOwnProperty(':root')) {
+            variableLibrary[mediaQueryConditionsText][':root'] = {};
+          }
+          variableLibrary[mediaQueryConditionsText][':root'] = deepAssign(variableLibrary[mediaQueryConditionsText][':root'], container);
+        }
+        console.log(JSON.stringify(container, null, 2));
+        if (alpha === undefined) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [red2, green2, blue2]
+          };
+          return result;
+        } else {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [red2, green2, blue2, alpha1]
+          };
+          return result;
         }
       } else {
         return modelComponent;
