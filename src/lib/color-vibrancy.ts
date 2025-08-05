@@ -56,7 +56,7 @@ export function getColorVibrancyCSSVariable(id: string, red: Component, green: C
   container[`${baseName}-d`] = `calc((var(${baseName}-prg) - var(--auto-dark-mode-color-vibrancy-constant-rg-avg)) / var(--auto-dark-mode-color-vibrancy-constant-rg-stdev))`;
   container[`${baseName}-e`] = `calc((var(${baseName}-pgb) - var(--auto-dark-mode-color-vibrancy-constant-gb-avg)) / var(--auto-dark-mode-color-vibrancy-constant-gb-stdev))`;
   container[`${baseName}-f`] = `calc((var(${baseName}-pbr) - var(--auto-dark-mode-color-vibrancy-constant-br-avg)) / var(--auto-dark-mode-color-vibrancy-constant-br-stdev))`;
-  container[`${baseName}-vibrancy`] = `calc((var(--d) + var(--e) + var(--f)) / 3)`;
+  container[`${baseName}-vibrancy`] = `calc((var(${baseName}-d) + var(${baseName}-e) + var(${baseName}-f)) / 3)`;
   return {
     type: 'model',
     model: 'var',
