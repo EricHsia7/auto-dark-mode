@@ -5,7 +5,7 @@ import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { isAngle } from './css-units';
 import { generateIdentifier } from './generate-identifier';
-import { hslToRgb } from './hsl-to-rgb';
+import { getConvertedHSLCSSVariables, hslToRgb } from './hsl-to-rgb';
 import { hwbToRgb } from './hwb-to-rgb';
 import { getInvertedRGBCSSVariables, invertRGB } from './invert-rgb';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
@@ -192,7 +192,27 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        return modelComponent;
+        const id = generateIdentifier();
+        const spreadModelComponent = spreadCSSVariables(modelComponent, variableIndex, mediaQueryConditionsText, selectorText, container);
+        const [hue1, saturation1, lightness1, alpha1] = spreadModelComponent.components;
+        const [red1, green1, blue1, alpha1] = getConvertedHSLCSSVariables(id, hue1, saturation1, lightness1, container);
+        const vibrancy = getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
+        const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, vibrancy, container);
+        if (alpha === undefined) {
+          const result: ModelComponent<CSSRGB> = {
+            type: 'model',
+            model: 'rgb',
+            components: [red2, green2, blue2]
+          };
+          return result;
+        } else {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [red2, green2, blue2, alpha1]
+          };
+          return result;
+        }
       } else {
         return modelComponent;
       }
