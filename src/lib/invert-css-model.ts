@@ -6,7 +6,6 @@ import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, pa
 import { isAngle } from './css-units';
 import { deepAssign } from './deep-assign';
 import { generateIdentifier } from './generate-identifier';
-import { getVariableLibraryContext } from './get-variable-library-context';
 import { hslToRgb } from './hsl-to-rgb';
 import { hwbToRgb } from './hwb-to-rgb';
 import { getInvertedRGBCSSVariables, invertRGB } from './invert-rgb';
@@ -64,7 +63,6 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         const id = generateIdentifier();
         const spreadModelComponent = spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText);
         const [red1, green1, blue1, alpha1] = spreadModelComponent.components;
-        console.log(JSON.stringify(spreadModelComponent, null, 2));
         const container = {};
         getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
         const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, container);
@@ -82,7 +80,6 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           }
           variableLibrary[mediaQueryConditionsText][':root'] = deepAssign(variableLibrary[mediaQueryConditionsText][':root'], container);
         }
-        console.log(JSON.stringify(container, null, 2));
         if (alpha === undefined) {
           const result: ModelComponent<CSSRGB> = {
             type: 'model',
