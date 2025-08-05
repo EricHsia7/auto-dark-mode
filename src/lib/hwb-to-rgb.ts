@@ -28,11 +28,15 @@ export function getConvertedHWBCSSVariables(id: string, hue: Component, white: C
   container[`${baseName}-gray`] = `calc(${W} / var(${baseName}-wb))`;
   container[`${baseName}-x`] = `calc(1 - var(${baseName}-wb))`;
   container[`${baseName}-y`] = `calc(${W} * 255)`;
-  const [r, g, b] = getConvertedHSLCSSVariables(id, { type: 'model', model: 'calc', components: [{ type: 'string', string: `${stringifyComponent(hue, cssPrimaryDelimiters)} / 1deg` }] }, { type: 'number', number: 100, unit: '%' }, { type: 'number', number: 50, unit: '%' }, container);
-  container[`${baseName}-r`] = `round(clamp(0,calc(var(${baseName}-x) * ${stringifyComponent(r, cssPrimaryDelimiters)} + var(${baseName}-y)),255))`;
-  container[`${baseName}-g`] = `round(clamp(0,alc(var(${baseName}-x) * ${stringifyComponent(g, cssPrimaryDelimiters)} + var(${baseName}-y)),255))`;
-  container[`${baseName}-b`] = `round(clamp(0,calc(var(${baseName}-x) * ${stringifyComponent(b, cssPrimaryDelimiters)} + var(${baseName}-y)),255))`;
-
+  // const [r, g, b] = getConvertedHSLCSSVariables(id, { type: 'model', model: 'calc', components: [{ type: 'string', string: `${stringifyComponent(hue, cssPrimaryDelimiters)} / 1deg` }] }, { type: 'number', number: 100, unit: '%' }, { type: 'number', number: 50, unit: '%' }, container);
+  const [r, g, b] = [
+    { type: 'number', number: 255, unit: '' },
+    { type: 'number', number: 0, unit: '' },
+    { type: 'number', number: 0, unit: '' }
+  ];
+  container[`${baseName}-r`] = `round(clamp(0,calc(var(${baseName}-x) * ${stringifyComponent(r, cssPrimaryDelimiters)} + var(${baseName}-y)),255) * (1 - var(${baseName}-ratio)) + var(${baseName}-gray) * var(${baseName}-ratio))`;
+  container[`${baseName}-g`] = `round(clamp(0,calc(var(${baseName}-x) * ${stringifyComponent(g, cssPrimaryDelimiters)} + var(${baseName}-y)),255) * (1 - var(${baseName}-ratio)) + var(${baseName}-gray) * var(${baseName}-ratio))`;
+  container[`${baseName}-b`] = `round(clamp(0,calc(var(${baseName}-x) * ${stringifyComponent(b, cssPrimaryDelimiters)} + var(${baseName}-y)),255) * (1 - var(${baseName}-ratio)) + var(${baseName}-gray) * var(${baseName}-ratio))`;
   return [
     {
       type: 'model',
