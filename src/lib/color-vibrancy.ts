@@ -39,9 +39,9 @@ export function getColorVibrancyCSSVariable(id: string, red: Component, green: C
   const x = baseStats.n * (Math.pow(baseStats.stdev[0], 2) + Math.pow(baseStats.avg[0], 2));
   const y = baseStats.n * (Math.pow(baseStats.stdev[1], 2) + Math.pow(baseStats.avg[1], 2));
   const z = baseStats.n * (Math.pow(baseStats.stdev[2], 2) + Math.pow(baseStats.avg[2], 2));
-  container[`${baseName}-rg-avg`] = `calc((${baseStats.avg[0]} + ${R}) / ${mergedNumber})`;
-  container[`${baseName}-gb-avg`] = `calc((${baseStats.avg[0]} + ${R}) / ${mergedNumber})`;
-  container[`${baseName}-br-avg`] = `calc((${baseStats.avg[0]} + ${R}) / ${mergedNumber})`;
+  container[`${baseName}-rg-avg`] = `calc((${baseStats.avg[0] * baseStats.n} + ${R}) / ${mergedNumber})`;
+  container[`${baseName}-gb-avg`] = `calc((${baseStats.avg[1] * baseStats.n} + ${G}) / ${mergedNumber})`;
+  container[`${baseName}-br-avg`] = `calc((${baseStats.avg[2] * baseStats.n} + ${B}) / ${mergedNumber})`;
   container[`${baseName}-rg-stdev`] = `calc((${x} + pow(${R},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2))`;
   container[`${baseName}-gb-stdev`] = `calc((${y} + pow(${G},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2))`;
   container[`${baseName}-br-stdev`] = `calc((${z} + pow(${B},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2))`;
