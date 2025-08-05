@@ -198,7 +198,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         const [red1, green1, blue1] = getConvertedHSLCSSVariables(id, hue1, saturation1, lightness1, container);
         const vibrancy = getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
         const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, vibrancy, container);
-        if (alpha === undefined) {
+        if (alpha1 === undefined) {
           const result: ModelComponent<CSSRGB> = {
             type: 'model',
             model: 'rgb',
@@ -257,7 +257,22 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        return modelComponent;
+        const id = generateIdentifier();
+        const spreadModelComponent = spreadCSSVariables(modelComponent, variableIndex, mediaQueryConditionsText, selectorText, container);
+        const [hue1, saturation1, lightness1, alpha1] = spreadModelComponent.components;
+        const [red1, green1, blue1] = getConvertedHSLCSSVariables(id, hue1, saturation1, lightness1, container);
+        const vibrancy = getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
+        const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, vibrancy, container);
+        if (alpha1 === undefined) {
+          return modelComponent;
+        } else {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [red2, green2, blue2, alpha1]
+          };
+          return result;
+        }
       } else {
         return modelComponent;
       }
