@@ -58,8 +58,8 @@ export function getInvertedRGBCSSVariables(id: string, red: Component, green: Co
   const R = stringifyComponent(red, cssPrimaryDelimiters);
   const G = stringifyComponent(green, cssPrimaryDelimiters);
   const B = stringifyComponent(blue, cssPrimaryDelimiters);
-  container[`${baseName}-max`] = `max(${R},${G},${B})`;
-  container[`${baseName}-min`] = `min(${R},${G},${B},0.1)`;
+  container[`${baseName}-max`] = `max(${R},${G},${B},0.1)`;
+  container[`${baseName}-min`] = `min(${R},${G},${B})`;
   container[`${baseName}-sat`] = `calc(var(${baseName}-max) - var(${baseName}-min)) / var(${baseName}-max)`;
   container[`${baseName}-eq`] = `calc(-0.1 + sqrt(var(${baseName}-sat)) * 1.1)`;
   container[`${baseName}-avg`] = `calc((${R} + ${G} + ${B}) / 3)`;
