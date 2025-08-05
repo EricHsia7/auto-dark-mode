@@ -2,7 +2,6 @@ import { Component, ModelComponent, stringifyComponent } from './component';
 import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSVAR } from './css-model';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
-import { StyleSheet } from './styles';
 
 const baseColors: number[][] = [
   [255, 255, 255],
@@ -36,9 +35,19 @@ export function getColorVibrancyCSSVariable(id: string, red: Component, green: C
   const G = stringifyComponent(green, cssPrimaryDelimiters);
   const B = stringifyComponent(blue, cssPrimaryDelimiters);
   const baseName = `--${id}-vibrancy`;
-  container[`${baseName}-d`] = `calc((abs(${R} - ${G}) - ${baseStats.avg[0]}) / ${baseStats.stdev[0]})`;
-  container[`${baseName}-e`] = `calc((abs(${G} - ${B}) - ${baseStats.avg[1]}) / ${baseStats.stdev[1]})`;
-  container[`${baseName}-f`] = `calc((abs(${B} - ${R}) - ${baseStats.avg[2]}) / ${baseStats.stdev[2]})`;
+  const mergedNumber = baseStats.n + 1;
+  const x = baseStats.n * (Math.pow(baseStats.stdev[0], 2) + Math.pow(baseStats.avg[0], 2));
+  const y = baseStats.n * (Math.pow(baseStats.stdev[1], 2) + Math.pow(baseStats.avg[1], 2));
+  const z = baseStats.n * (Math.pow(baseStats.stdev[2], 2) + Math.pow(baseStats.avg[2], 2));
+  container[`${baseName}-rg-avg`] = `calc((${baseStats.avg[0]} + ${R}) / ${mergedNumber})`;
+  container[`${baseName}-gb-avg`] = `calc((${baseStats.avg[0]} + ${R}) / ${mergedNumber})`;
+  container[`${baseName}-br-avg`] = `calc((${baseStats.avg[0]} + ${R}) / ${mergedNumber})`;
+  container[`${baseName}-rg-stdev`] = `calc((${x} + pow(${R},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2))`;
+  container[`${baseName}-gb-stdev`] = `calc((${y} + pow(${G},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2))`;
+  container[`${baseName}-br-stdev`] = `calc((${z} + pow(${B},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2))`;
+  container[`${baseName}-d`] = `calc((abs(${R} - ${G}) - var(${baseName}-rg-avg)) / var(${baseName}-rg-stdev))`;
+  container[`${baseName}-e`] = `calc((abs(${G} - ${B}) - var(${baseName}-gb-avg)) / var(${baseName}-gb-stdev))`;
+  container[`${baseName}-f`] = `calc((abs(${B} - ${R}) - var(${baseName}-br-avg)) / var(${baseName}-br-stdev))`;
   container[`${baseName}-v`] = `calc((var(${baseName}-d) + var(${baseName}-e) + var(${baseName}-f)) / 3)`;
   return {
     type: 'model',
@@ -46,10 +55,3 @@ export function getColorVibrancyCSSVariable(id: string, red: Component, green: C
     components: [{ type: 'string', string: `${baseName}-v` }]
   };
 }
-
-// const p = 0.006339594673 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.1357803475 + 0.006733518277 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1787805054 + 0.005240646414 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.1162090602;
-// const p = 0.006669426162 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.07742765348 + 0.007073453738 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1163189972 + 0.005399325815 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.06675079166;
-// const p = 0.006694646769 * Math.abs(color.rgb[0] - color.rgb[1]) + 0.06369476726 + 0.007040201321 * Math.abs(color.rgb[1] - color.rgb[2]) + 0.1045286998 + 0.005413701273 * Math.abs(color.rgb[0] - color.rgb[2]) + 0.05323332153;
-// const q = Math.min(Math.max(p / 3, 0), 1);
-// return q;
-// ./data/vibrancy.csv
