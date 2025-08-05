@@ -122,8 +122,21 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        // TODO: invert
-        return modelComponent;
+        const id = generateIdentifier();
+        const spreadModelComponent = spreadCSSVariables(modelComponent, variableIndex, mediaQueryConditionsText, selectorText, container);
+        const [red1, green1, blue1, alpha1] = spreadModelComponent.components;
+        const vibrancy = getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
+        const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, vibrancy, container);
+        if (alpha === undefined) {
+          return modelComponent;
+        } else {
+          const result: ModelComponent<CSSRGBA> = {
+            type: 'model',
+            model: 'rgba',
+            components: [red2, green2, blue2, alpha1]
+          };
+          return result;
+        }
       } else {
         return modelComponent;
       }
