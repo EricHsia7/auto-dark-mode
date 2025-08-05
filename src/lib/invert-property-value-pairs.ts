@@ -50,7 +50,7 @@ export function invertPropertyValuePairs(cssText: string): string {
       const color = colors.result[i];
       const parsedColor = parseCSSModel(color);
       if (parsedColor !== undefined) {
-        const invertedColor = invertCSSModel(parsedColor, false);
+        const invertedColor = invertCSSModel(parsedColor, false, false);
         colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
       }
     }
