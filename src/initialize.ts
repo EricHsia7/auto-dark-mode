@@ -6,13 +6,12 @@ import { getColorVibrancyConstantStyles } from './lib/color-vibrancy';
 import { findStyleSheetByNode } from './lib/find-stylesheet-by-node';
 import { generateCssFromImageItem, getImageItem, invertImageItem } from './lib/images';
 import { inlineCSS } from './lib/inline-css';
-import { currentStylesCollection, currentVariableLibrary, currentVariableReferenceStats, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
+import { currentStylesCollection, currentVariableIndex, currentVariableReferenceStats, generateCssFromStyles, invertStyles, StylesCollection, StyleSheetCSSArray, updateStyles } from './lib/styles';
 import { isSVGElement, svgElementsQuerySelectorString } from './lib/svg-elements';
 import { transformLayerCSS } from './lib/transform-layer-css';
 
 let currentStylesheets: StyleSheetCSSArray = [];
 let colorVibrancyConstantStylesheet: StyleSheetCSSArray = [];
-let variableLibraryStylesheet: StyleSheetCSSArray = [];
 let imageStylesheets: StyleSheetCSSArray = [];
 
 const processingElements = new Set();
@@ -59,7 +58,7 @@ export async function initialize() {
   updateStyles(elementsWithInlineStyle, svgElements, document.styleSheets);
 
   // Invert styles
-  const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats, currentVariableLibrary) as StylesCollection;
+  const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats, currentVariableIndex) as StylesCollection;
 
   // Generate inverted css
   currentStylesheets = generateCssFromStyles(invertedStyles, false);
@@ -67,11 +66,8 @@ export async function initialize() {
   // Generate color vibrancy constant css
   colorVibrancyConstantStylesheet = generateCssFromStyles({ '@stylesheet-color-vibrancy-constant': getColorVibrancyConstantStyles() }, false);
 
-  // Generate variable library css
-  variableLibraryStylesheet = generateCssFromStyles({ '@stylesheet-variable-library': currentVariableLibrary }, false);
-
   // Update stylesheets
-  updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
+  updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(imageStylesheets));
 
   const stylesheetsObserver = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
@@ -95,13 +91,13 @@ export async function initialize() {
               updateStyles([], [], [sheet]);
 
               // Invert styles
-              const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats, currentVariableLibrary) as StylesCollection;
+              const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats, currentVariableIndex) as StylesCollection;
 
               // Generate css
               currentStylesheets = generateCssFromStyles(invertedStyles, false);
 
               // Update stylesheets
-              updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
+              updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(imageStylesheets));
             }
             processingElements.delete(node);
           }
@@ -141,16 +137,13 @@ export async function initialize() {
     updateStyles(elementsWithInlineStyleToUpdate, svgElementsToUpdate, []);
 
     // Invert styles
-    const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats, currentVariableLibrary) as StylesCollection;
+    const invertedStyles = invertStyles(currentStylesCollection, currentVariableReferenceStats, currentVariableIndex) as StylesCollection;
 
     // Generate inverted css
     currentStylesheets = generateCssFromStyles(invertedStyles, false);
 
-    // Generate variable library css
-    variableLibraryStylesheet = generateCssFromStyles({ '@stylesheet-variable-library': currentVariableLibrary }, false);
-
     // Update stylesheets
-    updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
+    updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(imageStylesheets));
   });
 
   elementsObserver.observe(document.body, {
@@ -178,7 +171,7 @@ export async function initialize() {
             if (typeof invertedImageItem !== 'boolean') {
               const invertedImageItemCSS = generateCssFromImageItem(invertedImageItem);
               imageStylesheets.push(invertedImageItemCSS);
-              updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
+              updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(imageStylesheets));
             }
           });
         }
@@ -223,7 +216,7 @@ export async function initialize() {
               // Update stylesheet
               imageStylesheets.push(invertedImageItemCSS);
 
-              updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(variableLibraryStylesheet).concat(imageStylesheets));
+              updateStylesheets(currentStylesheets.concat(colorVibrancyConstantStylesheet).concat(imageStylesheets));
             }
           });
         }
@@ -238,5 +231,5 @@ export async function initialize() {
     childList: true
   });
 
-  console.log(currentVariableLibrary);
+  console.log(currentVariableIndex);
 }

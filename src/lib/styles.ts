@@ -143,9 +143,9 @@ export let currentStylesCollection: StylesCollection = {
     }
   }
 };
-export let currentVariableLibrary = {};
+export let currentVariableIndex = {};
 
-function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: VariableReferenceStats, variableLibrary, mediaQueryConditions: Array<string> = []) {
+function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, referenceStats: VariableReferenceStats, variableIndex, mediaQueryConditions: Array<string> = []) {
   for (const rule of rules) {
     switch (rule.type) {
       case CSSRule.STYLE_RULE: {
@@ -180,18 +180,18 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
             if (prop.startsWith('--')) {
               if (mediaQueryConditions.length > 0) {
                 const mediaQueryConditionsText = `@media ${mediaQueryConditions.join(' and ')}`; // TODO: simplify media query
-                if (!variableLibrary.hasOwnProperty(mediaQueryConditionsText)) {
-                  variableLibrary[mediaQueryConditionsText] = {};
+                if (!variableIndex.hasOwnProperty(mediaQueryConditionsText)) {
+                  variableIndex[mediaQueryConditionsText] = {};
                 }
-                if (!variableLibrary[mediaQueryConditionsText].hasOwnProperty(selectorText)) {
-                  variableLibrary[mediaQueryConditionsText][selectorText] = {};
+                if (!variableIndex[mediaQueryConditionsText].hasOwnProperty(selectorText)) {
+                  variableIndex[mediaQueryConditionsText][selectorText] = {};
                 }
-                variableLibrary[mediaQueryConditionsText][selectorText][prop] = value;
+                variableIndex[mediaQueryConditionsText][selectorText][prop] = value;
               } else {
-                if (!variableLibrary.hasOwnProperty(selectorText)) {
-                  variableLibrary[selectorText] = {};
+                if (!variableIndex.hasOwnProperty(selectorText)) {
+                  variableIndex[selectorText] = {};
                 }
-                variableLibrary[selectorText][prop] = value;
+                variableIndex[selectorText][prop] = value;
               }
             }
           }
@@ -206,7 +206,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (!container.hasOwnProperty(media)) {
           container[media] = {};
         }
-        processCSSRules(mediaRule.cssRules, container[media], referenceStats, variableLibrary, mediaQueryConditions.concat(mediaRule.conditionText));
+        processCSSRules(mediaRule.cssRules, container[media], referenceStats, variableIndex, mediaQueryConditions.concat(mediaRule.conditionText));
         // }
         // TODO: evaluate theme per color scheme
         break;
@@ -217,7 +217,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (importRule.styleSheet) {
           // Import rules with nested stylesheets
           try {
-            processCSSRules(importRule.styleSheet.cssRules, container, referenceStats, variableLibrary);
+            processCSSRules(importRule.styleSheet.cssRules, container, referenceStats, variableIndex);
           } catch (e) {
             // Skipped due to CORS/security
           }
@@ -263,7 +263,7 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
         if (!container.hasOwnProperty(supports)) {
           container[supports] = {};
         }
-        processCSSRules(supportsRule.cssRules, container[supports], referenceStats, variableLibrary);
+        processCSSRules(supportsRule.cssRules, container[supports], referenceStats, variableIndex);
         break;
       }
 
@@ -317,7 +317,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
         currentStylesCollection[sheetName] = {};
       } else {
         const sheetObj = {};
-        processCSSRules(sheet.cssRules, sheetObj, currentVariableReferenceStats, currentVariableLibrary);
+        processCSSRules(sheet.cssRules, sheetObj, currentVariableReferenceStats, currentVariableIndex);
         currentStylesCollection[sheetName] = deepAssign(currentStylesCollection[sheetName] || {}, sheetObj);
       }
     } catch (e) {
@@ -348,7 +348,7 @@ export function updateStyles(elementsWithInlineStyle: NodeListOf<HTMLElement>, s
   currentStylesCollection['@stylesheet-lambda'] = deepAssign(currentStylesCollection['@stylesheet-lambda'] || {}, lambdaStyles);
 }
 
-export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceStats: VariableReferenceStats, variableLibrary, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
+export function invertStyles(object: StylesCollection | StyleSheet | CSSProperties, referenceStats: VariableReferenceStats, variableIndex, path: string[] = []): CSSProperties | StyleSheet | StylesCollection {
   const newStyles: any = {};
   let backgroundColorRed = 0;
   let backgroundColorGreen = 0;
@@ -367,7 +367,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     const currentPath = path.concat(key);
 
     if (typeof value === 'object' && value !== null) {
-      newStyles[key] = invertStyles(value, referenceStats, variableLibrary, currentPath); // Recursive copy
+      newStyles[key] = invertStyles(value, referenceStats, variableIndex, currentPath); // Recursive copy
     } else {
       // Leaf node: reached a CSS property/value pair
       const selectorText = currentPath[currentPath.length - 2];
@@ -382,7 +382,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             const [r, g, b, a] = extractRGBA(parsedColor); // Extraction must occur before inverting because Array.prototype.splice() modifies arrays in place (array objects are mutable)
             const darkened = isDarkened(key);
             const mediaQueryConditionsText = mediaQueryConditions.length > 0 ? `@media ${mediaQueryConditions.join(' and ')}` : '';
-            const invertedColor = invertCSSModel(parsedColor, darkened, true, variableLibrary, mediaQueryConditionsText, selectorText);
+            const invertedColor = invertCSSModel(parsedColor, darkened, true, variableIndex, mediaQueryConditionsText, selectorText, newStyles);
             colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
 
             if (a !== 0) {
