@@ -68,23 +68,23 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
           const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, container);
           console.log(JSON.stringify(container, null, 2));
+          if (alpha === undefined) {
+            const result: ModelComponent<CSSRGB> = {
+              type: 'model',
+              model: 'rgb',
+              components: [red2, green2, blue2]
+            };
+            return result;
+          } else {
+            const result: ModelComponent<CSSRGBA> = {
+              type: 'model',
+              model: 'rgba',
+              components: [red2, green2, blue2, alpha1]
+            };
+            return result;
+          }
         } catch (e) {
           console.log(e);
-        }
-        if (alpha === undefined) {
-          const result: ModelComponent<CSSRGB> = {
-            type: 'model',
-            model: 'rgb',
-            components: [red2, green2, blue2]
-          };
-          return result;
-        } else {
-          const result: ModelComponent<CSSRGBA> = {
-            type: 'model',
-            model: 'rgba',
-            components: [red2, green2, blue2, alpha1]
-          };
-          return result;
         }
       } else {
         return modelComponent;
