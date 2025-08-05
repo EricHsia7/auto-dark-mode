@@ -1,6 +1,7 @@
 import { clamp } from './clamp';
 import { getColorVibrancy } from './color-vibrancy';
 import { Component, ModelComponent, stringifyComponent } from './component';
+import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSVAR } from './css-model';
 
 export function invertRGB(red: number, green: number, blue: number, darkened: boolean = false): [red: number, green: number, blue: number] {
@@ -54,9 +55,9 @@ export function invertRGB(red: number, green: number, blue: number, darkened: bo
 
 export function getInvertedRGBCSSVariables(id: string, red: Component, green: Component, blue: Component, container): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
   const baseName = `--${id}`;
-  const R = stringifyComponent(red);
-  const G = stringifyComponent(green);
-  const B = stringifyComponent(blue);
+  const R = stringifyComponent(red, cssPrimaryDelimiters);
+  const G = stringifyComponent(green, cssPrimaryDelimiters);
+  const B = stringifyComponent(blue, cssPrimaryDelimiters);
   container[`${baseName}-max`] = `max(${R},${G},${B})`;
   container[`${baseName}-min`] = `min(${R},${G},${B},0.1)`;
   container[`${baseName}-sat`] = `calc(var(${baseName}-max) - var(${baseName}-min)) / var(${baseName}-max)`;

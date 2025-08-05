@@ -1,4 +1,5 @@
 import { Component, ModelComponent, stringifyComponent } from './component';
+import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSVAR } from './css-model';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
 import { StyleSheet } from './styles';
@@ -45,9 +46,9 @@ export function getColorVibrancyConstantStyles(): StyleSheet {
 }
 
 export function getColorVibrancyCSSVariable(id: string, red: Component, green: Component, blue: Component, container): ModelComponent<CSSVAR> {
-  const R = stringifyComponent(red);
-  const G = stringifyComponent(green);
-  const B = stringifyComponent(blue);
+  const R = stringifyComponent(red, cssPrimaryDelimiters);
+  const G = stringifyComponent(green, cssPrimaryDelimiters);
+  const B = stringifyComponent(blue, cssPrimaryDelimiters);
   const baseName = `--${id}`;
   container[`${baseName}-prg`] = `calc(abs(${R} - ${G}))`;
   container[`${baseName}-pgb`] = `calc(abs(${G} - ${B}))`;
