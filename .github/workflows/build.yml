@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - dev-invert-arguments
+      - dev-invery-arguments-variable-index
 
 jobs:
   build:

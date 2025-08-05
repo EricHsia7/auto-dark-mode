@@ -2,8 +2,9 @@ import { Component, ModelComponent, parseComponent } from './component';
 import { CSSColor, CSSGradient, CSSVAR, isCalc, isColor, isGradient, isVariable, parseCSSModel } from './css-model';
 import { isPathContinuous } from './is-path-continuous';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
+import { CSSProperties } from './styles';
 
-function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variableLibrary, mediaQueryConditionsText: string, selectorText: string): Array<Component> {
+function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variableIndex, mediaQueryConditionsText: string, selectorText: string, container: CSSProperties): Array<Component> {
   const components = variableComponent.components;
   const componentsLen = components.length;
   let spreadComponents = [];
@@ -12,18 +13,18 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
     if (component.type === 'string' && component.string.startsWith('--')) {
       // spread referenced variable
       let context = undefined;
-      if (mediaQueryConditionsText !== '' && isPathContinuous(variableLibrary, [mediaQueryConditionsText, selectorText, component.string])) {
+      if (mediaQueryConditionsText !== '' && isPathContinuous(variableIndex, [mediaQueryConditionsText, selectorText, component.string])) {
         // root > media query > selector > property
-        context = variableLibrary[mediaQueryConditionsText][selectorText];
-      } else if (mediaQueryConditionsText !== '' && isPathContinuous(variableLibrary, [mediaQueryConditionsText, ':root', component.string])) {
+        context = variableIndex[mediaQueryConditionsText][selectorText];
+      } else if (mediaQueryConditionsText !== '' && isPathContinuous(variableIndex, [mediaQueryConditionsText, ':root', component.string])) {
         // root > media query > :root > property
-        context = variableLibrary[mediaQueryConditionsText][':root'];
-      } else if (isPathContinuous(variableLibrary, [selectorText, component.string])) {
+        context = variableIndex[mediaQueryConditionsText][':root'];
+      } else if (isPathContinuous(variableIndex, [selectorText, component.string])) {
         // root > selector
-        context = variableLibrary[selectorText];
-      } else if (isPathContinuous(variableLibrary, [':root', component.string])) {
+        context = variableIndex[selectorText];
+      } else if (isPathContinuous(variableIndex, [':root', component.string])) {
         // root > :root
-        context = variableLibrary[':root'];
+        context = variableIndex[':root'];
       }
       if (context !== undefined) {
         const value = context[component.string];
@@ -36,12 +37,12 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
             if (parsed.type === 'model') {
               // spread variables in intermediate models
               if (isColor(parsed) || isGradient(parsed)) {
-                spreadComponents.push(spreadCSSVariables(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
+                spreadComponents.push(spreadCSSVariables(parsed, variableIndex, mediaQueryConditionsText, selectorText, container));
               } else if (isVariable(parsed)) {
-                spreadComponents.push.apply(spreadComponents, getSpreadComponents(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
+                spreadComponents.push.apply(spreadComponents, getSpreadComponents(parsed, variableIndex, mediaQueryConditionsText, selectorText, container));
               }
             } else {
-              const property = `--varlib-${component.string}-${j.toString()}`;
+              const property = `--${component.string}-${j.toString()}`;
               const spreadComponent: ModelComponent<CSSVAR> = {
                 type: 'model',
                 model: 'var',
@@ -53,7 +54,7 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
                 ]
               };
               spreadComponents.push(spreadComponent);
-              context[property] = arg;
+              container[property] = arg;
             }
           }
         }
@@ -70,9 +71,9 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
           if (parsed.type === 'model') {
             // spread variables in intermediate models
             if (isColor(parsed) || isGradient(parsed)) {
-              spreadComponents.push(spreadCSSVariables(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
+              spreadComponents.push(spreadCSSVariables(parsed, variableIndex, mediaQueryConditionsText, selectorText, container));
             } else if (isVariable(parsed)) {
-              spreadComponents.push.apply(spreadComponents, getSpreadComponents(parsed, variableLibrary, mediaQueryConditionsText, selectorText));
+              spreadComponents.push.apply(spreadComponents, getSpreadComponents(parsed, variableIndex, mediaQueryConditionsText, selectorText, container));
             } else if (isCalc(parsed)) {
               spreadComponents.push(parsed);
             }
@@ -84,7 +85,7 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
       break;
     } else if (component.type === 'model' && component.model === 'var') {
       // spread variable in a variable
-      spreadComponents = getSpreadComponents(component, variableLibrary, mediaQueryConditionsText, selectorText);
+      spreadComponents = getSpreadComponents(component, variableIndex, mediaQueryConditionsText, selectorText, container);
     } else {
       // keep other components
       spreadComponents.push(component);
@@ -94,13 +95,13 @@ function getSpreadComponents(variableComponent: ModelComponent<CSSVAR>, variable
   return spreadComponents;
 }
 
-export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSSGradient>, variableLibrary, mediaQueryConditionsText: string, selectorText: string): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
+export function spreadCSSVariables(modelComponent: ModelComponent<CSSColor | CSSGradient>, variableIndex, mediaQueryConditionsText: string, selectorText: string, container: CSSProperties): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
   const components = modelComponent.components;
   const componentsLen = components.length;
   for (let i = componentsLen - 1; i >= 0; i--) {
     const component = components[i];
     if (component.type === 'model' && component.model === 'var') {
-      const spreadComponents = getSpreadComponents(component, variableLibrary, mediaQueryConditionsText, selectorText);
+      const spreadComponents = getSpreadComponents(component, variableIndex, mediaQueryConditionsText, selectorText, container);
       components.splice(i, 1, ...spreadComponents);
     }
   }

@@ -4,15 +4,15 @@ import { ModelComponent, parseComponent, stringifyComponent } from './component'
 import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { isAngle } from './css-units';
-import { deepAssign } from './deep-assign';
 import { generateIdentifier } from './generate-identifier';
 import { hslToRgb } from './hsl-to-rgb';
 import { hwbToRgb } from './hwb-to-rgb';
 import { getInvertedRGBCSSVariables, invertRGB } from './invert-rgb';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { spreadCSSVariables } from './spread-css-variables';
+import { CSSProperties } from './styles';
 
-export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean, spread: boolean = false, variableLibrary, mediaQueryConditionsText: string, selectorText: string = ''): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
+export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR | CSSGradient>, darkened: boolean, spread: boolean = false, variableIndex = {}, mediaQueryConditionsText: string = '', selectorText: string = '', container: CSSProperties = {}): ModelComponent<CSSColor | CSSVAR | CSSGradient> {
   switch (modelComponent.model) {
     case 'rgb': {
       const [red, green, blue, alpha] = modelComponent.components;
@@ -61,25 +61,10 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         }
       } else if (spread) {
         const id = generateIdentifier();
-        const spreadModelComponent = spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText);
+        const spreadModelComponent = spreadCSSVariables(modelComponent, variableIndex, mediaQueryConditionsText, selectorText, container);
         const [red1, green1, blue1, alpha1] = spreadModelComponent.components;
-        const container = {};
-        getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
-        const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, container);
-        if (mediaQueryConditionsText === '') {
-          if (!variableLibrary.hasOwnProperty(':root')) {
-            variableLibrary[':root'] = {};
-          }
-          variableLibrary[':root'] = deepAssign(variableLibrary[':root'], container);
-        } else {
-          if (!variableLibrary.hasOwnProperty(mediaQueryConditionsText)) {
-            variableLibrary[mediaQueryConditionsText] = {};
-          }
-          if (!variableLibrary[mediaQueryConditionsText].hasOwnProperty(':root')) {
-            variableLibrary[mediaQueryConditionsText][':root'] = {};
-          }
-          variableLibrary[mediaQueryConditionsText][':root'] = deepAssign(variableLibrary[mediaQueryConditionsText][':root'], container);
-        }
+        const vibrancy = getColorVibrancyCSSVariable(id, red1, green1, blue1, container);
+        const [red2, green2, blue2] = getInvertedRGBCSSVariables(id, red1, green1, blue1, vibrancy, container);
         if (alpha === undefined) {
           const result: ModelComponent<CSSRGB> = {
             type: 'model',
@@ -137,7 +122,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
+        // TODO: invert
         return modelComponent;
       } else {
         return modelComponent;
@@ -194,7 +179,6 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -240,7 +224,6 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -300,7 +283,6 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
           return result;
         }
       } else if (spread) {
-        console.log(spreadCSSVariables(modelComponent, variableLibrary, mediaQueryConditionsText, selectorText));
         return modelComponent;
       } else {
         return modelComponent;
@@ -314,14 +296,14 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         const component = components[i];
         if (component.type === 'model') {
           if (isColor(component) || isVariable(component)) {
-            const inverted = invertCSSModel(component, darkened, spread, variableLibrary, mediaQueryConditionsText, selectorText);
+            const inverted = invertCSSModel(component, darkened, spread, variableIndex, mediaQueryConditionsText, selectorText, container);
             components.splice(i, 1, inverted);
           }
         } else if (component.type === 'string') {
           const parsed = parseCSSModel(component.string);
           if (parsed !== undefined) {
             if (isColor(parsed) || isVariable(parsed)) {
-              const inverted = invertCSSModel(parsed, darkened, spread, variableLibrary, mediaQueryConditionsText, selectorText);
+              const inverted = invertCSSModel(parsed, darkened, spread, variableIndex, mediaQueryConditionsText, selectorText, container);
               components.splice(i, 1, inverted);
             }
           }
@@ -350,7 +332,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
             const subComponent = subComponents[j];
             if (subComponent.type === 'model') {
               if (isColor(subComponent) || isVariable(subComponent)) {
-                const inverted = invertCSSModel(subComponent, darkened, spread, variableLibrary, mediaQueryConditionsText, selectorText);
+                const inverted = invertCSSModel(subComponent, darkened, spread, variableIndex, mediaQueryConditionsText, selectorText, container);
                 subComponents.splice(j, 1, inverted);
               }
             }
@@ -362,7 +344,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         } else if (component.type === 'model') {
           // component is a color alone
           if (isColor(component) || isVariable(component)) {
-            const inverted = invertCSSModel(component, darkened, spread, variableLibrary, mediaQueryConditionsText, selectorText);
+            const inverted = invertCSSModel(component, darkened, spread, variableIndex, mediaQueryConditionsText, selectorText, container);
             components.splice(i, 1, inverted);
           }
         }
@@ -389,7 +371,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
             const subComponent = subComponents[j];
             if (subComponent.type === 'model') {
               if (isColor(subComponent) || isVariable(subComponent)) {
-                const inverted = invertCSSModel(subComponent, darkened, spread, variableLibrary, mediaQueryConditionsText, selectorText);
+                const inverted = invertCSSModel(subComponent, darkened, spread, variableIndex, mediaQueryConditionsText, selectorText, container);
                 subComponents.splice(j, 1, inverted);
               }
             }
@@ -402,7 +384,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         } else if (component.type === 'model') {
           // component is a color alone
           if (isColor(component) || isVariable(component)) {
-            const inverted = invertCSSModel(component, darkened, spread, variableLibrary, mediaQueryConditionsText, selectorText);
+            const inverted = invertCSSModel(component, darkened, spread, variableIndex, mediaQueryConditionsText, selectorText, container);
             components.splice(i, 1, inverted);
           }
         }
@@ -429,7 +411,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
             const subComponent = subComponents[j];
             if (subComponent.type === 'model') {
               if (isColor(subComponent) || isVariable(subComponent)) {
-                const inverted = invertCSSModel(subComponent, darkened, spread, variableLibrary, mediaQueryConditionsText, selectorText);
+                const inverted = invertCSSModel(subComponent, darkened, spread, variableIndex, mediaQueryConditionsText, selectorText, container);
                 subComponents.splice(j, 1, inverted);
               }
             }
@@ -442,7 +424,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
         } else if (component.type === 'model') {
           // component is a color alone
           if (isColor(component) || isVariable(component)) {
-            const inverted = invertCSSModel(component, darkened, spread, variableLibrary, mediaQueryConditionsText, selectorText);
+            const inverted = invertCSSModel(component, darkened, spread, variableIndex, mediaQueryConditionsText, selectorText, container);
             components.splice(i, 1, inverted);
           }
         }
