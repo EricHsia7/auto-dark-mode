@@ -285,8 +285,8 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
       const areHWBObject = typeof hue === 'object' && typeof black === 'object' && typeof white === 'object';
       const areHWBNumber = areHWBObject && hue.type === 'number' && white.type === 'number' && black.type === 'number';
       const isHueAngle = areHWBNumber && isAngle(hue);
-      const isWhitePercentage = areHWBNumber && (white.unit !== '' || white.unit !== '%');
-      const isBlackPercentage = areHWBNumber && (black.unit !== '' || black.unit !== '%');
+      const isWhitePercentage = areHWBNumber && (white.unit === '' || white.unit === '%');
+      const isBlackPercentage = areHWBNumber && (black.unit === '' || black.unit === '%');
       const absolute = isHueAngle && isWhitePercentage && isBlackPercentage;
 
       if (absolute) {
