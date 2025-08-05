@@ -69,9 +69,9 @@ export function getInvertedRGBCSSVariables(id: string, red: Component, green: Co
   container[`${baseName}-eq-v`] = `calc(max(var(${baseName}-eq-r),var(${baseName}-eq-g),var(${baseName}-eq-b)) / 255)`;
   container[`${baseName}-scaler`] = `calc((6 / 85 + (1 - 6 / 85) * (1 - var(${baseName}-eq-v))) / var(${baseName}-eq-v))`;
   container[`${baseName}-ratio`] = `calc((var(${baseName}-vibrancy) + 0.49) / 2)`;
-  container[`${baseName}-r`] = `clamp(0, round(var(${baseName}-eq-r) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${R} * var(${baseName}-ratio)), 255)`;
-  container[`${baseName}-g`] = `clamp(0, round(var(${baseName}-eq-g) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${G} * var(${baseName}-ratio)), 255)`;
-  container[`${baseName}-b`] = `clamp(0, round(var(${baseName}-eq-b) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${B} * var(${baseName}-ratio)), 255)`;
+  container[`${baseName}-r`] = `round(clamp(0, calc(var(${baseName}-eq-r) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${R} * var(${baseName}-ratio)), 255))`;
+  container[`${baseName}-g`] = `round(clamp(0, calc(var(${baseName}-eq-g) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${G} * var(${baseName}-ratio)), 255))`;
+  container[`${baseName}-b`] = `round(clamp(0, calc(var(${baseName}-eq-b) * var(${baseName}-scaler) * (1 - var(${baseName}-ratio)) + ${B} * var(${baseName}-ratio)), 255))`;
   return [
     {
       type: 'model',
