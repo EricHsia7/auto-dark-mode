@@ -6,6 +6,8 @@ let containerElement;
 let panelElement;
 let stylesheetsElement;
 let toggleElement;
+let previousStylesheetNames: Array<StyleSheetCSSItem['name']> = [];
+let previousStylesheetHashes: Array<StyleSheetCSSItem['hash']> = [];
 
 function generateElementOfStylesheet(): HTMLElement {
   const newStylesheetElement = document.createElement('div');
@@ -51,31 +53,40 @@ function generateElementOfStyleTag(): HTMLStyleElement {
 }
 
 export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
-  function updateStylesheet(stylesheetElement: HTMLElement, styleTagElement: HTMLStyleElement, stylesheet: StyleSheetCSSItem, state: string): void {
-    function updateName(stylesheetElement: HTMLElement, stylesheet: StyleSheetCSSItem): void {
+  function updateStylesheet(stylesheetElement: HTMLElement, styleTagElement: HTMLStyleElement, currentStylesheet: StyleSheetCSSItem, currentState: string, previousStylesheetName: string | undefined, previousStylesheetHash: string | undefined): void {
+    function updateName(stylesheetElement: HTMLElement, currentStylesheet: StyleSheetCSSItem): void {
       const thisNameElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_name') as HTMLElement;
       const thisToggleElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_toggle') as HTMLElement;
-      if (thisNameElement.innerText !== stylesheet.name || thisToggleElement.getAttribute('name') !== stylesheet.name) {
-        thisNameElement.innerText = stylesheet.name;
-        thisToggleElement.setAttribute('name', stylesheet.name);
+      if (thisNameElement.innerText !== currentStylesheet.name || thisToggleElement.getAttribute('name') !== currentStylesheet.name) {
+        thisNameElement.innerText = currentStylesheet.name;
+        thisToggleElement.setAttribute('name', currentStylesheet.name);
       }
     }
 
-    function updateStyleTag(stylesheetElement: HTMLElement, styleTagElement: HTMLStyleElement, stylesheet: StyleSheetCSSItem, state: string): void {
+    function updateStyleTag(stylesheetElement: HTMLElement, styleTagElement: HTMLStyleElement, currentStylesheet: StyleSheetCSSItem, currentState: string): void {
       const thisToggleElement = stylesheetElement.querySelector('.auto_dark_mode_panel_stylesheets_stylesheet_toggle') as HTMLElement;
       const thisState = thisToggleElement.getAttribute('state');
-      styleTagElement.setAttribute('auto-dark-mode-stylesheet-name', stylesheet.name);
-      if (styleTagElement.textContent !== stylesheet.css) {
-        styleTagElement.textContent = stylesheet.css;
+      styleTagElement.setAttribute('auto-dark-mode-stylesheet-name', currentStylesheet.name);
+      if (styleTagElement.textContent !== currentStylesheet.css) {
+        styleTagElement.textContent = currentStylesheet.css;
       }
-      const newDisabled = thisState === 'on' && state === 'on' ? false : true;
+      const newDisabled = thisState === 'on' && currentState === 'on' ? false : true;
       if (newDisabled !== styleTagElement.disabled) {
         styleTagElement.disabled = newDisabled;
       }
     }
 
-    updateName(stylesheetElement, stylesheet);
-    updateStyleTag(stylesheetElement, styleTagElement, stylesheet, state);
+    if (previousStylesheetName === undefined || previousStylesheetHash === undefined) {
+      updateName(stylesheetElement, currentStylesheet);
+      updateStyleTag(stylesheetElement, styleTagElement, currentStylesheet, currentState);
+    } else {
+      if (previousStylesheetHash !== currentStylesheet.hash) {
+        updateStyleTag(stylesheetElement, styleTagElement, currentStylesheet, currentState);
+      }
+      if (previousStylesheetName !== currentStylesheet.name) {
+        updateName(stylesheetElement, currentStylesheet);
+      }
+    }
   }
 
   if (!panelInitialized) {
@@ -116,7 +127,11 @@ export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
     const stylesheet = stylesheets[i];
     const stylesheetElement = stylesheetElements[i];
     const styleTagElement = styleTagElements[i];
-    updateStylesheet(stylesheetElement, styleTagElement, stylesheet, state);
+    const previousStylesheetName = previousStylesheetNames[i];
+    const previousStylesheetHash = previousStylesheetHashes[i];
+    updateStylesheet(stylesheetElement, styleTagElement, stylesheet, state, previousStylesheetName, previousStylesheetHash);
+    previousStylesheetNames.splice(i, 1, stylesheet.name);
+    previousStylesheetHashes.splice(i, 1, stylesheet.hash);
   }
 }
 

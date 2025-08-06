@@ -13,6 +13,7 @@ import { isDarkened } from './is-darkened';
 import { isInvertible } from './is-invertible';
 import { isPreserved } from './is-preserved';
 import { joinByDelimiters } from './join-by-delimiters';
+import { md5 } from './md5';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { SVGPresentationAttributesList } from './svg-presentation-attributes';
 
@@ -35,6 +36,7 @@ export type VariableReferenceStats = {
 export interface StyleSheetCSSItem {
   css: string;
   name: string;
+  hash: string;
 }
 
 export type StyleSheetCSSArray = Array<StyleSheetCSSItem>;
@@ -490,9 +492,12 @@ export function generateCssFromStyles(object: StylesCollection | StyleSheet, nes
       }
     }
 
+    const css = `${header}${result.join('')}`;
+    const hash = md5(css);
     results.push({
       name: sheet,
-      css: `${header}${result.join('')}`
+      css: css,
+      hash: hash
     });
   }
 
