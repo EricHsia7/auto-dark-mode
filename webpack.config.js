@@ -55,7 +55,7 @@ module.exports = (env, argv) => {
         raw: true, // if true, banner will not be wrapped in a comment
         entryOnly: true, // if true, the banner will only be added to the entry chunks,
         test: /\.js$/,
-        stage: webpack.Compilation.PROCESS_ASSETS_STAGE_REPORT
+        stage: webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE
       })
     ],
     target: ['web', 'es6'], // Target the browser environment (es6 is the default for browsers)
@@ -109,7 +109,7 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [
         new TerserPlugin({
-          extractComments: false
+          extractComments: true
           /*
           terserOptions: {
             compress: {
