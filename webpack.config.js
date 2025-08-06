@@ -109,15 +109,7 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [
         new TerserPlugin({
-          extractComments: false
-          /*
-          terserOptions: {
-            compress: {
-              inline: false,
-              loops: false
-            }
-          }
-          */
+          extractComments: true
         }),
         new CssMinimizerPlugin()
       ]
