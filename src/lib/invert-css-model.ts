@@ -1,4 +1,4 @@
-import { AbsoluteVariableIdentifierGenerator } from './absolute-variable-identifier';
+import { AbsoluteVariableIdentifierGenerator } from './absolute-variable-identifier-generator';
 import { angleToDegrees } from './angle-to-degree';
 import { getColorVibrancyCSSVariable } from './color-vibrancy';
 import { ModelComponent, parseComponent, stringifyComponent } from './component';

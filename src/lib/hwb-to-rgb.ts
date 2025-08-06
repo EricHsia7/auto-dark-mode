@@ -19,7 +19,7 @@ export function hwbToRgb(hue: number, white: number, black: number): [red: numbe
 }
 
 export function getConvertedHWBCSSVariables(id: string, hue: Component, white: Component, black: Component, container: CSSProperties): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
-  const baseName = `--${id}-hwb`;
+  const baseName = `${id}-hwb`;
   const W = `calc(${stringifyComponent(white, cssPrimaryDelimiters)} / 100%)`;
   const B = `calc(${stringifyComponent(black, cssPrimaryDelimiters)} / 100%)`;
   // this operation requires unit algebra proposed in CSS Values and Units Module Level 4

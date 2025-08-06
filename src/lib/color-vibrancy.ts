@@ -34,7 +34,7 @@ export function getColorVibrancyCSSVariable(id: string, red: Component, green: C
   const R = stringifyComponent(red, cssPrimaryDelimiters);
   const G = stringifyComponent(green, cssPrimaryDelimiters);
   const B = stringifyComponent(blue, cssPrimaryDelimiters);
-  const baseName = `--${id}-vibrancy`;
+  const baseName = `${id}-vibrancy`;
   const mergedNumber = baseStats.n + 1;
   const x = baseStats.n * (Math.pow(baseStats.stdev[0], 2) + Math.pow(baseStats.avg[0], 2));
   const y = baseStats.n * (Math.pow(baseStats.stdev[1], 2) + Math.pow(baseStats.avg[1], 2));

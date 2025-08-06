@@ -1,4 +1,4 @@
-import { AbsoluteVariableIdentifierGenerator } from './absolute-variable-identifier';
+import { AbsoluteVariableIdentifierGenerator } from './absolute-variable-identifier-generator';
 import { stringifyComponent } from './component';
 import { cssPrimaryDelimiters } from './css-delimiters';
 import { parseCSSModel } from './css-model';

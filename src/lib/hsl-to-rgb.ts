@@ -29,7 +29,7 @@ export function hslToRgb(hue: number, saturation: number, lightness: number): [r
 }
 
 export function getConvertedHSLCSSVariables(id: string, hue: Component, saturation: Component, lightness: Component, container: CSSProperties): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
-  const baseName = `--${id}-hsl`;
+  const baseName = `${id}-hsl`;
   const H = stringifyComponent(hue, cssPrimaryDelimiters);
   const S = `calc(${stringifyComponent(saturation, cssPrimaryDelimiters)} / 100%)`;
   const L = `calc(${stringifyComponent(lightness, cssPrimaryDelimiters)} / 100%)`;
