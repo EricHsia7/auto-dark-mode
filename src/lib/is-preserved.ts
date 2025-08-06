@@ -13,9 +13,5 @@ const preservedProperties = {
 };
 
 export function isPreserved(property: string): boolean {
-  if (preservedProperties.hasOwnProperty(property)) {
-    return true;
-  } else {
-    return false;
-  }
+  return preservedProperties.hasOwnProperty(property);
 }

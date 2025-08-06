@@ -3,9 +3,9 @@ export function isPathContinuous(object: any, path: Array<string>): boolean {
     return true;
   }
   if (typeof object === 'object' && !Array.isArray(object)) {
-    const key = path.shift();
+    const key = path[0];
     if (key !== undefined && object.hasOwnProperty(key)) {
-      return isPathContinuous(object[key], path);
+      return isPathContinuous(object[key], path.slice(1));
     } else {
       return false;
     }

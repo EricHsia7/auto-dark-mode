@@ -3,9 +3,5 @@ const darkenedProperties = {
 };
 
 export function isDarkened(property: string): boolean {
-  if (darkenedProperties.hasOwnProperty(property)) {
-    return true;
-  } else {
-    return false;
-  }
+  return darkenedProperties.hasOwnProperty(property);
 }
