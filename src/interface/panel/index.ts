@@ -77,11 +77,9 @@ export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
     }
 
     if (previousStylesheetName === undefined || previousStylesheetHash === undefined) {
-      console.log(0);
       updateName(stylesheetElement, currentStylesheet);
       updateStyleTag(stylesheetElement, styleTagElement, currentStylesheet, currentState);
     } else {
-      console.log(1);
       if (previousStylesheetHash !== currentStylesheet.hash) {
         updateStyleTag(stylesheetElement, styleTagElement, currentStylesheet, currentState);
       }
