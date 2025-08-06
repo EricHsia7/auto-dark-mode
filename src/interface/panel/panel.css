@@ -1,5 +1,5 @@
 .auto_dark_mode_panel {
-  background-color: var(--auto-dark-mode-ffffff);
+  background-color: var(--adm-ffffff);
   user-select: none;
   -webkit-user-select: none;
   visibility: inherit;
@@ -10,7 +10,7 @@
   .auto_dark_mode_panel {
     position: relative;
     width: 100%;
-    min-height: calc(65% + var(--auto-dark-mode-safe-area-bottom));
+    min-height: calc(65% + var(--adm-safe-area-bottom));
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
   }

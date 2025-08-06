@@ -17,7 +17,7 @@
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 60%, var(--auto-dark-mode-ffffff) 60%, var(--auto-dark-mode-ffffff) 100%);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 60%, var(--adm-ffffff) 60%, var(--adm-ffffff) 100%);
   }
 
   .auto_dark_mode_panel_container::-webkit-scrollbar {
