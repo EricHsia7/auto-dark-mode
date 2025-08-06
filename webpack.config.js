@@ -15,34 +15,6 @@ function getCurrentBranch() {
   }
 }
 
-function getMetadata(isDevelopment) {
-  const lines = [];
-  lines.push('==UserScript==');
-  let maxLength = 'exclude'.length;
-  for (const key in userscriptHeader) {
-    const thisLength = String(key).length;
-    if (thisLength > maxLength) {
-      maxLength = thisLength;
-    }
-  }
-  const padding = maxLength + 2;
-  for (const key in userscriptHeader) {
-    if (key === 'updateURL' || key === 'downloadURL') {
-      if (isDevelopment) continue;
-    }
-    lines.push(`@${String(key).padEnd(padding, ' ')}${userscriptHeader[key]}`);
-  }
-  for (const website of userscriptExclusionList.exclusion_list) {
-    lines.push(`@${'exclude'.padEnd(padding, ' ')}${website.pattern}`);
-  }
-  lines.push('==/UserScript==');
-  return lines
-    .map((e) => {
-      return `// ${e}`;
-    })
-    .join('\n');
-}
-
 module.exports = (env, argv) => {
   const isDevelopment = getCurrentBranch().startsWith('dev-') ? true : false;
   if (isDevelopment) {
