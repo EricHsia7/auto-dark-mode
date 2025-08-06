@@ -172,10 +172,10 @@ function processCSSRules(rules: CSSRuleList, container: { [key: string]: any }, 
                   referenceStats[cssVariableName] = [0, 0];
                 }
                 if (prop === 'background' || prop === 'background-color') {
-                  referenceStats[cssVariableName][0] += 1;
+                  referenceStats[cssVariableName][0]++;
                 }
                 if (prop === 'color') {
-                  referenceStats[cssVariableName][1] += 1;
+                  referenceStats[cssVariableName][1]++;
                 }
               }
             }
