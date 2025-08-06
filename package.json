@@ -34,6 +34,7 @@
     "webpack": "5.99.9"
   },
   "dependencies": {
-    "content-security-policy-parser": "0.6.0"
+    "content-security-policy-parser": "0.6.0",
+    "md5": "^2.3.0"
   }
 }

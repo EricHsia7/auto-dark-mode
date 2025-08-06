@@ -9,6 +9,7 @@ import { getSVGContent } from './get-svg-content';
 import { invertCSSModel } from './invert-css-model';
 import { invertPropertyValuePairs } from './invert-property-value-pairs';
 import { joinByDelimiters } from './join-by-delimiters';
+import { md5 } from './md5';
 import { resolveRelativeURL } from './resolve-relative-url';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { StyleSheetCSSItem } from './styles';
@@ -184,8 +185,10 @@ export function generateCssFromImageItem(imageItem: ImageItem): StyleSheetCSSIte
   const identifier = generateIdentifier();
   const sheet = `@image-${imageItem.mimetype}-${identifier}`;
   const css = `/* ${sheet} */ @media (prefers-color-scheme:dark){${rules}}`;
+  const hash = md5(css);
   return {
     name: sheet,
-    css: css
+    css: css,
+    hash: hash
   };
 }
