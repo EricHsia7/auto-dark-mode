@@ -1,5 +1,6 @@
 export function splitByTopLevelDelimiter(value: string, legalDelimiters = [' ', ',']) {
   value = value.trim();
+  if (legalDelimiters.length === 0) return value;
   let leftBracket = 0;
   let rightBracket = 0;
   let start = 0;
