@@ -15,6 +15,34 @@ function getCurrentBranch() {
   }
 }
 
+function getMetadata(isDevelopment) {
+  const lines = [];
+  lines.push('==UserScript==');
+  let maxLength = 'exclude'.length;
+  for (const key in userscriptHeader) {
+    const thisLength = String(key).length;
+    if (thisLength > maxLength) {
+      maxLength = thisLength;
+    }
+  }
+  const padding = maxLength + 2;
+  for (const key in userscriptHeader) {
+    if (key === 'updateURL' || key === 'downloadURL') {
+      if (isDevelopment) continue;
+    }
+    lines.push(`@${String(key).padEnd(padding, ' ')}${userscriptHeader[key]}`);
+  }
+  for (const website of userscriptExclusionList.exclusion_list) {
+    lines.push(`@${'exclude'.padEnd(padding, ' ')}${website.pattern}`);
+  }
+  lines.push('==/UserScript==');
+  return lines
+    .map((e) => {
+      return `// ${e}`;
+    })
+    .join('\n');
+}
+
 module.exports = (env, argv) => {
   const isDevelopment = getCurrentBranch().startsWith('dev-') ? true : false;
   if (isDevelopment) {
@@ -24,7 +52,7 @@ module.exports = (env, argv) => {
   }
   return {
     plugins: [
-      new webpack.BannerPlugin({
+      /* new webpack.BannerPlugin({
         banner: function () {
           const lines = [];
           lines.push('==UserScript==');
@@ -56,7 +84,7 @@ module.exports = (env, argv) => {
         entryOnly: true, // if true, the banner will only be added to the entry chunks,
         test: /\.js$/,
         stage: webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE
-      })
+      }) */
     ],
     target: ['web', 'es6'], // Target the browser environment (es6 is the default for browsers)
     mode: 'production', // Set the mode to 'production' or 'development'
@@ -109,7 +137,8 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [
         new TerserPlugin({
-          extractComments: true
+          extractComments: true,
+          banner: getMetadata(isDevelopment)
           /*
           terserOptions: {
             compress: {
