@@ -52,7 +52,7 @@ module.exports = (env, argv) => {
   }
   return {
     plugins: [
-      /* new webpack.BannerPlugin({
+      new webpack.BannerPlugin({
         banner: function () {
           const lines = [];
           lines.push('==UserScript==');
@@ -83,8 +83,8 @@ module.exports = (env, argv) => {
         raw: true, // if true, banner will not be wrapped in a comment
         entryOnly: true, // if true, the banner will only be added to the entry chunks,
         test: /\.js$/,
-        stage: webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE
-      }) */
+        stage: webpack.Compilation.PROCESS_ASSETS_STAGE_REPORT
+      })
     ],
     target: ['web', 'es6'], // Target the browser environment (es6 is the default for browsers)
     mode: 'production', // Set the mode to 'production' or 'development'
@@ -137,17 +137,7 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [
         new TerserPlugin({
-          extractComments: {
-            banner: getMetadata(isDevelopment)
-          }
-          /*
-          terserOptions: {
-            compress: {
-              inline: false,
-              loops: false
-            }
-          }
-          */
+          extractComments: true
         }),
         new CssMinimizerPlugin()
       ]
