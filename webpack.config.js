@@ -137,8 +137,9 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [
         new TerserPlugin({
-          extractComments: true,
-          banner: getMetadata(isDevelopment)
+          extractComments: {
+            banner: getMetadata(isDevelopment)
+          }
           /*
           terserOptions: {
             compress: {
