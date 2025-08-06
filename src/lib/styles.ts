@@ -1,3 +1,4 @@
+import { AbsoluteVariableIdentifierGenerator } from './absolute-variable-identifier';
 import { stringifyComponent } from './component';
 import { cssPrimaryDelimiters } from './css-delimiters';
 import { parseCSSModel } from './css-model';
@@ -375,6 +376,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
       if (isInvertible(key, value)) {
         const colors = splitByTopLevelDelimiter(value);
         const colorsLen = colors.result.length;
+        const absoluteVariableIdentifierGenerator = new AbsoluteVariableIdentifierGenerator(key)
         for (let i = colorsLen - 1; i >= 0; i--) {
           const color = colors.result[i];
           const parsedColor = parseCSSModel(color);
@@ -382,7 +384,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             const [r, g, b, a] = extractRGBA(parsedColor); // Extraction must occur before inverting because Array.prototype.splice() modifies arrays in place (array objects are mutable)
             const darkened = isDarkened(key);
             const mediaQueryConditionsText = mediaQueryConditions.length > 0 ? `@media ${mediaQueryConditions.join(' and ')}` : '';
-            const invertedColor = invertCSSModel(parsedColor, darkened, true, variableIndex, mediaQueryConditionsText, selectorText, newStyles);
+            const invertedColor = invertCSSModel(parsedColor, darkened, true, variableIndex, mediaQueryConditionsText, selectorText, newStyles, absoluteVariableIdentifierGenerator);
             colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
 
             if (a !== 0) {

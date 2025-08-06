@@ -16,7 +16,7 @@
   left: 24px;
   width: calc(100% - 24px - 24px);
   height: calc(80px - 24px - 24px);
-  color: var(--auto-dark-mode-333333);
+  color: var(--adm-333333);
   font-size: 18px;
   font-family: sans-serif;
   font-weight: bold;
@@ -34,7 +34,7 @@
   right: 24px;
   width: 40px;
   height: 24px;
-  background-color: var(--auto-dark-mode-cccccc);
+  background-color: var(--adm-cccccc);
   border-radius: 12px;
   appearance: none;
   -webkit-appearance: none;
@@ -47,7 +47,7 @@
 
 /* state: on */
 .auto_dark_mode_panel .auto_dark_mode_panel_head .auto_dark_mode_toggle[state="on"] {
-  background-color: var(--auto-dark-mode-accent-color);
+  background-color: var(--adm-accent-color);
 }
 
 /* head > toggle > thumb */
@@ -58,7 +58,7 @@
   width: 16px;
   height: 16px;
   border-radius: 8px;
-  background-color: var(--auto-dark-mode-ffffff);
+  background-color: var(--adm-ffffff);
   transform: translateX(0px);
   transition: transform 0.3s;
 }

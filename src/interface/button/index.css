@@ -19,8 +19,8 @@
   background-color: rgba(0, 0, 0, 0);
   backdrop-filter: blur(5px) contrast(200) invert(1) grayscale(1) brightness(1.2);
   -webkit-backdrop-filter: blur(5px) contrast(200) invert(1) grayscale(1) brightness(1.2);
-  -webkit-mask-image: var(--auto-dark-mode-button-mask);
-  mask-image: var(--auto-dark-mode-button-mask);
+  -webkit-mask-image: var(--adm-button-mask);
+  mask-image: var(--adm-button-mask);
   mask-composite: exclude;
   -webkit-mask-composite: destination-out;
   mask-size: 48px 48px;
@@ -29,7 +29,7 @@
   -webkit-mask-position: center center;
   mask-repeat: no-repeat;
   left: 20px;
-  bottom: calc(var(--auto-dark-mode-safe-area-bottom) + 20px);
+  bottom: calc(var(--adm-safe-area-bottom) + 20px);
   width: 48px;
   height: 48px;
   border-radius: 24px;
@@ -48,8 +48,8 @@
     bottom: 0px;
     width: 48px;
     height: 24px;
-    background-color: var(--auto-dark-mode-accent-color);
-    color: var(--auto-dark-mode-ffffff);
+    background-color: var(--adm-accent-color);
+    color: var(--adm-ffffff);
     font-family: sans-serif;
     font-weight: 400;
     font-size: 16px;
