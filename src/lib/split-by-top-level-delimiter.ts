@@ -1,4 +1,4 @@
-export function splitByTopLevelDelimiter(value: string, legalDelimiters = [' ', ',']) {
+export function splitByTopLevelDelimiter(value: string, legalDelimiters = [' ', ',']): { result: Array<string>; delimiters: Array<string> } {
   value = value.trim();
   let leftBracket = 0;
   let rightBracket = 0;
