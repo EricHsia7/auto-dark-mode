@@ -376,7 +376,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
       if (isInvertible(key, value)) {
         const colors = splitByTopLevelDelimiter(value);
         const colorsLen = colors.result.length;
-        const absoluteVariableIdentifierGenerator = new AbsoluteVariableIdentifierGenerator(key)
+        const absoluteVariableIdentifierGenerator = new AbsoluteVariableIdentifierGenerator(key);
         for (let i = colorsLen - 1; i >= 0; i--) {
           const color = colors.result[i];
           const parsedColor = parseCSSModel(color);
