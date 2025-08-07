@@ -56,6 +56,7 @@ export function parseNumber(value: string): NumberComponent | ParsingFailed {
 
   const unitedFloatMatch = value.match(/^([-+]?[0-9]*\.?[0-9]+)([a-z%]+)$/i);
   if (unitedFloatMatch) {
+    // float with unit
     return {
       type: 'number',
       number: parseFloat(unitedFloatMatch[1]),
