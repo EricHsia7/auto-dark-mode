@@ -25,5 +25,5 @@ export const cssPrimaryDelimiters = {
   'var': ',',
   'color-mix': ',',
   'calc': '',
-  'default': ','
+  'default': ' '
 };

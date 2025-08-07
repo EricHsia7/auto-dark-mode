@@ -1,5 +1,4 @@
 import { Component, stringifyComponent } from './component';
-import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSProperties } from './styles';
 
 export function hwbToRgb(hue: number, white: number, black: number): [red: number, green: number, blue: number] {
@@ -20,8 +19,8 @@ export function hwbToRgb(hue: number, white: number, black: number): [red: numbe
 
 export function getConvertedHWBCSSVariables(id: string, hue: Component, white: Component, black: Component, container: CSSProperties): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
   const baseName = `${id}-hwb`;
-  const W = `calc(${stringifyComponent(white, cssPrimaryDelimiters)} / 100%)`;
-  const B = `calc(${stringifyComponent(black, cssPrimaryDelimiters)} / 100%)`;
+  const W = `calc(${stringifyComponent(white)} / 100%)`;
+  const B = `calc(${stringifyComponent(black)} / 100%)`;
   // this operation requires unit algebra proposed in CSS Values and Units Module Level 4
   // https://www.w3.org/TR/css-values-4/#additions-L3
 
@@ -29,7 +28,7 @@ export function getConvertedHWBCSSVariables(id: string, hue: Component, white: C
   container[`${baseName}-gray`] = `calc(${W} / (${W} + ${B} + 0.01))`;
   container[`${baseName}-x`] = `calc(1 - ${W} - ${B})`;
   container[`${baseName}-y`] = `${W}`;
-  const H = stringifyComponent(hue, cssPrimaryDelimiters);
+  const H = stringifyComponent(hue);
   for (const channel of [
     ['0', 'r'],
     ['8', 'g'],

@@ -1,7 +1,6 @@
 import { clamp } from './clamp';
 import { getColorVibrancy } from './color-vibrancy';
 import { Component, ModelComponent, stringifyComponent } from './component';
-import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSVAR } from './css-model';
 
 export function invertRGB(red: number, green: number, blue: number, darkened: boolean = false): [red: number, green: number, blue: number] {
@@ -55,10 +54,10 @@ export function invertRGB(red: number, green: number, blue: number, darkened: bo
 
 export function getInvertedRGBCSSVariables(id: string, red: Component, green: Component, blue: Component, vibrancy: ModelComponent<CSSVAR>, container): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
   const baseName = `${id}-rgb`;
-  const R = `calc(${stringifyComponent(red, cssPrimaryDelimiters)} + 0.01)`;
-  const G = `calc(${stringifyComponent(green, cssPrimaryDelimiters)} + 0.01)`;
-  const B = `calc(${stringifyComponent(blue, cssPrimaryDelimiters)} + 0.01)`;
-  const V = stringifyComponent(vibrancy, cssPrimaryDelimiters);
+  const R = `calc(${stringifyComponent(red)} + 0.01)`;
+  const G = `calc(${stringifyComponent(green)} + 0.01)`;
+  const B = `calc(${stringifyComponent(blue)} + 0.01)`;
+  const V = stringifyComponent(vibrancy);
   // add 0.01 to avoid zero division error
   container[`${baseName}-max`] = `max(${R},${G},${B})`;
   container[`${baseName}-min`] = `min(${R},${G},${B})`;

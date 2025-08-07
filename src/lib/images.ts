@@ -1,5 +1,4 @@
 import { stringifyComponent } from './component';
-import { cssPrimaryDelimiters } from './css-delimiters';
 import { parseCSSModel } from './css-model';
 import { generateElementSelector } from './generate-element-selector';
 import { generateIdentifier } from './generate-identifier';
@@ -154,7 +153,7 @@ export async function invertImageItem(imageItem: ImageItem): Promise<ImageItem |
               const parsedColor = parseCSSModel(color);
               if (parsedColor !== undefined) {
                 const invertedColor = invertCSSModel(parsedColor, false, false);
-                colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
+                colors.result.splice(i, 1, stringifyComponent(invertedColor));
               }
             }
             element.setAttribute(property, joinByDelimiters(colors.result, colors.delimiters));

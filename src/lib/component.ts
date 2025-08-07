@@ -1,4 +1,4 @@
-import { cssDelimiters } from './css-delimiters';
+import { cssDelimiters, cssPrimaryDelimiters } from './css-delimiters';
 import { isTopLevelModel } from './is-top-level-model';
 import { splitByTopLevelDelimiter } from './split-by-top-level-delimiter';
 import { stripTopLevelModel } from './strip-top-level-model';
@@ -69,7 +69,7 @@ export function parseNumber(value: string): NumberComponent | ParsingFailed {
 export function parseModel(value: string): ModelComponent<string> | ParsingFailed {
   if (isTopLevelModel(value)) {
     const strippedModel = stripTopLevelModel(value);
-    const legalDelimiters = cssDelimiters[strippedModel.model] || cssDelimiters['default']; // TODO: separate the map
+    const legalDelimiters = cssDelimiters[strippedModel.model] || cssDelimiters['default'];
     const array = splitByTopLevelDelimiter(strippedModel.result, legalDelimiters);
 
     const parsedComponents = array.result.map((a) => parseComponent(a)).filter((b) => b !== undefined);
@@ -105,7 +105,7 @@ export function parseComponent(value: string): Component | ParsingFailed {
   return undefined;
 }
 
-export function stringifyComponent(component: Component | ParsingFailed, delimitersMap: { [model: string]: string }): string {
+export function stringifyComponent(component: Component | ParsingFailed): string {
   if (component === undefined) return '';
 
   if (component.type === 'number') {
@@ -117,9 +117,9 @@ export function stringifyComponent(component: Component | ParsingFailed, delimit
   }
 
   if (component.type === 'model') {
-    // Join subcomponents with a space (or use a delimiter if needed)
-    const delimiter = delimitersMap[component.model] || ' ';
-    const inner = component.components.map((e) => stringifyComponent(e, delimitersMap)).join(delimiter);
+    // Join subcomponents with a delimiter (or use a white space by default)
+    const delimiter = cssPrimaryDelimiters[component.model] || cssPrimaryDelimiters['default'];
+    const inner = component.components.map((e) => stringifyComponent(e)).join(delimiter);
     return `${component.model}(${inner})`;
   }
 

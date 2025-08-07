@@ -1,5 +1,4 @@
 import { Component, ModelComponent, stringifyComponent } from './component';
-import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSVAR } from './css-model';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
 
@@ -31,9 +30,9 @@ export function getColorVibrancy(red: number, green: number, blue: number): numb
 }
 
 export function getColorVibrancyCSSVariable(id: string, red: Component, green: Component, blue: Component, container): ModelComponent<CSSVAR> {
-  const R = stringifyComponent(red, cssPrimaryDelimiters);
-  const G = stringifyComponent(green, cssPrimaryDelimiters);
-  const B = stringifyComponent(blue, cssPrimaryDelimiters);
+  const R = stringifyComponent(red);
+  const G = stringifyComponent(green);
+  const B = stringifyComponent(blue);
   const baseName = `${id}-vibrancy`;
   const mergedNumber = baseStats.n + 1;
   const x = baseStats.n * (Math.pow(baseStats.stdev[0], 2) + Math.pow(baseStats.avg[0], 2));

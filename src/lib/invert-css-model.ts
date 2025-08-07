@@ -2,7 +2,6 @@ import { AbsoluteVariableIdentifierGenerator } from './absolute-variable-identif
 import { angleToDegrees } from './angle-to-degree';
 import { getColorVibrancyCSSVariable } from './color-vibrancy';
 import { ModelComponent, parseComponent, stringifyComponent } from './component';
-import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSColor, CSSGradient, CSSRGB, CSSRGBA, CSSVAR, isColor, isVariable, parseCSSModel } from './css-model';
 import { isAngle } from './css-units';
 import { getConvertedHSLCSSVariables, hslToRgb } from './hsl-to-rgb';
@@ -405,7 +404,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
               }
             }
           }
-          components.splice(i, 1, { type: 'string', string: subComponents.map((e) => stringifyComponent(e, cssPrimaryDelimiters)).join(' ') });
+          components.splice(i, 1, { type: 'string', string: subComponents.map((e) => stringifyComponent(e)).join(' ') });
         } else if (component.type === 'number') {
           // component is a direction (ex: 45deg) or position alone (might appear in color hint syntax)
           // keep it as-is
@@ -445,7 +444,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
             }
           }
 
-          components.splice(i, 1, { type: 'string', string: subComponents.map((e) => stringifyComponent(e, cssPrimaryDelimiters)).join(' ') });
+          components.splice(i, 1, { type: 'string', string: subComponents.map((e) => stringifyComponent(e)).join(' ') });
         } else if (component.type === 'number') {
           // component is a direction (ex: 45deg) or position alone (might appear in color hint syntax)
           // keep it as-is
@@ -485,7 +484,7 @@ export function invertCSSModel(modelComponent: ModelComponent<CSSColor | CSSVAR 
             }
           }
 
-          components.splice(i, 1, { type: 'string', string: subComponents.map((e) => stringifyComponent(e, cssPrimaryDelimiters)).join(' ') });
+          components.splice(i, 1, { type: 'string', string: subComponents.map((e) => stringifyComponent(e)).join(' ') });
         } else if (component.type === 'number') {
           // component is a direction (ex: 45deg) or position alone (might appear in color hint syntax)
           // keep it as-is

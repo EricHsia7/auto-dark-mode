@@ -1,5 +1,4 @@
 import { Component, ModelComponent, stringifyComponent } from './component';
-import { cssPrimaryDelimiters } from './css-delimiters';
 import { CSSVAR } from './css-model';
 import { CSSProperties } from './styles';
 
@@ -30,9 +29,9 @@ export function hslToRgb(hue: number, saturation: number, lightness: number): [r
 
 export function getConvertedHSLCSSVariables(id: string, hue: Component, saturation: Component, lightness: Component, container: CSSProperties): [red: ModelComponent<CSSVAR>, green: ModelComponent<CSSVAR>, blue: ModelComponent<CSSVAR>] {
   const baseName = `${id}-hsl`;
-  const H = stringifyComponent(hue, cssPrimaryDelimiters);
-  const S = `calc(${stringifyComponent(saturation, cssPrimaryDelimiters)} / 100%)`;
-  const L = `calc(${stringifyComponent(lightness, cssPrimaryDelimiters)} / 100%)`;
+  const H = stringifyComponent(hue);
+  const S = `calc(${stringifyComponent(saturation)} / 100%)`;
+  const L = `calc(${stringifyComponent(lightness)} / 100%)`;
   // this operation requires unit algebra proposed in CSS Values and Units Module Level 4
   // https://www.w3.org/TR/css-values-4/#additions-L3
 

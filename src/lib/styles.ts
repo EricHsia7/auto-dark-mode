@@ -1,6 +1,5 @@
 import { AbsoluteVariableIdentifierGenerator } from './absolute-variable-identifier-generator';
 import { stringifyComponent } from './component';
-import { cssPrimaryDelimiters } from './css-delimiters';
 import { parseCSSModel } from './css-model';
 import { deepAssign } from './deep-assign';
 import { evaluateTheme } from './evaluate-theme';
@@ -387,7 +386,7 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             const darkened = isDarkened(key);
             const mediaQueryConditionsText = mediaQueryConditions.length > 0 ? `@media ${mediaQueryConditions.join(' and ')}` : '';
             const invertedColor = invertCSSModel(parsedColor, darkened, true, variableIndex, mediaQueryConditionsText, selectorText, newStyles, absoluteVariableIdentifierGenerator);
-            colors.result.splice(i, 1, stringifyComponent(invertedColor, cssPrimaryDelimiters));
+            colors.result.splice(i, 1, stringifyComponent(invertedColor));
 
             if (a !== 0) {
               if (key === 'background-color' || key === 'background') {
