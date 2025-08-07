@@ -96,7 +96,7 @@ export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
     if (capacity < 0) {
       const newStyleTagsFragment = new DocumentFragment();
       const newStylesheetsFragment = new DocumentFragment();
-      for (let o = 0; o < Math.abs(capacity); o++) {
+      for (let i = 0, l = Math.abs(capacity); i < l; i++) {
         const newStyleTagElement = generateElementOfStyleTag();
         newStyleTagsFragment.appendChild(newStyleTagElement);
         const newStylesheetElement = generateElementOfStylesheet();
@@ -107,8 +107,8 @@ export function updateStylesheets(stylesheets: StyleSheetCSSArray): void {
     } else {
       const styleTagElements = document.querySelectorAll('style[auto-dark-mode-stylesheet-name]');
       const stylesheetElements = stylesheetsElement.querySelectorAll('.auto_dark_mode_panel_stylesheets_stylesheet');
-      for (let o = 0; o < Math.abs(capacity); o++) {
-        const groupIndex = currentStyleTagQuantity - 1 - o;
+      for (let i = 0, l = Math.abs(capacity); i < l; i++) {
+        const groupIndex = currentStyleTagQuantity - 1 - i;
         styleTagElements[groupIndex].remove();
         stylesheetElements[groupIndex].remove();
       }
