@@ -17,11 +17,7 @@ const svgElements = {
 // export type SvgElements = NodeListOf<SVGElement | SVGPathElement | SVGRectElement | SVGCircleElement | SVGEllipseElement | SVGPolygonElement | SVGLineElement | SVGPolylineElement | SVGGElement | SVGTextElement | SVGTSpanElement | SVGTextPathElement | SVGStopElement>;
 
 export function isSVGElement(tag: string): boolean {
-  if (svgElements.hasOwnProperty(tag.toLowerCase())) {
-    return true;
-  } else {
-    return false;
-  }
+  return svgElements.hasOwnProperty(tag.toLowerCase());
 }
 
 export const svgElementsQuerySelectorString = 'svg, svg path, svg rect, svg circle, svg ellipse, svg polygon, svg line, svg polyline, svg g, svg text, svg tspan, svg textPath, svg stop';
