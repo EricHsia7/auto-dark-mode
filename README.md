@@ -5,11 +5,11 @@
 ## Features
 
 - Automatically darkens websites based on their existing styles.
-- Smart color inversion for backgrounds, text, and borders.
+- Smart color inversion for user interfaces.
 - Control panel to enable/disable specific stylesheets.
 - Floating button to open the control panel.
 - Respects system dark mode preference (`prefers-color-scheme`).
-- Exclusion list for sites where dark mode should not be applied (e.g., Google, YouTube, GitHub).
+- Exclusion list for sites where dark mode should not be applied (e.g., YouTube, GitHub).
 
 ## Installation
 
