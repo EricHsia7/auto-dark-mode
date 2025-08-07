@@ -1,6 +1,7 @@
 import { Component, ModelComponent, stringifyComponent } from './component';
 import { CSSVAR } from './css-model';
 import { computeStats, getPerChannelDifference, mergeStats } from './stats';
+import { CSSProperties } from './styles';
 
 const baseColors: number[][] = [
   [255, 255, 255],
@@ -29,7 +30,7 @@ export function getColorVibrancy(red: number, green: number, blue: number): numb
   return (d + e + f) / 3;
 }
 
-export function getColorVibrancyCSSVariable(id: string, red: Component, green: Component, blue: Component, container): ModelComponent<CSSVAR> {
+export function getColorVibrancyCSSVariable(id: string, red: Component, green: Component, blue: Component, container: CSSProperties): ModelComponent<CSSVAR> {
   const R = stringifyComponent(red);
   const G = stringifyComponent(green);
   const B = stringifyComponent(blue);
