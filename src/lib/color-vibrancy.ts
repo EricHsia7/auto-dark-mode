@@ -30,25 +30,32 @@ export function getColorVibrancy(red: number, green: number, blue: number): numb
   return (d + e + f) / 3;
 }
 
+const mergedNumber = baseStats.n + 1;
+const a = baseStats.avg[0] * baseStats.n;
+const b = baseStats.avg[1] * baseStats.n;
+const c = baseStats.avg[2] * baseStats.n;
+const x = baseStats.n * (Math.pow(baseStats.stdev[0], 2) + Math.pow(baseStats.avg[0], 2));
+const y = baseStats.n * (Math.pow(baseStats.stdev[1], 2) + Math.pow(baseStats.avg[1], 2));
+const z = baseStats.n * (Math.pow(baseStats.stdev[2], 2) + Math.pow(baseStats.avg[2], 2));
+
 export function getColorVibrancyCSSVariable(id: string, red: Component, green: Component, blue: Component, container: CSSProperties): ModelComponent<CSSVAR> {
   const R = stringifyComponent(red);
   const G = stringifyComponent(green);
   const B = stringifyComponent(blue);
   const baseName = `${id}-vibrancy`;
-  const mergedNumber = baseStats.n + 1;
-  const x = baseStats.n * (Math.pow(baseStats.stdev[0], 2) + Math.pow(baseStats.avg[0], 2));
-  const y = baseStats.n * (Math.pow(baseStats.stdev[1], 2) + Math.pow(baseStats.avg[1], 2));
-  const z = baseStats.n * (Math.pow(baseStats.stdev[2], 2) + Math.pow(baseStats.avg[2], 2));
-  container[`${baseName}-rg-avg`] = `calc((${baseStats.avg[0] * baseStats.n} + ${R}) / ${mergedNumber})`;
-  container[`${baseName}-gb-avg`] = `calc((${baseStats.avg[1] * baseStats.n} + ${G}) / ${mergedNumber})`;
-  container[`${baseName}-br-avg`] = `calc((${baseStats.avg[2] * baseStats.n} + ${B}) / ${mergedNumber})`;
+  container[`${baseName}-rg-avg`] = `calc((${a} + ${R}) / ${mergedNumber})`;
+  container[`${baseName}-gb-avg`] = `calc((${b} + ${G}) / ${mergedNumber})`;
+  container[`${baseName}-br-avg`] = `calc((${c} + ${B}) / ${mergedNumber})`;
   container[`${baseName}-rg-stdev`] = `calc(sqrt((${x} + pow(${R},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2)))`;
   container[`${baseName}-gb-stdev`] = `calc(sqrt((${y} + pow(${G},2)) / ${mergedNumber} - pow(var(${baseName}-gb-avg),2)))`;
   container[`${baseName}-br-stdev`] = `calc(sqrt((${z} + pow(${B},2)) / ${mergedNumber} - pow(var(${baseName}-br-avg),2)))`;
+  /*
   container[`${baseName}-d`] = `calc((abs(${R} - ${G}) - var(${baseName}-rg-avg)) / var(${baseName}-rg-stdev))`;
   container[`${baseName}-e`] = `calc((abs(${G} - ${B}) - var(${baseName}-gb-avg)) / var(${baseName}-gb-stdev))`;
   container[`${baseName}-f`] = `calc((abs(${B} - ${R}) - var(${baseName}-br-avg)) / var(${baseName}-br-stdev))`;
   container[`${baseName}-v`] = `calc((var(${baseName}-d) + var(${baseName}-e) + var(${baseName}-f)) / 3)`;
+  */
+  container[`${baseName}-v`] = `calc(((abs(${R} - ${G}) - var(${baseName}-rg-avg)) / var(${baseName}-rg-stdev) + (abs(${G} - ${B}) - var(${baseName}-gb-avg)) / var(${baseName}-gb-stdev) + (abs(${B} - ${R}) - var(${baseName}-br-avg)) / var(${baseName}-br-stdev)) / 3)`;
   return {
     type: 'model',
     model: 'var',
