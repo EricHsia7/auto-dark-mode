@@ -31,21 +31,21 @@ export function getColorVibrancy(red: number, green: number, blue: number): numb
 }
 
 const mergedNumber = baseStats.n + 1;
-const a = baseStats.avg[0] * baseStats.n;
-const b = baseStats.avg[1] * baseStats.n;
-const c = baseStats.avg[2] * baseStats.n;
-const x = baseStats.n * (Math.pow(baseStats.stdev[0], 2) + Math.pow(baseStats.avg[0], 2));
-const y = baseStats.n * (Math.pow(baseStats.stdev[1], 2) + Math.pow(baseStats.avg[1], 2));
-const z = baseStats.n * (Math.pow(baseStats.stdev[2], 2) + Math.pow(baseStats.avg[2], 2));
+const a = (baseStats.avg[0] * baseStats.n) / mergedNumber;
+const b = (baseStats.avg[1] * baseStats.n) / mergedNumber;
+const c = (baseStats.avg[2] * baseStats.n) / mergedNumber;
+const x = (Math.pow(baseStats.stdev[0], 2) + Math.pow(baseStats.avg[0], 2)) * baseStats.n;
+const y = (Math.pow(baseStats.stdev[1], 2) + Math.pow(baseStats.avg[1], 2)) * baseStats.n;
+const z = (Math.pow(baseStats.stdev[2], 2) + Math.pow(baseStats.avg[2], 2)) * baseStats.n;
 
 export function getColorVibrancyCSSVariable(id: string, red: Component, green: Component, blue: Component, container: CSSProperties): ModelComponent<CSSVAR> {
   const R = stringifyComponent(red);
   const G = stringifyComponent(green);
   const B = stringifyComponent(blue);
   const baseName = `${id}-vibrancy`;
-  container[`${baseName}-rg-avg`] = `calc((${a} + ${R}) / ${mergedNumber})`;
-  container[`${baseName}-gb-avg`] = `calc((${b} + ${G}) / ${mergedNumber})`;
-  container[`${baseName}-br-avg`] = `calc((${c} + ${B}) / ${mergedNumber})`;
+  container[`${baseName}-rg-avg`] = `calc(${a} + ${R} / ${mergedNumber})`;
+  container[`${baseName}-gb-avg`] = `calc(${b} + ${G} / ${mergedNumber})`;
+  container[`${baseName}-br-avg`] = `calc(${c} + ${B} / ${mergedNumber})`;
   container[`${baseName}-rg-stdev`] = `calc(sqrt((${x} + pow(${R},2)) / ${mergedNumber} - pow(var(${baseName}-rg-avg),2)))`;
   container[`${baseName}-gb-stdev`] = `calc(sqrt((${y} + pow(${G},2)) / ${mergedNumber} - pow(var(${baseName}-gb-avg),2)))`;
   container[`${baseName}-br-stdev`] = `calc(sqrt((${z} + pow(${B},2)) / ${mergedNumber} - pow(var(${baseName}-br-avg),2)))`;

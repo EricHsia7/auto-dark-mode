@@ -26,8 +26,6 @@ export function getConvertedHWBCSSVariables(id: string, hue: Component, white: C
 
   container[`${baseName}-ratio`] = `round(down,clamp(0,${W} + ${B},1))`;
   container[`${baseName}-gray`] = `calc(${W} / (${W} + ${B} + 0.01))`;
-  container[`${baseName}-x`] = `calc(1 - ${W} - ${B})`;
-  container[`${baseName}-y`] = `${W}`;
   const H = stringifyComponent(hue);
   for (const channel of [
     ['0', 'r'],
@@ -35,8 +33,11 @@ export function getConvertedHWBCSSVariables(id: string, hue: Component, white: C
     ['4', 'b']
   ]) {
     container[`${baseName}-${channel[1]}-k`] = `calc(mod(${channel[0]} + ${H} / 30deg, 12))`;
+    /*
     container[`${baseName}-${channel[1]}-t`] = `calc(0.5 - 0.5 * max(-1,min(var(${baseName}-${channel[1]}-k) - 3,9 - var(${baseName}-${channel[1]}-k),1)))`;
     container[`${baseName}-${channel[1]}`] = `round(clamp(0,calc((((1 - ${W} - ${B}) * var(${baseName}-${channel[1]}-t) + ${W}) * (1 - var(${baseName}-ratio)) + var(${baseName}-gray) * var(${baseName}-ratio)) * 255),255))`;
+    */
+    container[`${baseName}-${channel[1]}`] = `round(clamp(0,calc((((1 - ${W} - ${B}) * (0.5 - 0.5 * max(-1,min(var(${baseName}-${channel[1]}-k) - 3,9 - var(${baseName}-${channel[1]}-k),1))) + ${W}) * (1 - var(${baseName}-ratio)) + var(${baseName}-gray) * var(${baseName}-ratio)) * 255),255))`;
   }
 
   return [
