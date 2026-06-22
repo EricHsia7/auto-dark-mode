@@ -80,7 +80,7 @@ module.exports = (env, argv) => {
             loader: 'babel-loader',
             options: {
               presets: [['@babel/preset-env', { exclude: ['@babel/plugin-transform-regenerator', '@babel/plugin-transform-template-literals', '@babel/plugin-transform-for-of'] }], 'babel-preset-modules', '@babel/preset-typescript'],
-              plugins: ['@babel/plugin-transform-runtime']
+              plugins: []
             }
           }
         },
