@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         auto-dark-mode
-// @version      0.37.0
+// @version      0.37.1
 // @description  Darken Any Website
 // @author       erichsia7
 // @inject-into  content
@@ -18,6 +18,7 @@
 // @exclude      *://github.*/*
 // @exclude      *://*.github.dev/*
 // @exclude      *://*.github.com/*
+// @exclude      *://vscode.*/*
 // @exclude      *://twitter.*/*
 // @exclude      *://x.*/*
 // @exclude      *://chatgpt.com/*
