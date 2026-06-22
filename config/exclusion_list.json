@@ -42,6 +42,11 @@
     },
     {
       "description": "",
+      "name": "VS Code",
+      "pattern": "*://vscode.*/*"
+    },
+    {
+      "description": "",
       "name": "Twitter",
       "pattern": "*://twitter.*/*"
     },
