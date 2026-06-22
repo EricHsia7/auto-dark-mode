@@ -8,7 +8,7 @@ export function evaluateTheme(backgroundColor: [red: number, green: number, blue
 
   const p2 = isColorDark(r2, g2, b2, a2);
 
-  if (a1 === 0 && p2 > 0.6) {
+  if (a1 === 0 && p2 > 0.5) {
     return 'light';
   }
 
