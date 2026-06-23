@@ -1,4 +1,5 @@
 import { AbsoluteVariableIdentifierGenerator } from './absolute-variable-identifier-generator';
+import { alphaToProbability } from './alpha-to-probability';
 import { stringifyComponent } from './component';
 import { parseCSSModel } from './css-model';
 import { deepAssign } from './deep-assign';
@@ -355,12 +356,12 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
   let backgroundColorRed = 0;
   let backgroundColorGreen = 0;
   let backgroundColorBlue = 0;
-  let backgroundColorAlpha = 0;
+  let backgroundColorWeight = 0;
 
   let textColorRed = 0;
   let textColorGreen = 0;
   let textColorBlue = 0;
-  let textColorAlpha = 0;
+  let textColorWeight = 0;
 
   // let quantity = 0;
 
@@ -389,29 +390,30 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
             colors.result.splice(i, 1, stringifyComponent(invertedColor));
 
             if (a !== 0) {
+              const weight = alphaToProbability(a);
               if (key === 'background-color' || key === 'background') {
-                backgroundColorRed += (r * a) / 255;
-                backgroundColorGreen += (g * a) / 255;
-                backgroundColorBlue += (b * a) / 255;
-                backgroundColorAlpha += a;
+                backgroundColorRed += (r * weight) / 255;
+                backgroundColorGreen += (g * weight) / 255;
+                backgroundColorBlue += (b * weight) / 255;
+                backgroundColorWeight += weight;
               } else if (key === 'color') {
-                textColorRed += (r * a) / 255;
-                textColorGreen += (g * a) / 255;
-                textColorBlue += (b * a) / 255;
-                textColorAlpha += a;
+                textColorRed += (r * weight) / 255;
+                textColorGreen += (g * weight) / 255;
+                textColorBlue += (b * weight) / 255;
+                textColorWeight += weight;
               } else if (key.startsWith('--')) {
                 if (referenceStats.hasOwnProperty(key)) {
                   if (referenceStats[key][0] > referenceStats[key][1]) {
-                    backgroundColorRed += (r * a) / 255;
-                    backgroundColorGreen += (g * a) / 255;
-                    backgroundColorBlue += (b * a) / 255;
-                    backgroundColorAlpha += a;
+                    backgroundColorRed += (r * weight) / 255;
+                    backgroundColorGreen += (g * weight) / 255;
+                    backgroundColorBlue += (b * weight) / 255;
+                    backgroundColorWeight += weight;
                   }
                   if (referenceStats[key][0] < referenceStats[key][1]) {
-                    textColorRed += (r * a) / 255;
-                    textColorGreen += (g * a) / 255;
-                    textColorBlue += (b * a) / 255;
-                    textColorAlpha += a;
+                    textColorRed += (r * weight) / 255;
+                    textColorGreen += (g * weight) / 255;
+                    textColorBlue += (b * weight) / 255;
+                    textColorWeight += weight;
                   }
                 }
               }
@@ -428,8 +430,8 @@ export function invertStyles(object: StylesCollection | StyleSheet | CSSProperti
     }
   }
 
-  const mainBackgroundColor = backgroundColorAlpha > 0 ? [(backgroundColorRed / backgroundColorAlpha) * 255, (backgroundColorGreen / backgroundColorAlpha) * 255, (backgroundColorBlue / backgroundColorAlpha) * 255, 1] : [0, 0, 0, 0];
-  const mainTextColor = textColorAlpha > 0 ? [(textColorRed / textColorAlpha) * 255, (textColorGreen / textColorAlpha) * 255, (textColorBlue / textColorAlpha) * 255, 1] : [0, 0, 0, 0];
+  const mainBackgroundColor = backgroundColorWeight > 0 ? [(backgroundColorRed / backgroundColorWeight) * 255, (backgroundColorGreen / backgroundColorWeight) * 255, (backgroundColorBlue / backgroundColorWeight) * 255, 1] : [0, 0, 0, 0];
+  const mainTextColor = textColorWeight > 0 ? [(textColorRed / textColorWeight) * 255, (textColorGreen / textColorWeight) * 255, (textColorBlue / textColorWeight) * 255, 1] : [0, 0, 0, 0];
 
   const originalTheme = evaluateTheme(mainBackgroundColor, mainTextColor);
 
