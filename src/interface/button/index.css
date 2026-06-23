@@ -16,9 +16,9 @@
 
 /* framed: false */
 .auto_dark_mode_button[framed="false"] {
-  background-color: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(5px) contrast(200) invert(1) grayscale(1) brightness(1.2);
-  -webkit-backdrop-filter: blur(5px) contrast(200) invert(1) grayscale(1) brightness(1.2);
+  background-color: var(--adm-333333-60);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   -webkit-mask-image: var(--adm-button-mask);
   mask-image: var(--adm-button-mask);
   mask-composite: exclude;
